@@ -1,4 +1,4 @@
-package cashon.example.com.cashon;
+package com.cashon.cashon;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

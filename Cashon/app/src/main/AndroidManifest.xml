@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cashon.example.com.cashon" >
+    package="com.cashon.cashon" >
 
     <application
         android:allowBackup="true"
