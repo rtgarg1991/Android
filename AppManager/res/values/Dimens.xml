@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="fragement_padding">20dp</dimen>
-    <dimen name="grid_view_installed_app_width">100dp</dimen>
-</resources>
