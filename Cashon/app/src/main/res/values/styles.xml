@@ -5,4 +5,23 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!-- EdiTest Style-->
+    <style name="edittext_style">
+        <item name="android:layout_marginLeft">@dimen/edittext_style_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/edittext_style_margin_right</item>
+        <item name="android:layout_marginTop">@dimen/edittext_style_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/edittext_style_margin_bottom</item>
+
+        <item name="android:paddingLeft">@dimen/edittext_style_padding_left</item>
+        <item name="android:paddingRight">@dimen/edittext_style_padding_right</item>
+        <item name="android:paddingTop">@dimen/edittext_style_padding_top</item>
+        <item name="android:paddingBottom">@dimen/edittext_style_padding_bottom</item>
+    </style>
+    <style name="edittext_single_line_style" parent="edittext_style">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_height">@dimen/edittext_style_layout_height</item>
+        <item name="android:background">@drawable/edittext_style</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
+    </style>
 </resources>

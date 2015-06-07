@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:gravity="center_horizontal"
+    android:orientation="vertical" android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.cashon.cashon.RegisterActivity">
+
+    <!-- Login progress -->
+    <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp" android:visibility="gone" />
+
+    <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical">
+
+            <EditText android:id="@+id/textName" android:layout_width="match_parent"
+                android:hint="@string/prompt_Name" android:inputType="textCapWords"
+                android:imeOptions="actionUnspecified"
+                style="@style/edittext_single_line_style"/>
+
+            <EditText android:id="@+id/textEmail" android:layout_width="match_parent"
+                android:hint="@string/prompt_email" android:inputType="textEmailAddress"
+                style="@style/edittext_single_line_style" />
+
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:orientation="horizontal">
+
+                <Spinner
+                    android:layout_width="0px" android:layout_weight="2"
+                    android:entries="@array/country_codes" android:prompt="@string/country_code_prompt"
+                    style="@style/edittext_single_line_style"
+                    android:layout_marginRight="1dp"
+                    android:padding="2dp"/>
+
+                <EditText android:id="@+id/textMobileNumber"
+                    android:layout_width="0px" android:layout_weight="5" android:hint="@string/prompt_password"
+                    android:imeOptions="actionUnspecified" android:inputType="phone"
+                    android:imeActionId="@+id/login" android:maxLength="10"
+                    style="@style/edittext_single_line_style"
+                    android:layout_marginLeft="5dp"/>
+            </LinearLayout>
+
+            <Button android:id="@+id/buttonRegister" style="?android:textAppearanceSmall"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" android:text="@string/action_Register"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
+

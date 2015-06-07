@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:thickness="0dp" android:shape="rectangle">
+    <corners android:radius="@dimen/edittext_style_cornor_radius" />
+    <solid android:color="@color/edittext_gradient_end_color"/>
+    <!--<gradient-->
+        <!--android:startColor="@color/edittext_gradient_start_color"-->
+        <!--android:endColor="@color/edittext_gradient_end_color"-->
+        <!--android:type="linear"-->
+        <!--android:angle="270"/>-->
+</shape>
