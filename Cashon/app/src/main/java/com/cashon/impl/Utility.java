@@ -1,10 +1,13 @@
-package com.cashon.helper;
+package com.cashon.impl;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
+
+import com.cashon.helper.Constants;
+import com.cashon.helper.PreferenceManager;
 
 /**
  * Created by Rohit on 6/8/2015.
@@ -30,13 +33,12 @@ public class Utility {
     /**
      * return whether user is registered or not
      * @param context Context to be used to check about user registration
+     * @throws IllegalArgumentException If context provided is null
      */
-    public static boolean isUserRegistered(Context context) {
-        // get shared preferences and check boolean value whether user is registered or not
-        SharedPreferences pref = context.getSharedPreferences(Constants.CASHON_SHARED_PREF, Context.MODE_PRIVATE);
-        boolean isUserRegistered = pref.getBoolean(Constants.USER_REGISTERED, false);
-
-        return isUserRegistered;
+    public static boolean isUserRegistered(Context context)
+            throws IllegalArgumentException{
+        return PreferenceManager.getDefaultSharedPreferenceValue(
+                context, Constants.USER_REGISTERED, Context.MODE_PRIVATE, false);
     }
 
     /**

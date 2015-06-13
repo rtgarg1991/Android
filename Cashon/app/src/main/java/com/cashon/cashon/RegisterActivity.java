@@ -4,10 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,7 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.cashon.helper.Utility;
+import com.cashon.helper.Logger;
+import com.cashon.helper.PreferenceManager;
+import com.cashon.impl.Utility;
 
 /**
  * A login screen that offers login via email/password.
@@ -25,7 +29,7 @@ public class RegisterActivity extends Activity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private UserRegistrationTask mAuthTask = null;
 
     // UI references.
     private EditText mEmailView;
@@ -47,6 +51,7 @@ public class RegisterActivity extends Activity {
         mMobileView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                Logger.doSecureLogging(Log.DEBUG, "User Trying to Register, lets check progress!");
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     attemptRegister();
                     return true;
@@ -76,6 +81,7 @@ public class RegisterActivity extends Activity {
     public void attemptRegister() {
         // if async task already running , then return
         if (mAuthTask != null) {
+            Logger.doSecureLogging(Log.DEBUG, "User Already in registration process with Server, so lets decline this request!");
             return;
         }
 
@@ -94,6 +100,7 @@ public class RegisterActivity extends Activity {
 
         // Check for valid Mobile Number
         if (!Utility.isValidMobile(mobile)) {
+            Logger.doSecureLogging(Log.DEBUG, "Wrong Mobile Entered by User, set error in EditText");
             mMobileView.setError(getString(R.string.error_invalid_mobile));
             focusView = mMobileView;
             cancel = true;
@@ -101,6 +108,7 @@ public class RegisterActivity extends Activity {
 
         // Check for a valid email, if the user entered one.
         if (!Utility.isValidEmail(email)) {
+            Logger.doSecureLogging(Log.DEBUG, "Wrong Email Entered by User, set error in EditText");
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
@@ -108,6 +116,7 @@ public class RegisterActivity extends Activity {
 
         // Check for a valid Name
         if (TextUtils.isEmpty(name)) {
+            Logger.doSecureLogging(Log.DEBUG, "Wrong Name Entered by User, set error in EditText");
             mNameView.setError(getString(R.string.error_field_required));
             focusView = mNameView;
             cancel = true;
@@ -118,11 +127,12 @@ public class RegisterActivity extends Activity {
             // form field with an error.
             focusView.requestFocus();
         } else {
+            Logger.doSecureLogging(Log.INFO, "Lets try to register user on Server!");
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-//            mAuthTask = new UserLoginTask(email, mobile);
-//            mAuthTask.execute((Void) null);
+            mAuthTask = new UserRegistrationTask(email, mobile, name);
+            mAuthTask.execute((Void) null);
         }
     }
 
@@ -163,22 +173,25 @@ public class RegisterActivity extends Activity {
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
+     * Represents an asynchronous registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserRegistrationTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
+        private final String mName;
 
-        UserLoginTask(String email, String password) {
+        UserRegistrationTask(String email, String password, String name) {
             mEmail = email;
             mPassword = password;
+            mName = name;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            // get default shared preferences
+            SharedPreferences prefs = PreferenceManager.getSharedPreferences(RegisterActivity.this, MODE_PRIVATE);
 
             try {
                 // Simulate network access.
