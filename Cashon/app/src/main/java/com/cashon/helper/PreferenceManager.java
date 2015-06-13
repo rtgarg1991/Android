@@ -10,9 +10,6 @@ import android.text.TextUtils;
  */
 public class PreferenceManager {
 
-    private static final String EXCEPTION_INVALID_CONTEXT = "Context Invalid";
-    private static final String EXCEPTION_INVALID_KEY = "Key Invalid";
-
     /**
      * Get Default Shared Preference for the Application
      * @param context Context to be used to get SharedPreferences
@@ -23,7 +20,7 @@ public class PreferenceManager {
     public static SharedPreferences getSharedPreferences(Context context, int mode)
             throws IllegalArgumentException {
         if(context == null) {
-            throw new IllegalArgumentException(EXCEPTION_INVALID_CONTEXT);
+            throw new IllegalArgumentException(Constants.EXCEPTION_INVALID_CONTEXT);
         }
         return context.getSharedPreferences(Constants.CASHON_SHARED_PREF, mode);
     }
@@ -41,10 +38,10 @@ public class PreferenceManager {
             Context context, String key, int mode, boolean defaultValue)
             throws IllegalArgumentException{
         if(key == null || TextUtils.isEmpty(key)) {
-            throw new IllegalArgumentException(EXCEPTION_INVALID_KEY);
+            throw new IllegalArgumentException(Constants.EXCEPTION_INVALID_KEY);
         }
         if(context == null) {
-            throw new IllegalArgumentException(EXCEPTION_INVALID_CONTEXT);
+            throw new IllegalArgumentException(Constants.EXCEPTION_INVALID_CONTEXT);
         }
         return getSharedPreferences(context, mode).getBoolean(key, defaultValue);
     }

@@ -31,7 +31,18 @@ public class Constants {
     public static final int SPLASH_SCREEN_TIMEOUT = 3000;
 
     /***
+     * Temporary timeout time in milliseconds
+     * just to wait for any retry attempt
+     */
+    public static final int TEMP_TIMEOUT = 500;
+
+    /***
      * String value which will store whether user is registered or not
      */
     public static final String USER_REGISTERED = "user_registered";
+
+    // Custom Exception Messages [START]
+    public static final String EXCEPTION_INVALID_CONTEXT = "Context Invalid";
+    public static final String EXCEPTION_INVALID_KEY = "Key Invalid";
+    // Custom Exception Messages [END]
 }
