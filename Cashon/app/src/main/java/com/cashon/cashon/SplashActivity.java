@@ -11,6 +11,8 @@ import com.cashon.helper.Constants;
 import com.cashon.impl.SimpleDelayHandler;
 import com.cashon.helper.Logger;
 import com.cashon.impl.Utility;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class SplashActivity extends Activity implements SimpleDelayHandler.SimpleDelayHandlerCallback {
 
@@ -20,6 +22,7 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.splashProgressBar);

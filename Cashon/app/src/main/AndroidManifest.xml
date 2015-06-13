@@ -30,6 +30,10 @@
             android:label="@string/title_activity_register"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d0a30b6010f9dfc681758e38a9446b380770c2eb" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
