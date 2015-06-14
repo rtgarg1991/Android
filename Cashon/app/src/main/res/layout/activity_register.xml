@@ -30,7 +30,7 @@
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:orientation="horizontal">
 
-                <Spinner
+                <Spinner android:id="@+id/spinnerCountryCode"
                     android:layout_width="0px" android:layout_weight="2"
                     android:entries="@array/country_codes" android:prompt="@string/country_code_prompt"
                     style="@style/edittext_single_line_style"

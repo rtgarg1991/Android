@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -51,7 +52,12 @@ public class HardwareAccess {
      */
     private static void accessInternet(final Context context, final HardwareAccessCallbacks callback) {
         Logger.doSecureLogging(Log.DEBUG, "Trying to Access Internet by showing dialog to user");
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = null;
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            builder = new AlertDialog.Builder(context);
+        } else {
+            builder = new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_LIGHT);
+        }
         builder.setMessage(MESSAGE_INTERNET_CONNECT)
                 .setCancelable(false)
                 .setPositiveButton(POSITIVE_INTERNET_CONNECT, new DialogInterface.OnClickListener() {
@@ -91,6 +97,6 @@ public class HardwareAccess {
          * @param access Integer for which {@link HardwareAccess} Class was used
          * @param isSuccess Whether user tried to enable the feature or not
          */
-        public void accessCompleted(int access, boolean isSuccess);
+        void accessCompleted(int access, boolean isSuccess);
     }
 }

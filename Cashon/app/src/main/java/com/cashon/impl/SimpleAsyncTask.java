@@ -10,12 +10,12 @@ public class SimpleAsyncTask extends AsyncTask<Object, Object, Object> {
     private SimpleAsyncTaskCallbacks callback = null;
 
     public interface SimpleAsyncTaskCallbacks {
-        public void onPreExecute();
-        public Object doInBackground(Object... params);
-        public void onPostExecute(Object o);
-        public void onProgressUpdate(Object... values);
-        public void onCancelled(Object o);
-        public void onCancelled();
+        void onPreExecute();
+        Object doInBackground(Object... params);
+        void onPostExecute(Object o);
+        void onProgressUpdate(Object... values);
+        void onCancelled(Object o);
+        void onCancelled();
     }
 
     public SimpleAsyncTask(SimpleAsyncTaskCallbacks callback) {

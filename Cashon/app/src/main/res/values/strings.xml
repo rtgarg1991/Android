@@ -18,7 +18,9 @@
     <string name="error_field_required">This field is required</string>
 
     <string name="country_code_prompt">Choose a country</string>
+    <string name="gcm_defaultSenderId">293017939033</string>
     <string-array name="country_codes">
         <item>+91 (IN)</item>
     </string-array>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

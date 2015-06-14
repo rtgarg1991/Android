@@ -28,7 +28,7 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_splash);
 
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.splashProgressBar);
     }
@@ -83,8 +83,13 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         } else {
-            // TODO user is registered and internet is working
+
             Logger.doSecureLogging(Log.INFO, "User is registered and Internet is also working, so lets show some offers!");
+            // Open Main Activity notifying the user is registered
+            // and lets show him/her some awesome offers to earn some money
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
     }
 
