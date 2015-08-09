@@ -5,7 +5,19 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <!-- EdiTest Style-->
+    <!-- EditText Style-->
+    <style name="textview_style">
+        <item name="android:layout_marginLeft">@dimen/textview_style_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/textview_style_margin_right</item>
+        <item name="android:layout_marginTop">@dimen/textview_style_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/textview_style_margin_bottom</item>
+
+        <item name="android:paddingLeft">@dimen/textview_style_padding_left</item>
+        <item name="android:paddingRight">@dimen/textview_style_padding_right</item>
+        <item name="android:paddingTop">@dimen/textview_style_padding_top</item>
+        <item name="android:paddingBottom">@dimen/textview_style_padding_bottom</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+    </style>
     <style name="edittext_style">
         <item name="android:layout_marginLeft">@dimen/edittext_style_margin_left</item>
         <item name="android:layout_marginRight">@dimen/edittext_style_margin_right</item>
@@ -16,6 +28,8 @@
         <item name="android:paddingRight">@dimen/edittext_style_padding_right</item>
         <item name="android:paddingTop">@dimen/edittext_style_padding_top</item>
         <item name="android:paddingBottom">@dimen/edittext_style_padding_bottom</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+        <item name="android:textColorHint">@color/primary_text_color</item>
     </style>
     <style name="edittext_single_line_style" parent="edittext_style">
         <item name="android:gravity">center</item>
@@ -23,5 +37,32 @@
         <item name="android:background">@drawable/edittext_style</item>
         <item name="android:singleLine">true</item>
         <item name="android:maxLines">1</item>
+    </style>
+    <style name="app_install_title_textview_style" parent="edittext_single_line_style">
+        <item name="android:paddingTop">@dimen/app_install_textview_style_padding_top</item>
+        <item name="android:paddingBottom">@dimen/app_install_textview_style_padding_bottom</item>
+        <item name="android:layout_marginTop">@dimen/app_install_textview_style_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/app_install_textview_style_margin_bottom</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="app_install_description_textview_style" parent="app_install_title_textview_style">
+        <item name="android:layout_marginLeft">@dimen/app_install_description_style_padding_left</item>
+        <item name="android:layout_marginRight">@dimen/app_install_description_style_padding_right</item>
+        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:gravity">left</item>
+    </style>
+    <style name="edittext_single_line_style_no_margin" parent="edittext_single_line_style">
+        <item name="android:layout_margin">0dp</item>
+    </style>
+
+    <style name="drawer_list_textview_style" parent="edittext_style">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">@dimen/drawer_list_item_padding_left</item>
+        <item name="android:paddingRight">@dimen/drawer_list_item_padding_right</item>
+        <item name="android:textSize">@dimen/drawer_list_item_text_size</item>
+        <item name="android:minHeight">@dimen/drawer_list_item_min_height</item>
+        <item name="android:textColor">@color/drawer_list_item_text_color</item>
+        <item name="android:layout_marginTop">@dimen/drawer_list_item_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/drawer_list_item_margin_bottom</item>
     </style>
 </resources>

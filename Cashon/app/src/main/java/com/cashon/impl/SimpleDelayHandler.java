@@ -1,5 +1,6 @@
 package com.cashon.impl;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -20,6 +21,9 @@ public class SimpleDelayHandler {
     private Handler mNonUIHandler;
 
     private static class UIHandler extends Handler {
+        public UIHandler(Looper looper) {
+            super(looper);
+        }
         @Override
         public void handleMessage(Message message) {
             SimpleDelayHandlerCallback callback = (SimpleDelayHandlerCallback)message.obj;
@@ -39,8 +43,10 @@ public class SimpleDelayHandler {
         }
     }
 
-    private SimpleDelayHandler() {
-        mUIHandler = new UIHandler();
+    private SimpleDelayHandler(Context context) {
+        if(context != null) {
+            mUIHandler = new UIHandler(context.getMainLooper());
+        }
 
         HandlerThread thread = new HandlerThread("ABC");
         thread.start();
@@ -52,13 +58,17 @@ public class SimpleDelayHandler {
      * get SimpleDelayHandler Class object to run your callback after specific time
      * @return SimpleDelayHandler object
      */
-    public static SimpleDelayHandler getInstance() {
+    public static SimpleDelayHandler getInstance(Context context) {
         if(handler == null) {
             synchronized (SimpleDelayHandler.class) {
                 if(handler == null) {
-                    handler = new SimpleDelayHandler();
+                    handler = new SimpleDelayHandler(context);
                 }
             }
+        } else if(context != null) {
+            handler.mUIHandler = new UIHandler(context.getMainLooper());
+        } else {
+            handler.mUIHandler = null;
         }
         return handler;
     }
@@ -72,7 +82,7 @@ public class SimpleDelayHandler {
      * @param needUICallback whether the callback should be in UI Thread of your Application or in Non-UI thread
      */
     public void startDelayed(SimpleDelayHandlerCallback callback, int delay, boolean needUICallback) {
-        if(needUICallback) {
+        if(needUICallback && mUIHandler != null) {
             Message message = mUIHandler.obtainMessage();
             message.obj = callback;
             mUIHandler.sendMessageDelayed(message, delay);

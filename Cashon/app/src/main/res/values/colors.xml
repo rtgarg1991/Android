@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="background_light">#FFEEEEEE</color>
+    <color name="background_light_grey">#FFD3D3D3</color>
+    <color name="background_grey">#FFEBEBEB</color>
+
     <color name="edittext_gradient_start_color">#FFC8C8C8</color>
     <color name="edittext_gradient_end_color">#FFDDDDDD</color>
+
+    <!-- Drawer List TextView Style [START] -->
+    <color name="drawer_list_item_text_color">#FF000000</color>
+    <!-- Drawer List TextView Style [END] -->
+    <color name="primary_text_color">#FF212121</color>
+    <color name="primary_text_color_light">#FFEDEDED</color>
+
+    <color name="primary">#FFFF5722</color>
+    <color name="primary_dark">#FFE64A19</color>
+    <color name="primary_light">#FFFFCCBC</color>
+    <color name="accent">#FFFFEB3B</color>
+    <color name="secondary_text">#FF727272</color>
+    <color name="icons">#FFFFFFFF</color>
+    <color name="divider">#FFB6B6B6</color>
 </resources>

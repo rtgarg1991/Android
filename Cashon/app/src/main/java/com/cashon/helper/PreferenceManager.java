@@ -45,4 +45,26 @@ public class PreferenceManager {
         }
         return getSharedPreferences(context, mode).getBoolean(key, defaultValue);
     }
+
+    /**
+     * Get boolean value of particular key in SharedPreferences
+     * @param context Context to be used to get SharedPreferences
+     * @param key Key whose boolean value needs to be set
+     * @param mode Mode to be used for getting SharedPreferences
+     * @param value value which will be set for provided key
+     * @throws IllegalArgumentException If context provided is null or key provided is empty or null
+     */
+    public static void setDefaultSharedPreferenceValue(
+            Context context, String key, int mode, boolean value)
+            throws IllegalArgumentException{
+        if(key == null || TextUtils.isEmpty(key)) {
+            throw new IllegalArgumentException(Constants.EXCEPTION_INVALID_KEY);
+        }
+        if(context == null) {
+            throw new IllegalArgumentException(Constants.EXCEPTION_INVALID_CONTEXT);
+        }
+        SharedPreferences.Editor editor = getSharedPreferences(context, mode).edit();
+        editor.putBoolean(key, value);
+        editor.commit();
+    }
 }

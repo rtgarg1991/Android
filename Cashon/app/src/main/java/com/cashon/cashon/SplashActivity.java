@@ -12,8 +12,8 @@ import com.cashon.impl.HardwareAccess;
 import com.cashon.impl.SimpleDelayHandler;
 import com.cashon.helper.Logger;
 import com.cashon.impl.Utility;
-import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
+import com.parse.ParseAnalytics;
+import com.parse.ParseUser;
 
 public class SplashActivity extends Activity implements SimpleDelayHandler.SimpleDelayHandlerCallback, HardwareAccess.HardwareAccessCallbacks {
 
@@ -27,7 +27,8 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+
+        ParseAnalytics.trackAppOpenedInBackground(getIntent());
         setContentView(R.layout.activity_splash);
 
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.splashProgressBar);
@@ -38,16 +39,21 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
         super.onStart();
 
         // lets create a timeout request
-        SimpleDelayHandler simpleDelayHandler = SimpleDelayHandler.getInstance();
+        SimpleDelayHandler simpleDelayHandler = SimpleDelayHandler.getInstance(this);
         simpleDelayHandler.startDelayed(this, Constants.SPLASH_SCREEN_TIMEOUT, true);
 
         if(Utility.isInternetConnected(this)) {
             isInternetConnected = true;
         }
+        ParseUser user = ParseUser.getCurrentUser();
 
-        if(Utility.isUserRegistered(this)) {
+        if(user != null && user.isAuthenticated()) {
+//            user.logOut();
             isUserDeviceRegistered = true;
         }
+        // TODO Temporary skip
+//        isInternetConnected = true;
+//        isUserDeviceRegistered = true;
 
     }
 
@@ -67,7 +73,7 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
                 if(Utility.isInternetConnected(this)) {
                     isInternetConnected = true;
 
-                    SimpleDelayHandler simpleDelayHandler = SimpleDelayHandler.getInstance();
+                    SimpleDelayHandler simpleDelayHandler = SimpleDelayHandler.getInstance(this);
                     simpleDelayHandler.startDelayed(this, Constants.TEMP_TIMEOUT, true);
                 } else {
                     // TODO Open an empty Activity or Empty list for the user
@@ -79,7 +85,7 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
             Logger.doSecureLogging(Log.DEBUG, "User not registered, lets show Register Activity!");
             //TODO remove Toast
             Toast.makeText(getApplicationContext(), "User not registered", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, RegisterActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         } else {
@@ -109,7 +115,7 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
                         isInternetConnected = true;
                     }
 
-                    SimpleDelayHandler simpleDelayHandler = SimpleDelayHandler.getInstance();
+                    SimpleDelayHandler simpleDelayHandler = SimpleDelayHandler.getInstance(this);
                     simpleDelayHandler.startDelayed(this, Constants.TEMP_TIMEOUT, true);
                 }
                 break;

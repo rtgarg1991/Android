@@ -27,6 +27,13 @@
                 android:hint="@string/prompt_email" android:inputType="textEmailAddress"
                 style="@style/edittext_single_line_style" />
 
+            <EditText android:id="@+id/textPassword" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="@string/prompt_password"
+                android:imeActionId="@+id/login"
+                android:imeActionLabel="@string/action_register"
+                android:imeOptions="actionUnspecified" android:inputType="textPassword"
+                style="@style/edittext_single_line_style" />
+
             <LinearLayout android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:orientation="horizontal">
 
@@ -38,12 +45,16 @@
                     android:padding="2dp"/>
 
                 <EditText android:id="@+id/textMobileNumber"
-                    android:layout_width="0px" android:layout_weight="5" android:hint="@string/prompt_password"
+                    android:layout_width="0px" android:layout_weight="5" android:hint="@string/prompt_mobile"
                     android:imeOptions="actionUnspecified" android:inputType="phone"
                     android:imeActionId="@+id/login" android:maxLength="10"
                     style="@style/edittext_single_line_style"
                     android:layout_marginLeft="5dp"/>
             </LinearLayout>
+
+            <EditText android:id="@+id/textReferral" android:layout_width="match_parent"
+                android:hint="@string/prompt_referral"
+                style="@style/edittext_single_line_style" />
 
             <Button android:id="@+id/buttonRegister" style="?android:textAppearanceSmall"
                 android:layout_width="match_parent" android:layout_height="wrap_content"

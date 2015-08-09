@@ -16,5 +16,53 @@
     <dimen name="edittext_style_padding_top">3dp</dimen>
     <dimen name="edittext_style_padding_bottom">3dp</dimen>
 
+    <dimen name="textview_style_margin_left">15dp</dimen>
+    <dimen name="textview_style_margin_right">15dp</dimen>
+    <dimen name="textview_style_margin_top">5dp</dimen>
+    <dimen name="textview_style_margin_bottom">5dp</dimen>
+
+    <dimen name="textview_style_padding_left">5dp</dimen>
+    <dimen name="textview_style_padding_right">5dp</dimen>
+    <dimen name="textview_style_padding_top">2dp</dimen>
+    <dimen name="textview_style_padding_bottom">2dp</dimen>
+
+    <dimen name="app_install_textview_style_padding_top">2dp</dimen>
+    <dimen name="app_install_textview_style_padding_bottom">2dp</dimen>
+    <dimen name="app_install_textview_style_margin_top">4dp</dimen>
+    <dimen name="app_install_textview_style_margin_bottom">4dp</dimen>
+
+    <dimen name="app_install_description_style_padding_left">4dp</dimen>
+    <dimen name="app_install_description_style_padding_right">4dp</dimen>
+
+    <dimen name="text_size_title">20dp</dimen>
+    <dimen name="text_size_payout">24dp</dimen>
+    <dimen name="text_size_primary">14dp</dimen>
     <dimen name="edittext_style_layout_height">40dp</dimen>
+
+    <!-- Drawer List Dimens [START]-->
+    <dimen name="drawer_list_layout_width">220dp</dimen>
+    <dimen name="drawer_list_layout_top_padding">2dp</dimen>
+    <!-- Drawer List Dimens [END]-->
+
+    <!-- Drawer List TextView Style [START] -->
+    <dimen name="drawer_list_item_text_size">20dp</dimen>
+    <dimen name="drawer_list_item_min_height">40dp</dimen>
+    <dimen name="drawer_list_item_padding_left">16dp</dimen>
+    <dimen name="drawer_list_item_padding_right">16dp</dimen>
+    <dimen name="drawer_list_item_margin_top">10dp</dimen>
+    <dimen name="drawer_list_item_margin_bottom">10dp</dimen>
+    <!-- Drawer List TextView Style [END] -->
+
+    <!-- Image View , App Install Style [START] -->
+    <dimen name="image_view_app_install_width">65dp</dimen>
+    <dimen name="image_view_app_install_height">65dp</dimen>
+    <dimen name="image_view_app_install_padding">10dp</dimen>
+    <dimen name="image_view_app_install_padding_bottom">0dp</dimen>
+    <!-- Image View , App Install Style [END] -->
+
+    <dimen name="wallet_image_view_width">32dp</dimen>
+    <dimen name="wallet_image_view_height">32dp</dimen>
+
+    <dimen name="app_install_list_item_description_width">250dp</dimen>
+    <dimen name="contact_us_edit_text_height">150dp</dimen>
 </resources>

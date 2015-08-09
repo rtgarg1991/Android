@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cashon.cashon" >
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -11,12 +9,21 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <permission android:protectionLevel="signature"
+        android:name="com.cashon.cashon.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.cashon.cashon.permission.C2D_MESSAGE" />
 
     <application
+        android:name=".CashOnApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:label="@string/app_name" >
         <activity
             android:name=".SplashActivity"
             android:label="@string/app_name"
@@ -34,47 +41,66 @@
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
 
-        <!-- [START gcm_receiver] -->
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <service
+            android:name="com.cashon.services.MobileNumberVerificationService"
+            android:exported="false" >
+        </service>
+
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:configChanges="orientation|screenSize|keyboardHidden">
+        </activity>
+
+        <service android:name="com.parse.PushService" />
+        <receiver android:name="com.parse.ParseBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.parse.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
+                <!--
+                  IMPORTANT: Change "com.parse.tutorials.pushnotifications" to match your app's package name.
+                -->
                 <category android:name="com.cashon.cashon" />
             </intent-filter>
         </receiver>
-        <!-- [END gcm_receiver] -->
-
-
-        <!-- [START gcm_listener] -->
-        <service
-            android:name="com.cashon.services.GcmListenerService"
-            android:exported="false" >
+        <receiver android:name="com.cashon.services.CustomPushReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.DELETE" />
+                <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
-        </service>
-        <!-- [END gcm_listener] -->
-        <!-- [START instanceId_listener] -->
-        <service
-            android:name="com.cashon.services.InstanceIDListenerService"
-            android:exported="false" >
+        </receiver>
+        <receiver android:name="com.cashon.services.AppBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED"/>
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.cashon.services.AppService"
+            android:enabled="true">
         </service>
-        <!-- [END instanceId_listener] -->
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="d0a30b6010f9dfc681758e38a9446b380770c2eb" />
-
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
-        </activity>
     </application>
 
 </manifest>
