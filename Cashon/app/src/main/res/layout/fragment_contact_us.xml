@@ -32,7 +32,9 @@
         android:hint="@string/contact_us_message_hint_text"
         android:textColor="@color/black"
         android:textColorHint="@color/black_dim"
-        android:paddingTop="@dimen/contact_us_default_item_padding_top"/>
+        android:paddingTop="@dimen/contact_us_default_item_padding_top"
+        android:background="@drawable/edittext_style"
+        android:layout_marginTop="@dimen/recharge_default_item_margin_top"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -40,7 +42,7 @@
         android:text="@string/send"
         android:id="@+id/contact_us_send_button"
         android:layout_gravity="center_horizontal"
-        android:background="@color/primary"
+        android:background="@drawable/default_button_style"
         android:textColor="@color/white"
-        android:paddingTop="@dimen/recharge_default_item_padding_top" />
+        android:layout_marginTop="@dimen/recharge_default_item_margin_top" />
 </LinearLayout>

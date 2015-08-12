@@ -2,47 +2,37 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
+    android:layout_margin="@dimen/latest_deals_item_main_margin"
+    android:background="@drawable/list_item_background"
     >
-
+    <ImageView
+        android:layout_width="@dimen/latest_deals_image_view_width"
+        android:layout_height="@dimen/latest_deals_image_view_height"
+        android:padding="@dimen/latest_deals_image_view_padding"
+        android:paddingBottom="@dimen/latest_deals_image_view_padding_bottom"
+        android:id="@+id/latest_deals_list_item_image_view"
+        android:layout_gravity="center_vertical"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="@dimen/image_view_app_install_width"
-            android:layout_height="@dimen/image_view_app_install_height"
-            android:padding="@dimen/image_view_app_install_padding"
-            android:paddingBottom="@dimen/image_view_app_install_padding_bottom"
-            android:id="@+id/latest_deals_list_item_image_view" />
-
-            <RelativeLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/latest_deals_list_item_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        style="@style/app_install_title_textview_style"
-                        android:textSize="@dimen/text_size_title"/>
-                </LinearLayout>
-            </RelativeLayout>
-    </LinearLayout>
-    <RelativeLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:orientation="vertical">
         <TextView
-            android:layout_width="@dimen/app_install_list_item_description_width"
+            android:id="@+id/latest_deals_list_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:textSize="@dimen/text_size_title_17"
+            android:textColor="@color/black"
+            android:layout_marginLeft="@dimen/latest_deals_title_margin_left"
+            android:layout_marginRight="@dimen/latest_deals_title_margin_right"
+            android:layout_marginTop="@dimen/latest_deals_title_margin_top"
+            android:layout_marginBottom="@dimen/latest_deals_title_margin_bottom"/>
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
@@ -50,6 +40,11 @@
             android:maxLines="4"
             android:ellipsize="end"
             android:id="@+id/latest_deals_list_item_description"
-            style="@style/app_install_description_textview_style"/>
-    </RelativeLayout>
+            android:textSize="@dimen/text_size_subtitle"
+            android:textColor="@color/black_dim"
+            android:layout_marginLeft="@dimen/latest_deals_description_margin_left"
+            android:layout_marginRight="@dimen/latest_deals_description_margin_right"
+            android:layout_marginTop="@dimen/latest_deals_description_margin_top"
+            android:layout_marginBottom="@dimen/latest_deals_description_margin_bottom"/>
+    </LinearLayout>
 </LinearLayout>

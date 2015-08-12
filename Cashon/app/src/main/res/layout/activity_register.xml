@@ -5,7 +5,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.cashon.cashon.RegisterActivity">
+    tools:context="com.fireballlabs.cashguru.RegisterActivity"
+    android:background="@color/white">
 
     <!-- Login progress -->
     <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
@@ -58,8 +59,20 @@
 
             <Button android:id="@+id/buttonRegister" style="?android:textAppearanceSmall"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" android:text="@string/action_Register"
-                android:textStyle="bold" />
+                android:text="@string/action_Register"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:background="@drawable/default_button_style"
+                android:singleLine="true"
+                android:layout_marginLeft="@dimen/login_edit_text_margin_left"
+                android:layout_marginRight="@dimen/login_edit_text_margin_right"
+                android:layout_marginTop="@dimen/login_edit_text_margin_top"
+                android:layout_marginBottom="@dimen/login_edit_text_margin_bottom"
+                android:paddingLeft="@dimen/login_edit_text_padding_left"
+                android:paddingRight="@dimen/login_edit_text_padding_right"
+                android:paddingTop="@dimen/login_edit_text_padding_top"
+                android:paddingBottom="@dimen/login_edit_text_padding_bottom"
+                android:textColor="@color/white" />
 
         </LinearLayout>
     </ScrollView>

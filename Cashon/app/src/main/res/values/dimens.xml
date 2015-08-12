@@ -56,8 +56,12 @@
 
     <dimen name="drawer_list_item_margin_top">8dp</dimen>
     <dimen name="drawer_list_item_margin_right">6dp</dimen>
-    <dimen name="drawer_list_item_margin_left">6dp</dimen>
+    <dimen name="drawer_list_item_margin_left">12dp</dimen>
     <dimen name="drawer_list_item_margin_bottom">0dp</dimen>
+    <dimen name="drawer_list_image_view_width">24dp</dimen>
+    <dimen name="drawer_list_image_view_height">24dp</dimen>
+    <dimen name="drawer_list_item_image_margin_right">6dp</dimen>
+    <dimen name="drawer_list_item_text_margin_right">6dp</dimen>
 
     <dimen name="text_size_title_24">24dp</dimen>
     <dimen name="text_size_title">20dp</dimen>
@@ -94,12 +98,14 @@
 
     <dimen name="sliding_tab_height">32dp</dimen>
 
-    <dimen name="recharge_edit_text_height">150dp</dimen>
+    <dimen name="recharge_edit_text_height">100dp</dimen>
     <dimen name="recharge_main_padding_left">12dp</dimen>
     <dimen name="recharge_main_padding_right">12dp</dimen>
     <dimen name="recharge_main_padding_top">12dp</dimen>
     <dimen name="recharge_balance_margin_bottom">6dp</dimen>
-    <dimen name="recharge_default_item_padding_top">8dp</dimen>
+    <dimen name="recharge_default_item_margin_top">8dp</dimen>
+    <dimen name="recharge_default_item_padding_left">8dp</dimen>
+    <dimen name="recharge_default_item_padding_right">8dp</dimen>
 
 
     <dimen name="spinner_default_item_margin_top">4dp</dimen>
@@ -117,5 +123,30 @@
     <dimen name="refer_friends_refer_code_margin_bottom">16dp</dimen>
     <dimen name="refer_friends_default_item_margin_top">12dp</dimen>
     <dimen name="refer_friend_refer_code_min_height">120dp</dimen>
+
+    <dimen name="login_edit_text_margin_left">15dp</dimen>
+    <dimen name="login_edit_text_margin_right">15dp</dimen>
+    <dimen name="login_edit_text_margin_top">15dp</dimen>
+    <dimen name="login_edit_text_margin_bottom">15dp</dimen>
+
+    <dimen name="login_edit_text_padding_left">15dp</dimen>
+    <dimen name="login_edit_text_padding_right">15dp</dimen>
+    <dimen name="login_edit_text_padding_top">3dp</dimen>
+    <dimen name="login_edit_text_padding_bottom">3dp</dimen>
+
+    <dimen name="latest_deals_image_view_width">56dp</dimen>
+    <dimen name="latest_deals_image_view_height">56dp</dimen>
+    <dimen name="latest_deals_image_view_padding">10dp</dimen>
+    <dimen name="latest_deals_image_view_padding_bottom">0dp</dimen>
+    <dimen name="latest_deals_title_margin_left">12dp</dimen>
+    <dimen name="latest_deals_title_margin_right">12dp</dimen>
+    <dimen name="latest_deals_title_margin_top">4dp</dimen>
+    <dimen name="latest_deals_title_margin_bottom">4dp</dimen>
+    <dimen name="latest_deals_description_margin_left">8dp</dimen>
+    <dimen name="latest_deals_description_margin_right">8dp</dimen>
+    <dimen name="latest_deals_description_margin_top">2dp</dimen>
+    <dimen name="latest_deals_description_margin_bottom">2dp</dimen>
+    <dimen name="latest_deals_item_main_margin">5dp</dimen>
+
 
 </resources>

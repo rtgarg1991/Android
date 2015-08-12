@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.cashon.ui.ReferFriendsFragment"
+    android:layout_height="match_parent" tools:context="com.fireballlabs.ui.ReferFriendsFragment"
     android:orientation="horizontal" android:background="@color/white"
     android:paddingLeft="@dimen/refer_friends_main_padding_left"
     android:paddingRight="@dimen/refer_friends_main_padding_right"
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:id="@+id/buttonShareReferal" android:text="@string/share_text"
                 android:layout_gravity="center"
-                android:background="@color/primary"
+                android:background="@drawable/default_button_style"
                 android:textColor="@color/white"
                 android:layout_marginTop="@dimen/refer_friends_default_item_margin_top"/>
         </LinearLayout>
