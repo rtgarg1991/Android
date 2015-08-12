@@ -48,7 +48,6 @@ public class LatestDealsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_latest_deals, container, false);
         mRefreshLayout = (SwipeRefreshLayout) rootView;
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.latest_deals_recycler_view);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.abc_list_divider_mtrl_alpha)));
         mAdapter = new LatestDealsAdapter(getActivity(), this);
 
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -76,7 +75,9 @@ public class LatestDealsFragment extends Fragment {
 
     public void showProgress(boolean show) {
         mRefreshLayout.setRefreshing(false);
-        Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait_app_offers)));
+        if(isVisible()) {
+            Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait_app_offers)));
+        }
     }
 
     class LatestDealsAsyncTask extends AsyncTask<Void, Void, List<LatestDeal>> {

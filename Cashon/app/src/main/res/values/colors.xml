@@ -12,8 +12,15 @@
     <!-- Drawer List TextView Style [END] -->
     <color name="primary_text_color">#FF212121</color>
     <color name="primary_text_color_light">#FFEDEDED</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="black_dim">#AA000000</color>
+    <color name="black_double_dim">#55000000</color>
+    <color name="black_triple_dim">#11000000</color>
+    <color name="secondary">#FF00aba9</color>
 
-    <color name="primary">#FFFF5722</color>
+    <color name="primary">#FFEE1111</color>
+    <color name="primary_dim">#AAEE1111</color>
     <color name="primary_dark">#FFE64A19</color>
     <color name="primary_light">#FFFFCCBC</color>
     <color name="accent">#FFFFEB3B</color>

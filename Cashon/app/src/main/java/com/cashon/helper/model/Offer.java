@@ -17,6 +17,7 @@ import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,8 @@ public class Offer {
     public String description;
     public int payout;
     public int type;
+
+    boolean isAvailable;
     public List<Payout> payouts;
 
     public String getId() {
@@ -116,6 +119,14 @@ public class Offer {
         this.payouts = payouts;
     }
 
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setIsAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
+    }
+
     public static UsedOffer getOfferData(String packageName, UsedOffer offer, Context context, boolean isInstallCheck) throws ParseException {
         if(offer == null) {
             offer = new UsedOffer();
@@ -148,7 +159,7 @@ public class Offer {
 
         if(isInstallCheck) {
             offer.setOurAffiliation(UsedOffer.checkIfThisOfferUserHasAttempted(
-                    Utility.getRefUrlStringWithoutOfferSubType(ParseInstallation.getCurrentInstallation().getObjectId(),
+                    Utility.getRefUrlStringWithoutOfferSubType(ParseUser.getCurrentUser().getObjectId(),
                             offer.getOfferId()), context));
         }
 
@@ -218,6 +229,7 @@ public class Offer {
     public static String PARSE_TABLE_OFFERS_COLUMN_DESCRIPTION = "description";
     public static String PARSE_TABLE_OFFERS_COLUMN_PAYOUT = "payout";
     public static String PARSE_TABLE_OFFERS_COLUMN_TYPE = "type";
+    public static String PARSE_TABLE_OFFERS_COLUMN_IS_AVAILABLE = "isAvailable";
 
     public static String PARSE_TABLE_PAYOUT_COLUMN_OFFER_ID = "offerId";
     public static String PARSE_TABLE_PAYOUT_COLUMN_OFFER_TYPE = "offerType";
@@ -229,6 +241,7 @@ public class Offer {
     public static List<Offer> getAllOffers(Context context) throws ParseException {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_OFFERS);
+        query.whereEqualTo(PARSE_TABLE_OFFERS_COLUMN_IS_AVAILABLE, true);
         List<ParseObject> list = query.find();
 
         List<Offer> offers = new ArrayList<Offer>();
@@ -243,6 +256,7 @@ public class Offer {
             offer.setDescription(obj.getString(PARSE_TABLE_OFFERS_COLUMN_DESCRIPTION));
             offer.setPayout(obj.getInt(PARSE_TABLE_OFFERS_COLUMN_PAYOUT));
             offer.setType(obj.getInt(PARSE_TABLE_OFFERS_COLUMN_TYPE));
+            offer.setIsAvailable(obj.getBoolean(PARSE_TABLE_OFFERS_COLUMN_IS_AVAILABLE));
 
             offer.payouts = new ArrayList<Payout>();
 
@@ -261,17 +275,25 @@ public class Offer {
             // get all installed applications
             try {
                 PackageInfo info= pm.getPackageInfo(offer.getPackageName(), PackageManager.GET_META_DATA);
-                if(info == null) {
-                    offers.add(offer);
+                if(info == null && offer.isAvailable()) {
+                    checkAndAddOffer(offers, offer);
                 }
             } catch (PackageManager.NameNotFoundException e) {
-                offers.add(offer);
+                if(offer.isAvailable()) {
+                    checkAndAddOffer(offers, offer);
+                }
             }
         }
 
         return offers;
     }
 
+    private static void checkAndAddOffer(List<Offer> offers, Offer offer) {
+
+        if(!UsedOffer.checkIfUserHasUsedThisOffer(offer)) {
+            offers.add(offer);
+        }
+    }
 
 
     public void saveData(Context context) {

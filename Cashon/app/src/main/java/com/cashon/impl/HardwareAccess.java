@@ -15,10 +15,10 @@ import com.cashon.helper.Logger;
  * Created by Rohit on 6/14/2015.
  */
 public class HardwareAccess {
-    private static final String MESSAGE_INTERNET_CONNECT = "Connect to WiFi or Mobile Network";
+    private static final String MESSAGE_INTERNET_CONNECT = "Please check your internet connection.";
     private static final String POSITIVE_INTERNET_CONNECT = "WiFi";
     private static final String NEUTRAL_INTERNET_CONNECT = "Mobile Network";
-    private static final String NEGATIVE_INTERNET_CONNECT = "Cancel";
+    private static final String NEGATIVE_INTERNET_CONNECT = "Try again";
 
     public static final int ACCESS_INTERNET = 0x01;
 
@@ -60,7 +60,7 @@ public class HardwareAccess {
         }
         builder.setMessage(MESSAGE_INTERNET_CONNECT)
                 .setCancelable(false)
-                .setPositiveButton(POSITIVE_INTERNET_CONNECT, new DialogInterface.OnClickListener() {
+                /*.setPositiveButton(POSITIVE_INTERNET_CONNECT, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         Logger.doSecureLogging(Log.DEBUG, "User chose to enable internet by enabling WiFi");
@@ -77,13 +77,13 @@ public class HardwareAccess {
                         context.startActivity(new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS));
                         callback.accessCompleted(ACCESS_INTERNET, true);
                     }
-                })
+                })*/
                 .setNegativeButton(NEGATIVE_INTERNET_CONNECT, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         Logger.doSecureLogging(Log.DEBUG, "User chose not to enable Internet right now");
                         // Notify calling component about user denial to enable the internet
-                        callback.accessCompleted(ACCESS_INTERNET, false);
+                        callback.accessCompleted(ACCESS_INTERNET, true);
                     }
                 });
         AlertDialog alert = builder.create();

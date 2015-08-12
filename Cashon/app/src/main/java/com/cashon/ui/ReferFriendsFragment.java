@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.cashon.cashon.R;
 import com.cashon.helper.Constants;
+import com.cashon.helper.model.InstallationHelper;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -38,7 +39,7 @@ public class ReferFriendsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_refer_friends, container, false);
-        final String referalCode = (String)ParseInstallation.getCurrentInstallation().get("referCode");
+        final String referalCode = (String)ParseInstallation.getCurrentInstallation().get(InstallationHelper.PARSE_TABLE_COLUMN_REFER_CODE);
         TextView referalTextView = (TextView) view.findViewById(R.id.textReferralCode);
         referalTextView.setText(referalCode);
 

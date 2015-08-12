@@ -1,10 +1,16 @@
 package com.cashon.helper.model;
 
+import android.util.Log;
+
+import com.cashon.helper.Logger;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -26,7 +32,7 @@ public class Conversions {
         if(user == null || !user.isAuthenticated()) {
             return 0;
         }
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_CONVERSIONS);
+        /*ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_CONVERSIONS);
         query.whereEqualTo(PARSE_TABLE_COLUMN_EMAIL_ID, user.getUsername());
         try {
             List<ParseObject> conversions = query.find();
@@ -37,7 +43,20 @@ public class Conversions {
             return totalBalance;
         } catch (ParseException e) {
             e.printStackTrace();
+        }*/
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("deviceId", user.getObjectId());
+        try {
+            Object amount = ParseCloud.callFunction("GetUserBalance", params);
+            if(amount instanceof Integer) {
+                return Float.valueOf((int)amount);
+            } else {
+                return (float)amount;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
         return 0;
     }
 }

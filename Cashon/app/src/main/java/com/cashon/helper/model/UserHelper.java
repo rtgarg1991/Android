@@ -16,10 +16,11 @@ public class UserHelper {
     boolean phoneVerified;
     boolean emailVerified;
 
-    public static String PARSE_TABLE_COLUMN_COUNTRY_CODE = "country_code";
-    public static String PARSE_TABLE_COLUMN_DEVICE_ID = "device_id";
+    public static String PARSE_TABLE_COLUMN_COUNTRY_CODE = "countryCode";
+    public static String PARSE_TABLE_COLUMN_DEVICE_ID = "deviceId";
     public static String PARSE_TABLE_COLUMN_MOBILE = "mobile";
-    public static String PARSE_TABLE_COLUMN_MOBILE_VERIFIED = "mobile_verified";
+    public static String PARSE_TABLE_COLUMN_MOBILE_VERIFIED = "mobileVerified";
+    public static String PARSE_TABLE_COLUMN_REFER_CODE = "referCode";
 
     public String getName() {
         return name;

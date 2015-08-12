@@ -5,25 +5,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cashon.adapter.MainDrawerAdapter;
 import com.cashon.helper.Constants;
-import com.cashon.helper.Logger;
 import com.cashon.helper.PreferenceManager;
 import com.cashon.sql.SQLWrapper;
-import com.parse.FunctionCallback;
-import com.parse.GetCallback;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -105,10 +94,11 @@ public class Utility {
         featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS));
         featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_LATEST_DEALS, Constants.ID_APP_LATEST_DEALS));
         featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_REFER, Constants.ID_APP_REFER));
+        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_RECHARGE, Constants.ID_APP_RECHARGE));
         featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_CONTACT_US, Constants.ID_APP_CONTACT_US));
 
         featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_SETTINGS, Constants.ID_APP_SETTINGS));
-        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_HELP, Constants.ID_APP_HELP));
+        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_FAQ, Constants.ID_APP_FAQ));
         return featureList;
     }
 
@@ -190,7 +180,7 @@ public class Utility {
 
     public static void showProgress(Context context, boolean show, String text) {
         if(show) {
-            shown++;
+//            shown++;
             if(mProgressDialog != null && mProgressDialog.isShowing()) {
 
             } else {
@@ -202,12 +192,25 @@ public class Utility {
             }
         } else {
             if(mProgressDialog != null && mProgressDialog.isShowing()) {
-                shown--;
-                if(shown == 0) {
+//                shown--;
+//                if(shown == 0) {
                     mProgressDialog.dismiss();
-                }
+//                }
             }
         }
 
+    }
+
+    public static boolean isValidRechargeAmount(String amountString, float balance) {
+        try {
+            int amount = Integer.parseInt(amountString);
+            if(amount >= Constants.RECHARGE_AMOUNT_MIN && amount <= Constants.RECHARGE_AMOUNT_MAX && amount <= balance) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NumberFormatException ex) {
+            return false;
+        }
     }
 }

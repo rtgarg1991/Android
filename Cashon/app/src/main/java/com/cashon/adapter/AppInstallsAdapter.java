@@ -1,10 +1,7 @@
 package com.cashon.adapter;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -16,16 +13,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.cashon.cashon.R;
+import com.cashon.helper.Constants;
 import com.cashon.helper.model.Offer;
 import com.cashon.helper.model.UsedOffer;
 import com.cashon.impl.Utility;
-import com.cashon.sql.SQLWrapper;
 import com.cashon.ui.AppInstallsFragment;
-import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 
@@ -46,18 +41,18 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
         LayoutInflater vi = LayoutInflater.from(parent.getContext());
         View v = null;
         if(type == 1) {
-            v = vi.inflate(R.layout.app_install_list_item_1, parent, false);
+            v = vi.inflate(R.layout.app_install_list_item, parent, false);
             TextView title = (TextView) v.findViewById(R.id.app_install_list_item_title);
+            TextView subtitle = (TextView) v.findViewById(R.id.app_install_list_item_subtitle);
             TextView payout = (TextView) v.findViewById(R.id.app_install_list_item_payout);
             TextView description = (TextView) v.findViewById(R.id.app_install_list_item_description);
-//            TextView payoutDescription = (TextView) v.findViewById(R.id.app_install_list_item_payout_description);
             ImageView image = (ImageView) v.findViewById(R.id.app_install_list_item_image_view);
             Button button = (Button) v.findViewById(R.id.app_install_list_item_Button);
-            ViewHolder holder = new ViewHolder(v, title, payout, description, image, button);
+            ViewHolder holder = new ViewHolder(v, title, subtitle, payout, description, image, button);
 
             return holder;
         } else if(type == -1){
-            ViewHolder holder = new ViewHolder(new View(mContext), null, null, null, null, null);
+            ViewHolder holder = new ViewHolder(new View(mContext), null, null, null, null, null, null);
             return holder;
         } else {
             // TODO need to check if we need multiple type of offers
@@ -68,7 +63,8 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
     @Override
     public void onBindViewHolder(final AppInstallsAdapter.ViewHolder holder, final int position) {
         holder.setTextViewTitleText(mOffers.get(position).getTitle());
-        holder.setTextViewPayoutText(String.valueOf(mOffers.get(position).getPayout()));
+        holder.setTextViewSubtitleText(mOffers.get(position).getSubTitle());
+        holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(mOffers.get(position).getPayout()));
         holder.setTextViewDescriptionText(mOffers.get(position).getDescription());
 
         StringBuilder allPayout = new StringBuilder();
@@ -86,7 +82,7 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                 @Override
                 public void onClick(View v) {
                     final WebView webView = new WebView(mContext);
-                    final String uniqueClick = Utility.getRefUrlString(ParseInstallation.getCurrentInstallation().getObjectId(), mOffers.get(position).getId());
+                    final String uniqueClick = Utility.getRefUrlString(ParseUser.getCurrentUser().getObjectId(), mOffers.get(position).getId());
 
                     webView.setWebViewClient(new WebViewClient() {
                         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -154,12 +150,23 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
         } else {
             mOffers.clear();
         }
-        mOffers.addAll(offers);
+        if(offers == null) {
+            mFragment.setEmptyViewVisibility(View.GONE);
+            mOffers.addAll(new ArrayList<Offer>());
+        } else {
+            mOffers.addAll(offers);
+            if(mOffers != null && mOffers.size() > 0) {
+                mFragment.setEmptyViewVisibility(View.GONE);
+            } else {
+                mFragment.setEmptyViewVisibility(View.VISIBLE);
+            }
+        }
         notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle = null;
+        TextView textViewSubtitle;
         TextView textViewPayout = null;
         TextView textViewDescription = null;
         TextView textViewPayoutDescription = null;
@@ -167,17 +174,18 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
         ImageView imageView = null;
         View parent;
 
-        public ViewHolder(View itemView, TextView textViewTitle, TextView textViewPayout,
+        public ViewHolder(View itemView, TextView textViewTitle, TextView textViewSubtitle, TextView textViewPayout,
                           TextView textViewDescription, ImageView imageView, Button clickButton) {
-            this(itemView, textViewTitle, textViewPayout, textViewDescription, null, imageView, clickButton);
+            this(itemView, textViewTitle, textViewSubtitle, textViewPayout, textViewDescription, null, imageView, clickButton);
         }
 
-        public ViewHolder(View itemView, TextView textViewTitle, TextView textViewPayout,
+        public ViewHolder(View itemView, TextView textViewTitle, TextView textViewSubtitle, TextView textViewPayout,
                           TextView textViewDescription, TextView textViewPayoutDescription,
                           ImageView imageView, Button clickButton) {
             super(itemView);
             this.parent = itemView;
             this.textViewTitle = textViewTitle;
+            this.textViewSubtitle = textViewSubtitle;
             this.textViewPayout = textViewPayout;
             this.textViewDescription = textViewDescription;
             this.textViewPayoutDescription = textViewPayoutDescription;
@@ -193,6 +201,16 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
         public void setTextViewTitleText(String text) {
             if(this.textViewTitle != null) {
                 this.textViewTitle.setText(text);
+            }
+        }
+
+        public TextView getTextViewSubtitle() {
+            return textViewSubtitle;
+        }
+
+        public void setTextViewSubtitleText(String text) {
+            if(this.textViewSubtitle != null) {
+                this.textViewSubtitle.setText(text);
             }
         }
 

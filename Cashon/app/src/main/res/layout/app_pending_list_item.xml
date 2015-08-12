@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/list_item_background"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/app_install_item_main_margin" >
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="@dimen/image_view_app_install_width"
+            android:layout_height="@dimen/image_view_app_install_height"
+            android:padding="@dimen/image_view_app_install_padding"
+            android:paddingBottom="@dimen/image_view_app_install_padding_bottom"
+            android:id="@+id/app_pending_list_item_image_view"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/app_pending_list_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_title"
+            android:layout_toRightOf="@id/app_pending_list_item_image_view"
+            android:layout_alignParentTop="true"
+            android:gravity="left"
+            android:layout_marginTop="@dimen/app_install_item_title_margin_top"
+            android:layout_marginLeft="@dimen/app_install_item_title_margin_left"
+            android:layout_marginBottom="@dimen/app_install_item_title_margin_bottom"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/app_pending_list_item_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Click Install to earn money!"
+            android:gravity="left"
+            android:layout_toRightOf="@id/app_pending_list_item_image_view"
+            android:layout_below="@id/app_pending_list_item_title"
+            android:layout_marginTop="@dimen/app_install_item_description_margin_top"
+            android:layout_marginLeft="@dimen/app_install_item_description_margin_left"
+            android:layout_marginBottom="@dimen/app_install_item_description_margin_bottom"
+            android:textColor="@color/primary_dim"
+            android:textSize="@dimen/text_size_subtitle"/>
+
+        <TextView
+            android:id="@+id/app_pending_list_item_payout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textSize="@dimen/text_size_payout"
+            android:textStyle="bold"
+            android:gravity="left"
+            android:layout_marginTop="@dimen/app_install_item_payout_margin_top"
+            android:layout_marginLeft="@dimen/app_install_item_payout_margin_left"
+            android:layout_marginBottom="@dimen/app_install_item_payout_margin_bottom"
+            android:layout_marginRight="@dimen/app_install_item_payout_margin_right"
+            android:textColor="@color/black"
+            android:background="@drawable/app_install_payout_button"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:singleLine="false"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:id="@+id/app_pending_list_item_description"
+            android:layout_marginTop="@dimen/app_install_item_button_margin_top"
+            android:layout_marginLeft="@dimen/app_install_item_button_margin_left"
+            android:layout_marginBottom="@dimen/app_install_item_button_margin_bottom"
+            android:layout_marginRight="@dimen/app_install_item_button_margin_right"
+            android:textColor="@color/black"/>
+        <!--<Button
+            android:id="@+id/app_install_list_item_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/app_install_round_button"
+            android:textSize="@dimen/text_size_title"
+            android:text="Install"
+            android:layout_marginTop="@dimen/app_install_item_button_margin_top"
+            android:layout_marginLeft="@dimen/app_install_item_button_margin_left"
+            android:layout_marginBottom="@dimen/app_install_item_button_margin_bottom"
+            android:layout_marginRight="@dimen/app_install_item_button_margin_right"
+            android:textColor="@color/white"/>-->
+    </RelativeLayout>
+</LinearLayout>

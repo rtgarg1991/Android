@@ -25,6 +25,7 @@ import com.cashon.helper.model.UserHelper;
 import com.cashon.impl.Utility;
 import com.cashon.ui.ContactUsFragment;
 import com.cashon.ui.LatestDealsFragment;
+import com.cashon.ui.RechargeFragment;
 import com.cashon.ui.ReferFriendsFragment;
 import com.cashon.ui.SlidingTabFragment;
 import com.cashon.view.WalletWidget;
@@ -70,7 +71,7 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
             super.onCreate(savedInstanceState);
             return;
         }
-        installation.put(InstallationHelper.PARSE_TABLE_COLUMN_REFER_CODE, installation.getObjectId());
+        installation.put(InstallationHelper.PARSE_TABLE_COLUMN_REFER_CODE, ParseUser.getCurrentUser().getObjectId());
         installation.put(InstallationHelper.PARSE_TABLE_COLUMN_EMAIL, ParseUser.getCurrentUser().getUsername());
         installation.put(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID, ParseUser.getCurrentUser().get(UserHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
         installation.saveInBackground(new SaveCallback() {
@@ -92,31 +93,12 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }*/
-        // if current API is 3.0 or more, i.e. API level 11 or more
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            ActionBar actionBar = getActionBar();
-            if (actionBar != null) {
-                actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
-                actionBar.setCustomView(R.layout.wallet_widget);
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
-                        | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-                final WalletWidget wallet = (WalletWidget)actionBar.getCustomView();
-                if(wallet != null) {
-                    // TODO update with correct wallet balance
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            wallet.updateWalletBalance(Constants.INR_LABEL, Conversions.getBalance());
-                        }
-                    });
-                }
-            }
-        }
 
         // Title for our Activity
         mDrawerTitle = mTitle = getTitle().toString();
         // Drawer List
         mDrawerList = (RecyclerView)findViewById(R.id.list_drawer);
+//        mDrawerList.setBackgroundColor(getResources().getColor(R.color.primary_dim));
         // Drawer View
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -138,7 +120,7 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
+                R.drawable.drawer,  /* nav drawer image to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -170,6 +152,39 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        // if current API is 3.0 or more, i.e. API level 11 or more
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            ActionBar actionBar = getActionBar();
+            if (actionBar != null) {
+                actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary)));
+                actionBar.setCustomView(R.layout.wallet_widget);
+                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+                        | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+                final WalletWidget wallet = (WalletWidget)actionBar.getCustomView();
+                if(wallet != null) {
+                    // TODO update with correct wallet balance
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            wallet.updateWalletBalance(Constants.INR_LABEL, Conversions.getBalance());
+                        }
+                    });
+                    thread.start();
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Constants.appInstallSyncNeeded = true;
+    }
+
+    @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // sync the toggle state after onRestoreInstanceState has occurred
@@ -190,6 +205,9 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
                 break;
             case Constants.ID_APP_CONTACT_US:
                 fragment = ContactUsFragment.newInstance();
+                break;
+            case Constants.ID_APP_RECHARGE:
+                fragment = RechargeFragment.newInstance();
                 break;
             case Constants.ID_APP_REFER:
                 fragment = ReferFriendsFragment.newInstance();

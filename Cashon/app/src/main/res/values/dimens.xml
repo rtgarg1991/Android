@@ -26,6 +26,11 @@
     <dimen name="textview_style_padding_top">2dp</dimen>
     <dimen name="textview_style_padding_bottom">2dp</dimen>
 
+    <dimen name="wallet_widget_padding">5dp</dimen>
+    <dimen name="wallet_widget_margin">5dp</dimen>
+
+    <dimen name="app_install_item_main_margin">5dp</dimen>
+
     <dimen name="app_install_textview_style_padding_top">2dp</dimen>
     <dimen name="app_install_textview_style_padding_bottom">2dp</dimen>
     <dimen name="app_install_textview_style_margin_top">4dp</dimen>
@@ -34,7 +39,30 @@
     <dimen name="app_install_description_style_padding_left">4dp</dimen>
     <dimen name="app_install_description_style_padding_right">4dp</dimen>
 
+    <dimen name="app_install_item_title_margin_top">4dp</dimen>
+    <dimen name="app_install_item_title_margin_left">4dp</dimen>
+    <dimen name="app_install_item_title_margin_bottom">2dp</dimen>
+    <dimen name="app_install_item_description_margin_top">0dp</dimen>
+    <dimen name="app_install_item_description_margin_left">4dp</dimen>
+    <dimen name="app_install_item_description_margin_bottom">2dp</dimen>
+    <dimen name="app_install_item_payout_margin_top">4dp</dimen>
+    <dimen name="app_install_item_payout_margin_left">4dp</dimen>
+    <dimen name="app_install_item_payout_margin_bottom">4dp</dimen>
+    <dimen name="app_install_item_payout_margin_right">4dp</dimen>
+    <dimen name="app_install_item_button_margin_top">1dp</dimen>
+    <dimen name="app_install_item_button_margin_left">4dp</dimen>
+    <dimen name="app_install_item_button_margin_bottom">1dp</dimen>
+    <dimen name="app_install_item_button_margin_right">4dp</dimen>
+
+    <dimen name="drawer_list_item_margin_top">8dp</dimen>
+    <dimen name="drawer_list_item_margin_right">6dp</dimen>
+    <dimen name="drawer_list_item_margin_left">6dp</dimen>
+    <dimen name="drawer_list_item_margin_bottom">0dp</dimen>
+
+    <dimen name="text_size_title_24">24dp</dimen>
     <dimen name="text_size_title">20dp</dimen>
+    <dimen name="text_size_title_17">17dp</dimen>
+    <dimen name="text_size_subtitle">14dp</dimen>
     <dimen name="text_size_payout">24dp</dimen>
     <dimen name="text_size_primary">14dp</dimen>
     <dimen name="edittext_style_layout_height">40dp</dimen>
@@ -49,13 +77,11 @@
     <dimen name="drawer_list_item_min_height">40dp</dimen>
     <dimen name="drawer_list_item_padding_left">16dp</dimen>
     <dimen name="drawer_list_item_padding_right">16dp</dimen>
-    <dimen name="drawer_list_item_margin_top">10dp</dimen>
-    <dimen name="drawer_list_item_margin_bottom">10dp</dimen>
     <!-- Drawer List TextView Style [END] -->
 
     <!-- Image View , App Install Style [START] -->
-    <dimen name="image_view_app_install_width">65dp</dimen>
-    <dimen name="image_view_app_install_height">65dp</dimen>
+    <dimen name="image_view_app_install_width">48dp</dimen>
+    <dimen name="image_view_app_install_height">48dp</dimen>
     <dimen name="image_view_app_install_padding">10dp</dimen>
     <dimen name="image_view_app_install_padding_bottom">0dp</dimen>
     <!-- Image View , App Install Style [END] -->
@@ -63,6 +89,33 @@
     <dimen name="wallet_image_view_width">32dp</dimen>
     <dimen name="wallet_image_view_height">32dp</dimen>
 
-    <dimen name="app_install_list_item_description_width">250dp</dimen>
+    <dimen name="app_install_list_item_description_width">230dp</dimen>
     <dimen name="contact_us_edit_text_height">150dp</dimen>
+
+    <dimen name="sliding_tab_height">32dp</dimen>
+
+    <dimen name="recharge_edit_text_height">150dp</dimen>
+    <dimen name="recharge_main_padding_left">12dp</dimen>
+    <dimen name="recharge_main_padding_right">12dp</dimen>
+    <dimen name="recharge_main_padding_top">12dp</dimen>
+    <dimen name="recharge_balance_margin_bottom">6dp</dimen>
+    <dimen name="recharge_default_item_padding_top">8dp</dimen>
+
+
+    <dimen name="spinner_default_item_margin_top">4dp</dimen>
+
+    <dimen name="contact_us_balance_margin_bottom">6dp</dimen>
+    <dimen name="contact_us_main_padding_left">12dp</dimen>
+    <dimen name="contact_us_main_padding_right">12dp</dimen>
+    <dimen name="contact_us_main_padding_top">12dp</dimen>
+    <dimen name="contact_us_default_item_padding_top">8dp</dimen>
+
+    <dimen name="refer_friends_main_padding_left">12dp</dimen>
+    <dimen name="refer_friends_main_padding_right">12dp</dimen>
+    <dimen name="refer_friends_main_padding_top">12dp</dimen>
+    <dimen name="refer_friends_refer_code_margin_top">16dp</dimen>
+    <dimen name="refer_friends_refer_code_margin_bottom">16dp</dimen>
+    <dimen name="refer_friends_default_item_margin_top">12dp</dimen>
+    <dimen name="refer_friend_refer_code_min_height">120dp</dimen>
+
 </resources>

@@ -4,7 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="please_wait_app_offers">Please Wait, While We Retrieve Some Offers for You!</string>
+    <string name="please_wait_app_offers">Please wait, While we retrieve some offers for you!</string>
     <string name="please_wait">Please Wait!</string>
 
 
@@ -18,7 +18,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
 
     <!-- Strings related to Register Activity -->
-    <string name="prompt_Name">Your Name</string>
+    <string name="prompt_Name">Name</string>
     <string name="prompt_mobile">Mobile Number</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_email">Email Id</string>
@@ -38,9 +38,9 @@
     <string name="title_activity_main">MainActivity</string>
 
     <string name="referral_code">Your Referral Code is : </string>
-    <string name="referral_conditions">1. Share Your Unique Referral Code with Friends\r\n2. When Your Friends Sign Up using your Referral Code, You will Receive Referral Bonus\r\n3. You will receive half Referral Bonus when your friend completes Sign Up and half when your friends try at least 2 apps\r\n4. Your friend must be a new user of CashOn</string>
+    <string name="referral_conditions">1. Share your unique referral code with friends\r\n\r\n2. When your referrals sign up using your Referral Code, You will be credited with ₹10\r\n\r\nNote: Valid only for new users</string>
     <string name="share_text">Share</string>
-    <string name="share_using">Share Referal Code via</string>
+    <string name="share_using">Share Referral Code via</string>
 
 <!-- Navigation Drawer Strings -->
     <string name="drawer_open">Open navigation drawer</string>
@@ -49,5 +49,84 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="send">Send</string>
-    <string name="contact_us_title_string">Enter your message below :</string>
+    <string name="contact_us_title_string">Contact Us</string>
+
+    <string name="recharge_mobile">Mobile</string>
+    <string name="recharge_dth">DTH</string>
+    <string name="recharge_data_card">Data Card</string>
+    <string name="recharge_prepaid">Prepaid</string>
+    <string name="recharge_postpaid">Postpaid</string>
+    <string name="empty_recycler_view_string">Oops! nothing to Show here.</string>
+    <string-array name="recharge_mobile_prepaid_company">
+        <item>Aircel</item>
+        <item>Airtel</item>
+        <item>Vodafone</item>
+        <item>BSNL</item>
+        <item>Docomo (CDMA)</item>
+        <item>Docomo (GSM)</item>
+        <item>Idea</item>
+        <item>Tata Indicom</item>
+        <item>Videocon</item>
+        <item>MTNL</item>
+        <item>Reliance Mobile (CDMA)</item>
+        <item>Reliance Mobile (GSM)</item>
+        <item>Unilor</item>
+        <item>MTS</item>
+        <item>Virgin (CDMA)</item>
+        <item>Virgin (GSM)</item>
+    </string-array>
+    <string-array name="recharge_mobile_postpaid_company">
+        <item>Aircel</item>
+        <item>Airtel</item>
+        <item>Vodafone</item>
+        <item>BSNL</item>
+        <item>Docomo</item>
+        <item>Idea</item>
+        <item>Tata Indicom</item>
+        <item>Reliance Mobile (CDMA)</item>
+        <item>Reliance Mobile (GSM)</item>
+        <item>MTS</item>
+    </string-array>
+    <string-array name="recharge_dth_company">
+        <item>Airtel Digital TV</item>
+        <item>Dish TV</item>
+        <item>Reliance Digital TV</item>
+        <item>SUN Direct</item>
+        <item>Tata Sky</item>
+        <item>Videocon D2H</item>
+    </string-array>
+    <string-array name="recharge_data_card_prepaid_company">
+        <item>Aircel</item>
+        <item>Airtel</item>
+        <item>Vodafone</item>
+        <item>BSNL</item>
+        <item>MTNL</item>
+        <item>Reliance NetConnect+</item>
+        <item>Tata Photon Plus</item>
+        <item>Tata Photon Whiz</item>
+        <item>MTS MBlaze</item>
+        <item>MTS MBrowse</item>
+    </string-array>
+    <string-array name="recharge_data_card_postpaid_company">
+        <item>Aircel</item>
+        <item>Airtel</item>
+        <item>Vodafone</item>
+        <item>BSNL</item>
+        <item>MTNL</item>
+        <item>Reliance NetConnect+</item>
+        <item>Tata Photon Plus</item>
+        <item>Tata Photon Whiz</item>
+        <item>MTS MBlaze</item>
+        <item>MTS MBrowse</item>
+    </string-array>
+
+    <string name="recharge_text_balance">Your Balance : </string>
+    <string name="recharge_text_top_up">Top up your Phone, DTH or Data Card</string>
+    <string name="recharge_mobile_hint_text">Mobile Number</string>
+    <string name="recharge_amount_hint_text">Amount</string>
+    <string name="recharge_message_hint_text">Any Special recharge (2G/3G/SMS etc.)</string>
+
+    <string name="contact_us_message_hint_text">How can we help you?</string>
+
+    <string name="app_install_install">Try \u0026 Earn</string>
 </resources>

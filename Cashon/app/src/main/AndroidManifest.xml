@@ -101,6 +101,9 @@
         <service android:name="com.cashon.services.AppService"
             android:enabled="true">
         </service>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d0a30b6010f9dfc681758e38a9446b380770c2eb" />
     </application>
 
 </manifest>

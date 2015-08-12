@@ -7,10 +7,8 @@ import android.util.Log;
 
 import com.cashon.helper.Constants;
 import com.cashon.helper.Logger;
+import com.cashon.helper.model.Conversions;
 import com.cashon.helper.model.Referrals;
-import com.cashon.impl.Utility;
-import com.parse.ParseAnalytics;
-import com.parse.ParseCrashReporting;
 import com.parse.ParsePushBroadcastReceiver;
 
 import org.json.JSONException;
@@ -40,8 +38,11 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
         }
         if(obj != null) {
             if (obj.has("code") && obj.has("email")) {
-                if(Constants.REFERRAL_PUSH_NOTIFICATION == obj.optInt("code")) {
+                if(Constants.PUSH_NOTIFICATION_REFERRAL == obj.optInt("code")) {
                     Referrals.verifyReferralAndCredit(obj.optString("email", null));
+                } else if(Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION == obj.optInt("code")) {
+                    //Referrals.verifyReferralAndCredit(obj.optString("email", null));
+                    // do nothing for now
                 }
             }
         }

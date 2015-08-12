@@ -1,0 +1,87 @@
+﻿adding all the code
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	new file:   Android
+#	modified:   Cashon/app/app.iml
+#	modified:   Cashon/app/build.gradle
+#	new file:   Cashon/app/libs/Parse-1.9.2.jar
+#	new file:   Cashon/app/libs/ParseCrashReporting-1.9.2.jar
+#	modified:   Cashon/app/src/main/AndroidManifest.xml
+#	new file:   Cashon/app/src/main/java/com/cashon/adapter/AppInstallsAdapter.java
+#	new file:   Cashon/app/src/main/java/com/cashon/adapter/CompletedInstallsAdapter.java
+#	new file:   Cashon/app/src/main/java/com/cashon/adapter/LatestDealsAdapter.java
+#	new file:   Cashon/app/src/main/java/com/cashon/adapter/MainDrawerAdapter.java
+#	new file:   Cashon/app/src/main/java/com/cashon/adapter/PendingInstallsAdapter.java
+#	new file:   Cashon/app/src/main/java/com/cashon/cashon/CashOnApplication.java
+#	new file:   Cashon/app/src/main/java/com/cashon/cashon/LoginActivity.java
+#	modified:   Cashon/app/src/main/java/com/cashon/cashon/MainActivity.java
+#	modified:   Cashon/app/src/main/java/com/cashon/cashon/RegisterActivity.java
+#	modified:   Cashon/app/src/main/java/com/cashon/cashon/SplashActivity.java
+#	modified:   Cashon/app/src/main/java/com/cashon/helper/Constants.java
+#	modified:   Cashon/app/src/main/java/com/cashon/helper/PreferenceManager.java
+#	new file:   Cashon/app/src/main/java/com/cashon/helper/model/Conversions.java
+#	new file:   Cashon/app/src/main/java/com/cashon/helper/model/InstallationHelper.java
+#	new file:   Cashon/app/src/main/java/com/cashon/helper/model/LatestDeal.java
+#	new file:   Cashon/app/src/main/java/com/cashon/helper/model/Offer.java
+#	new file:   Cashon/app/src/main/java/com/cashon/helper/model/ReferralHelper.java
+#	new file:   Cashon/app/src/main/java/com/cashon/helper/model/Referrals.java
+#	new file:   Cashon/app/src/main/java/com/cashon/helper/model/UsedOffer.java
+#	new file:   Cashon/app/src/main/java/com/cashon/helper/model/UserHelper.java
+#	modified:   Cashon/app/src/main/java/com/cashon/impl/SimpleDelayHandler.java
+#	modified:   Cashon/app/src/main/java/com/cashon/impl/Utility.java
+#	new file:   Cashon/app/src/main/java/com/cashon/services/AppBroadcastReceiver.java
+#	new file:   Cashon/app/src/main/java/com/cashon/services/AppService.java
+#	new file:   Cashon/app/src/main/java/com/cashon/services/CustomPushReceiver.java
+#	deleted:    Cashon/app/src/main/java/com/cashon/services/GcmListenerService.java
+#	deleted:    Cashon/app/src/main/java/com/cashon/services/InstanceIDListenerService.java
+#	new file:   Cashon/app/src/main/java/com/cashon/services/MobileNumberVerificationService.java
+#	new file:   Cashon/app/src/main/java/com/cashon/sql/CashOnSqliteOpenHelper.java
+#	new file:   Cashon/app/src/main/java/com/cashon/sql/SQLWrapper.java
+#	new file:   Cashon/app/src/main/java/com/cashon/ui/AppInstallsFragment.java
+#	new file:   Cashon/app/src/main/java/com/cashon/ui/CompletedInstallsFragment.java
+#	new file:   Cashon/app/src/main/java/com/cashon/ui/ContactUsFragment.java
+#	new file:   Cashon/app/src/main/java/com/cashon/ui/DividerItemDecoration.java
+#	new file:   Cashon/app/src/main/java/com/cashon/ui/LatestDealsFragment.java
+#	new file:   Cashon/app/src/main/java/com/cashon/ui/PendingInstallsFragment.java
+#	new file:   Cashon/app/src/main/java/com/cashon/ui/ReferFriendsFragment.java
+#	new file:   Cashon/app/src/main/java/com/cashon/ui/SlidingTabFragment.java
+#	new file:   Cashon/app/src/main/java/com/cashon/view/SlidingTabLayout.java
+#	new file:   Cashon/app/src/main/java/com/cashon/view/SlidingTabStrip.java
+#	new file:   Cashon/app/src/main/java/com/cashon/view/WalletWidget.java
+#	new file:   Cashon/app/src/main/res/drawable-hdpi/drawer_shadow.9.png
+#	new file:   Cashon/app/src/main/res/drawable-hdpi/ic_drawer.png
+#	new file:   Cashon/app/src/main/res/drawable-mdpi/drawer_shadow.9.png
+#	new file:   Cashon/app/src/main/res/drawable-mdpi/ic_drawer.png
+#	new file:   Cashon/app/src/main/res/drawable-xhdpi/drawer_shadow.9.png
+#	new file:   Cashon/app/src/main/res/drawable-xhdpi/ic_drawer.png
+#	new file:   Cashon/app/src/main/res/drawable/app_install_payout_button_shape.xml
+#	new file:   Cashon/app/src/main/res/drawable/app_install_round_button.xml
+#	new file:   Cashon/app/src/main/res/drawable/wallet.png
+#	new file:   Cashon/app/src/main/res/layout/activity_login.xml
+#	modified:   Cashon/app/src/main/res/layout/activity_main.xml
+#	modified:   Cashon/app/src/main/res/layout/activity_register.xml
+#	new file:   Cashon/app/src/main/res/layout/app_install_list_item_1.xml
+#	new file:   Cashon/app/src/main/res/layout/drawer_list_item.xml
+#	new file:   Cashon/app/src/main/res/layout/fragment_app_installs.xml
+#	new file:   Cashon/app/src/main/res/layout/fragment_contact_us.xml
+#	new file:   Cashon/app/src/main/res/layout/fragment_latest_deals.xml
+#	new file:   Cashon/app/src/main/res/layout/fragment_pending_installs.xml
+#	new file:   Cashon/app/src/main/res/layout/fragment_refer_friends.xml
+#	new file:   Cashon/app/src/main/res/layout/fragment_sliding_tab.xml
+#	new file:   Cashon/app/src/main/res/layout/latest_deals_list_item.xml
+#	new file:   Cashon/app/src/main/res/layout/wallet_widget.xml
+#	modified:   Cashon/app/src/main/res/values/colors.xml
+#	modified:   Cashon/app/src/main/res/values/dimens.xml
+#	modified:   Cashon/app/src/main/res/values/strings.xml
+#	modified:   Cashon/app/src/main/res/values/styles.xml
+#	new file:   JAVA
+#	new file:   acg1kskc.tta.txt
+#
+# Changes not staged for commit:
+#	modified:   Android (modified content, untracked content)
+#
+

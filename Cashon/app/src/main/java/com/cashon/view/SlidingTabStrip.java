@@ -1,14 +1,19 @@
 package com.cashon.view;
 
-import android.R;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.cashon.cashon.R;
 
 /**
  * Created by Rohit on 7/4/2015.
@@ -17,12 +22,12 @@ import android.widget.LinearLayout;
 class SlidingTabStrip extends LinearLayout {
 
     private static final int DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS = 4;
-    private static final byte DEFAULT_BOTTOM_BORDER_COLOR_ALPHA = 0x26;
+    private static final int DEFAULT_BOTTOM_BORDER_COLOR_ALPHA = 0xFF;
     private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 4;
     private static final int DEFAULT_SELECTED_INDICATOR_COLOR = 0xFF33B5E5;
 
     private static final int DEFAULT_DIVIDER_THICKNESS_DIPS = 2;
-    private static final byte DEFAULT_DIVIDER_COLOR_ALPHA = 0x20;
+    private static final int DEFAULT_DIVIDER_COLOR_ALPHA = 0xFF;
     private static final float DEFAULT_DIVIDER_HEIGHT = 0.5f;
 
     private final int mBottomBorderThickness;
@@ -53,8 +58,8 @@ class SlidingTabStrip extends LinearLayout {
         final float density = getResources().getDisplayMetrics().density;
 
         TypedValue outValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorForeground, outValue, true);
-        final int themeForegroundColor =  outValue.data;
+//        context.getTheme().resolveAttribute(R.attr.colorForeground, outValue, true);
+        final int themeForegroundColor =  getResources().getColor(R.color.white); //outValue.data;
 
         mDefaultBottomBorderColor = setColorAlpha(themeForegroundColor,
                 DEFAULT_BOTTOM_BORDER_COLOR_ALPHA);
@@ -103,6 +108,7 @@ class SlidingTabStrip extends LinearLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        setBackgroundColor(getResources().getColor(R.color.primary));
         final int height = getHeight();
         final int childCount = getChildCount();
         final int dividerHeightPx = (int) (Math.min(Math.max(0f, mDividerHeight), 1f) * height);
@@ -118,10 +124,10 @@ class SlidingTabStrip extends LinearLayout {
             int color = tabColorizer.getIndicatorColor(mSelectedPosition);
 
             if (mSelectionOffset > 0f && mSelectedPosition < (getChildCount() - 1)) {
-                int nextColor = tabColorizer.getIndicatorColor(mSelectedPosition + 1);
-                if (color != nextColor) {
-                    color = blendColors(nextColor, color, mSelectionOffset);
-                }
+//                int nextColor = tabColorizer.getIndicatorColor(mSelectedPosition + 1);
+//                if (color != nextColor) {
+//                    color = blendColors(nextColor, color, mSelectionOffset);
+//                }
 
                 // Draw the selection partway between the tabs
                 View nextTitle = getChildAt(mSelectedPosition + 1);
@@ -133,27 +139,54 @@ class SlidingTabStrip extends LinearLayout {
 
             mSelectedIndicatorPaint.setColor(color);
 
-            canvas.drawRect(left, height - mSelectedIndicatorThickness, right,
-                    height, mSelectedIndicatorPaint);
+            Paint paint = new Paint();
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(getResources().getColor(R.color.white));
+            paint.setAntiAlias(true);
+
+            Path path = new Path();
+            path.setFillType(Path.FillType.EVEN_ODD);
+            path.moveTo(left + (height / 2), 0);
+            path.lineTo(right - (height / 2), 0);
+//            path.moveTo(left + right - height, 0);
+            path.lineTo(right, height);
+//            path.moveTo(left + right, height);
+            path.lineTo(left, height);
+//            path.moveTo(left, height);
+            path.lineTo(left + (height / 2), 0);
+            path.close();
+            /*canvas.drawRect(left, *//*height - mSelectedIndicatorThickness*//*0, right,
+                    height, mSelectedIndicatorPaint);*/
+            canvas.drawPath(path, paint);
         }
 
         // Thin underline along the entire bottom edge
-        canvas.drawRect(0, height - mBottomBorderThickness, getWidth(), height, mBottomBorderPaint);
+//        canvas.drawRect(0, /*height - mBottomBorderThickness*/0, getWidth(), height, mBottomBorderPaint);
 
         // Vertical separators between the titles
         int separatorTop = (height - dividerHeightPx) / 2;
-        for (int i = 0; i < childCount - 1; i++) {
+        for (int i = 0; i < childCount; i++) {
+            View child = getChildAt(i);
+            if (i == mSelectedPosition) {
+//                ((TextView) child).setBackgroundResource(R.drawable.selected_tab_bg);
+                ((TextView) child).setTextColor(getResources().getColor(R.color.black));
+            } else {
+//                ((TextView) child).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                ((TextView) child).setTextColor(getResources().getColor(R.color.white));
+            }
+        }
+        /*for (int i = 0; i < childCount - 1; i++) {
             View child = getChildAt(i);
             mDividerPaint.setColor(tabColorizer.getDividerColor(i));
             canvas.drawLine(child.getRight(), separatorTop, child.getRight(),
                     separatorTop + dividerHeightPx, mDividerPaint);
-        }
+        }*/
     }
 
     /**
      * Set the alpha value of the {@code color} to be the given {@code alpha} value.
      */
-    private static int setColorAlpha(int color, byte alpha) {
+    private static int setColorAlpha(int color, int alpha) {
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
     }
 

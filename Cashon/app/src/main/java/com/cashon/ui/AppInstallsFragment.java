@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cashon.adapter.AppInstallsAdapter;
@@ -49,6 +50,7 @@ public class AppInstallsFragment extends Fragment {
     AppInstallsAdapter mAdapter;
     MaterialDialog mProgressDialog;
     private SwipeRefreshLayout mRefreshLayout;
+    private TextView mEmptyTextView;
 
     public static AppInstallsFragment newInstance(String title) {
         AppInstallsFragment fragment = new AppInstallsFragment();
@@ -71,19 +73,31 @@ public class AppInstallsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_app_installs, container, false);
         mRefreshLayout = (SwipeRefreshLayout) rootView;
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.app_installs_recycler_view);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.abc_list_divider_mtrl_alpha)));
+//        mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.abc_list_divider_mtrl_alpha)));
         mAdapter = new AppInstallsAdapter(getActivity(), this);
+        mEmptyTextView = (TextView)rootView.findViewById(R.id.app_install_empty_text_view);
 
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Constants.appInstallSyncNeeded = true;
                 setUpOffers();
             }
         });
-        setUpOffers();
 
         // return root view which will be shown in the content area of activity
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setUpOffers();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     private void setUpOffers() {
@@ -99,6 +113,15 @@ public class AppInstallsFragment extends Fragment {
         task.execute((Void) null);
     }
 
+    public void setEmptyViewVisibility(int visibility) {
+        mEmptyTextView.setVisibility(visibility);
+        if(visibility == View.GONE) {
+            mRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
     class AppInstallAsyncTaks extends AsyncTask<Void, Void, List<Offer>> {
 
         @Override
@@ -108,13 +131,15 @@ public class AppInstallsFragment extends Fragment {
                 try {
                     List<Offer> offers = Offer.getAllOffers(getActivity());
 
-                    synchronized (getActivity()) {
-                        if(Constants.appInstallSyncNeeded) {
-                            SQLWrapper.Offer.clearCurrentDataFromDB(getActivity());
-                            for (Offer offer : offers) {
-                                offer.saveData(getActivity());
+                    if(getActivity() != null) {
+                        synchronized (getActivity()) {
+                            if (Constants.appInstallSyncNeeded) {
+                                SQLWrapper.Offer.clearCurrentDataFromDB(getActivity());
+                                for (Offer offer : offers) {
+                                    offer.saveData(getActivity());
+                                }
+                                Constants.appInstallSyncNeeded = false;
                             }
-                            Constants.appInstallSyncNeeded = false;
                         }
                     }
                     return offers;
@@ -156,8 +181,10 @@ public class AppInstallsFragment extends Fragment {
     }
 
     public void showProgress(boolean show) {
-        mRefreshLayout.setRefreshing(false);
-        Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait_app_offers)));
+        if(isVisible()) {
+            mRefreshLayout.setRefreshing(false);
+            Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait_app_offers)));
+        }
     }
 
 }

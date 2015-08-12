@@ -4,4 +4,11 @@
     android:id="@+id/textDrawerListTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/drawer_list_textview_style"/>
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:textColor="@color/black"
+    android:textSize="@dimen/text_size_title"
+    android:layout_marginTop="@dimen/drawer_list_item_margin_top"
+    android:layout_marginLeft="@dimen/drawer_list_item_margin_left"
+    android:layout_marginRight="@dimen/drawer_list_item_margin_right"
+    android:layout_marginBottom="@dimen/drawer_list_item_margin_bottom"/>

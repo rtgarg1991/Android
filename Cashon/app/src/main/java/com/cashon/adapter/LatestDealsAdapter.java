@@ -84,7 +84,7 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
 
             private void handleAffUrl() {
                 final WebView webView = new WebView(mContext);
-                final String uniqueClick = Utility.getRefUrlString(ParseInstallation.getCurrentInstallation().getObjectId(), mOffers.get(position).getId());
+                final String uniqueClick = Utility.getRefUrlString(ParseUser.getCurrentUser().getObjectId(), mOffers.get(position).getId());
 
                 webView.setWebViewClient(new WebViewClient() {
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {

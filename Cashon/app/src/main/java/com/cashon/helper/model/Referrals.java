@@ -45,7 +45,7 @@ public class Referrals {
 
             ParseObject object = new ParseObject(PARSE_TABLE_NAME_REFERRALS);
             object.put(PARSE_TABLE_COLUMN_USER_EMAIL, email);
-            object.put(PARSE_TABLE_COLUMN_USER_CODE, installation.getObjectId());
+            object.put(PARSE_TABLE_COLUMN_USER_CODE, user.getObjectId());
             object.put(PARSE_TABLE_COLUMN_REFER_CODE, referCode);
             object.put(PARSE_TABLE_COLUMN_CREDITED_AT_REFERRER, false);
             object.put(PARSE_TABLE_COLUMN_CREDITED_AT_REFERRED, false);
@@ -75,6 +75,7 @@ public class Referrals {
         if(email != null && user != null && user.isAuthenticated()) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_REFERRALS);
             query.whereEqualTo(PARSE_TABLE_COLUMN_USER_EMAIL, email);
+            query.whereEqualTo(PARSE_TABLE_COLUMN_CREDITED_AT_REFERRER, false);
             query.getFirstInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(final ParseObject parseObject, ParseException e) {
@@ -82,14 +83,14 @@ public class Referrals {
                         if(parseObject == null) {
                             // TODO no such referral present
                         } else {
-                            if(parseObject.get(PARSE_TABLE_COLUMN_REFER_CODE).equals(ParseInstallation.getCurrentInstallation().getObjectId())
+                            if(parseObject.get(PARSE_TABLE_COLUMN_REFER_CODE).equals(user.getObjectId())
                                     && !((Boolean)parseObject.get(PARSE_TABLE_COLUMN_CREDITED_AT_REFERRER))) {
 
                                 // credit amount in current user's account
                                 HashMap<String, Object> params = new HashMap<String, Object>();
                                 params.put(PARSE_TABLE_COLUMN_TO_USER_EMAIL, user.getUsername());
                                 params.put(PARSE_TABLE_COLUMN_FROM_USER_EMAIL, email);
-                                params.put(PARSE_TABLE_COLUMN_TO_USER_CODE, ParseInstallation.getCurrentInstallation().getObjectId());
+                                params.put(PARSE_TABLE_COLUMN_TO_USER_CODE, user.getObjectId());
                                 params.put(PARSE_TABLE_COLUMN_FROM_USER_CODE, parseObject.get(PARSE_TABLE_COLUMN_USER_CODE));
                                 params.put(PARSE_TABLE_COLUMN_AMOUNT, parseObject.get(PARSE_TABLE_COLUMN_AMOUNT));
                                 ParseCloud.callFunctionInBackground("addReferral", params, new FunctionCallback<Boolean>() {

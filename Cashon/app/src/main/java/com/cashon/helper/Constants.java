@@ -51,34 +51,38 @@ public class Constants {
     // Feature List [START]
     // We need Titles and Unique IDs of Feature Only
     // TODO Save class reference also for faster processing
-    public static final String TITLE_APP_INSTALLS = "App Installs";
-    public static final int ID_APP_INSTALLS = 01;
+    public static final String TITLE_APP_INSTALLS = "Offer Wall";
+    public static final int ID_APP_INSTALLS = 1;
 
-    public static final String TITLE_APP_LATEST_DEALS = "Latest Deals";
-    public static final int ID_APP_LATEST_DEALS = 02;
+    public static final String TITLE_APP_LATEST_DEALS = "Hot Deals";
+    public static final int ID_APP_LATEST_DEALS = 2;
 
-    public static final String TITLE_APP_REFER = "Refer Friends";
-    public static final int ID_APP_REFER = 03;
+    public static final String TITLE_APP_REFER = "Refer & Earn";
+    public static final int ID_APP_REFER = 3;
 
     public static final String TITLE_APP_SETTINGS = "App Settings";
-    public static final int ID_APP_SETTINGS = 04;
+    public static final int ID_APP_SETTINGS = 4;
 
-    public static final String TITLE_APP_HELP = "Help";
-    public static final int ID_APP_HELP = 05;
+    public static final String TITLE_APP_FAQ = "FAQ";
+    public static final int ID_APP_FAQ = 5;
 
-    public static final String TITLE_PENDING_INSTALLS = "Pending Installs";
-    public static final int ID_PENDING_INSTALLS = 06;
+    public static final String TITLE_PENDING_INSTALLS = "Pending";
+    public static final int ID_PENDING_INSTALLS = 6;
 
-    public static final String TITLE_COMPLETED_INSTALLS = "Completed Installs";
-    public static final int ID_COMPLETED_INSTALLS = 07;
+    public static final String TITLE_COMPLETED_INSTALLS = "Completed";
+    public static final int ID_COMPLETED_INSTALLS = 7;
 
     public static final String TITLE_APP_CONTACT_US = "Contact Us";
     public static final int ID_APP_CONTACT_US = 8;
 
+    public static final String TITLE_APP_RECHARGE = "Top Up";
+    public static final int ID_APP_RECHARGE = 9;
+
     public static final String INR_TEXT = "INR";
     public static final String INR_LABEL = "\u20B9";
-    public static final String TEXT_REFERAL = "Install CashOn Application, Use my referal code %s to sign up and earn " + INR_LABEL + "15";
-    public static final int REFERRAL_PUSH_NOTIFICATION = 1;
+    public static final String TEXT_REFERAL = "Hey! Checkout CashGuru, Its the best way to get free recharge. Give it a try! Use referral code : %s. Get CashGuru http://abcd.com/abcd";
+    public static final int PUSH_NOTIFICATION_REFERRAL = 1;
+    public static final int PUSH_NOTIFICATION_INSTALL_CONVERSION = 2;
     public static final int MAX_PAYOUT_APP_INSTALL = 15;
     // Feature List [END]
     public static boolean appInstallSyncNeeded = true;
@@ -95,4 +99,6 @@ public class Constants {
     public static final int MESSAGE_ADD_PACKAGES = 2;
     public static final int MESSAGE_ADD_PACKAGE = 3;
     public static final int MESSAGE_DELETE_PACKAGE = 4;
+    public static final int RECHARGE_AMOUNT_MIN = 10;
+    public static final int RECHARGE_AMOUNT_MAX = 100;
 }

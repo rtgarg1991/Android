@@ -61,8 +61,8 @@ public class ContactUsFragment extends Fragment {
                     } else {
                         String email = user.getUsername();
                         ParseObject object = new ParseObject(PARSE_TABLE_NAME_CONTACT_US);
-                        object.add(PARSE_TABLE_NAME_COLUMN_EMAIL, email);
-                        object.add(PARSE_TABLE_NAME_COLUMN_MESSAGE, et.getText().toString());
+                        object.put(PARSE_TABLE_NAME_COLUMN_EMAIL, email);
+                        object.put(PARSE_TABLE_NAME_COLUMN_MESSAGE, et.getText().toString());
 
                         // set public access so that referrer can access this entry
                         ParseACL groupACL = new ParseACL(user);

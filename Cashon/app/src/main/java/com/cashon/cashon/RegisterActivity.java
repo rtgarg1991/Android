@@ -26,6 +26,7 @@ import com.cashon.helper.Constants;
 import com.cashon.helper.Logger;
 import com.cashon.helper.PreferenceManager;
 import com.cashon.helper.model.Referrals;
+import com.cashon.helper.model.UserHelper;
 import com.cashon.impl.SimpleAsyncTask;
 import com.cashon.impl.Utility;
 import com.parse.FunctionCallback;
@@ -198,10 +199,10 @@ public class RegisterActivity extends Activity {
         user.setEmail(email);
 
         // other fields related to this user
-        user.put("mobile", mobile);
-        user.put("country_code", countryCode);
-        user.put("device_id", deviceId);
-        user.put("mobile_verified", false);
+        user.put(UserHelper.PARSE_TABLE_COLUMN_MOBILE, mobile);
+        user.put(UserHelper.PARSE_TABLE_COLUMN_COUNTRY_CODE, countryCode);
+        user.put(UserHelper.PARSE_TABLE_COLUMN_DEVICE_ID, deviceId);
+        user.put(UserHelper.PARSE_TABLE_COLUMN_MOBILE_VERIFIED, false);
 
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {
@@ -214,6 +215,12 @@ public class RegisterActivity extends Activity {
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putBoolean(Constants.PREF_USER_REGISTERED, true);
                     editor.commit();
+
+                    ParseUser usr = ParseUser.getCurrentUser();
+                    if(usr != null) {
+                        usr.put(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE, usr.getObjectId());
+                        usr.saveEventually();
+                    }
 
                     // add referral for current signup
                     if(referral != null) {

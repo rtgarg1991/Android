@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/recharge_main_padding_left"
+            android:paddingRight="@dimen/recharge_main_padding_right"
+            android:paddingTop="@dimen/recharge_main_padding_top">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_title"
+                    android:text="@string/recharge_text_balance"
+                    android:layout_marginBottom="@dimen/recharge_balance_margin_bottom"/>
+                <TextView
+                    android:id="@+id/recharge_edit_text_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_title_24"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/primary"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/text_size_title"
+                android:text="@string/recharge_text_top_up"
+                android:paddingTop="@dimen/recharge_default_item_padding_top"/>
+            <RadioGroup
+                android:id="@+id/recharge_radio_group_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/recharge_default_item_padding_top" >
+
+                <RadioButton
+                    android:id="@+id/recharge_radio_button_mobile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recharge_mobile"
+                    android:checked="true"
+                    android:textColor="@color/black"/>
+
+                <RadioButton
+                    android:id="@+id/recharge_radio_button_dth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recharge_dth"
+                    android:textColor="@color/black" />
+
+                <RadioButton
+                    android:id="@+id/recharge_radio_button_data_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recharge_data_card"
+                    android:textColor="@color/black" />
+            </RadioGroup>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recharge_mobile_number"
+                android:layout_gravity="center_horizontal"
+                android:inputType="phone"
+                android:hint="@string/recharge_mobile_hint_text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black_dim"
+                android:paddingTop="@dimen/recharge_default_item_padding_top"/>
+
+
+            <RadioGroup
+                android:id="@+id/recharge_radio_group_pre_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/recharge_default_item_padding_top" >
+
+                <RadioButton
+                    android:id="@+id/recharge_radio_button_prepaid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recharge_prepaid"
+                    android:checked="true"
+                    android:textColor="@color/black" />
+
+                <RadioButton
+                    android:id="@+id/recharge_radio_button_postpaid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recharge_postpaid"
+                    android:textColor="@color/black" />
+            </RadioGroup>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recharge_spinner_company"
+                android:popupBackground="@color/white"
+                android:paddingTop="@dimen/recharge_default_item_padding_top"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/recharge_amount"
+                android:layout_gravity="center_horizontal"
+                android:hint="@string/recharge_amount_hint_text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black_dim"
+                android:paddingTop="@dimen/recharge_default_item_padding_top"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/recharge_message"
+                android:layout_gravity="center_horizontal"
+                android:scrollbars="vertical"
+                android:minHeight="@dimen/contact_us_edit_text_height"
+                android:hint="@string/recharge_message_hint_text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black_dim"
+                android:paddingTop="@dimen/recharge_default_item_padding_top"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/send"
+                android:id="@+id/recharge_send_button"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/primary"
+                android:textColor="@color/white"
+                android:paddingTop="@dimen/recharge_default_item_padding_top"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
