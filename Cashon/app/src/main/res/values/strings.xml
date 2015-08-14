@@ -138,4 +138,6 @@
     <string name="new_user_popup_title">Welcome!</string>
     <string name="new_user_popup_content">Welcome to CashGuru, Earn free recharge for just checking out some of the best Android apps, you will get INSTANT free mobile recharge in minutes!</string>
     <string name="new_user_popup_button">Start Earning</string>
+
+    <string name="google_url_shortner_api_key">AIzaSyAyt-jN1d56M5xu8xDXnHdJ3d4oV74SHvU</string>
 </resources>

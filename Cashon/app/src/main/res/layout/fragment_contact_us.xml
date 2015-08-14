@@ -33,7 +33,6 @@
         android:textColor="@color/black"
         android:textColorHint="@color/black_dim"
         android:paddingTop="@dimen/contact_us_default_item_padding_top"
-        android:background="@drawable/edittext_style"
         android:layout_marginTop="@dimen/recharge_default_item_margin_top"/>
 
     <Button

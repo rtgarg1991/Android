@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fireballlabs.cashguru" >
+    package="net.fireballlabs.cashguru" >
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -16,17 +16,18 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <permission android:protectionLevel="signature"
-        android:name="com.fireballlabs.cashguru.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.fireballlabs.cashguru.permission.C2D_MESSAGE" />
+        android:name="net.fireballlabs.cashguru.permission.C2D_MESSAGE" />
+    <uses-permission android:name="net.fireballlabs.cashguru.permission.C2D_MESSAGE" />
 
     <application
-        android:name=".CashGuruApplication"
+        android:name="net.fireballlabs.cashguru.CashGuruApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:logo="@drawable/logo">
+        android:logo="@drawable/logo"
+        android:theme="@style/AppTheme">
         <activity
-            android:name="com.fireballlabs.cashguru.SplashActivity"
+            android:name="net.fireballlabs.cashguru.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -36,17 +37,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.fireballlabs.cashguru.RegisterActivity"
+            android:name="net.fireballlabs.cashguru.RegisterActivity"
             android:label="@string/title_activity_register"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible"
-            android:parentActivityName="com.fireballlabs.cashguru.LoginActivity"
+            android:parentActivityName="net.fireballlabs.cashguru.LoginActivity"
             android:icon="@drawable/logo_no_shadow"
             android:logo="@drawable/logo_no_shadow" >
         </activity>
 
         <activity
-            android:name="com.fireballlabs.cashguru.MainActivity"
+            android:name="net.fireballlabs.cashguru.MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
             android:icon="@drawable/logo_no_shadow"
@@ -54,13 +55,14 @@
         </activity>
 
         <service
-            android:name="com.fireballlabs.services.MobileNumberVerificationService"
+            android:name="net.fireballlabs.services.MobileNumberVerificationService"
             android:exported="false" >
         </service>
 
         <activity
-            android:name="com.fireballlabs.cashguru.LoginActivity"
+            android:name="net.fireballlabs.cashguru.LoginActivity"
             android:label="@string/title_activity_login"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:icon="@drawable/logo_no_shadow"
@@ -83,17 +85,17 @@
                 <!--
                   IMPORTANT: Change "com.parse.tutorials.pushnotifications" to match your app's package name.
                 -->
-                <category android:name="com.fireballlabs.cashguru" />
+                <category android:name="net.fireballlabs.cashguru" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.fireballlabs.services.CustomPushReceiver" android:exported="false">
+        <receiver android:name="net.fireballlabs.services.CustomPushReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
                 <action android:name="com.parse.push.intent.DELETE" />
                 <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.fireballlabs.services.AppBroadcastReceiver"
+        <receiver android:name="net.fireballlabs.services.AppBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -106,7 +108,7 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-        <service android:name="com.fireballlabs.services.AppService"
+        <service android:name="net.fireballlabs.services.AppService"
             android:enabled="true">
         </service>
         <meta-data

@@ -27,7 +27,7 @@
         android:layout_gravity="left|start"
         android:choiceMode="singleChoice"
         android:divider="@null"
-        android:background="@color/white"
+        android:background="@color/background_light_grey"
         android:paddingTop="@dimen/drawer_list_layout_top_padding"
         />
 

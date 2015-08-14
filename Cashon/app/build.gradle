@@ -21,7 +21,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.fireballlabs.cashguru"
+        applicationId "net.fireballlabs.cashguru"
         minSdkVersion 10
         targetSdkVersion 22
         versionCode 1

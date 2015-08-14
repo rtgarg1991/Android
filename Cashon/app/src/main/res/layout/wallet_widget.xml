@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fireballlabs.view.WalletWidget
+<net.fireballlabs.view.WalletWidget
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/wallet_widget_margin">
+    <TextView
+        android:id="@+id/wallet_widget_title_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/wallet_widget_background"
-        android:padding="@dimen/wallet_widget_padding"
-        android:layout_margin="@dimen/wallet_widget_margin">
-        <!--<ImageView
-            android:id="@+id/wallet_widget_image_view"
-            android:layout_width="@dimen/wallet_image_view_width"
-            android:layout_height="@dimen/wallet_image_view_height"
-            android:src="@drawable/wallet"
-            android:layout_gravity="center"/>-->
-        <TextView
-            android:id="@+id/wallet_widget_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/primary_text_color_light"
-            android:textSize="@dimen/text_size_title"
-            android:layout_gravity="center"/>
-    </LinearLayout>
-</com.fireballlabs.view.WalletWidget>
+        android:layout_alignParentLeft="true"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_title"/>
+    <TextView
+        android:id="@+id/wallet_widget_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="@color/primary_text_color_light"
+        android:textSize="@dimen/text_size_title"
+        android:layout_gravity="center"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/wallet_widget_background"/>
+</net.fireballlabs.view.WalletWidget>

@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.fireballlabs.ui.ReferFriendsFragment"
+    android:layout_height="match_parent" tools:context="net.fireballlabs.ui.ReferFriendsFragment"
     android:orientation="horizontal" android:background="@color/white"
     android:paddingLeft="@dimen/refer_friends_main_padding_left"
     android:paddingRight="@dimen/refer_friends_main_padding_right"

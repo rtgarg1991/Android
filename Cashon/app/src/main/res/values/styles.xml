@@ -1,12 +1,11 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorControlNormal">@color/primary_dim</item>
         <item name="colorControlActivated">@color/primary</item>
         <item name="colorControlHighlight">@color/primary</item>
-    </style>
+    </style>-->
 
     <!-- EditText Style-->
     <style name="textview_style">
@@ -37,7 +36,7 @@
     <style name="edittext_single_line_style" parent="edittext_style">
         <item name="android:gravity">center</item>
         <item name="android:layout_height">@dimen/edittext_style_layout_height</item>
-        <item name="android:background">@drawable/edittext_style</item>
+        <!--<item name="android:background">@drawable/edittext_style</item>-->
         <item name="android:singleLine">true</item>
         <item name="android:maxLines">1</item>
     </style>
@@ -68,4 +67,32 @@
         <item name="android:layout_marginTop">@dimen/drawer_list_item_margin_top</item>
         <item name="android:layout_marginBottom">@dimen/drawer_list_item_margin_bottom</item>
     </style>
+
+    <style name="SpinnerTheme" parent="android:Widget.Spinner">
+        <item name="android:background">@drawable/spinner_background_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/list_selector_holo_light</item>
+    </style>
+
+    <!-- Changes the spinner drop down item radio button style -->
+    <style name="DropDownItemSpinnerTheme" parent="android:Widget.DropDownItem.Spinner">
+        <item name="android:checkMark">@drawable/btn_radio_holo_light</item>
+    </style>
+
+    <style name="ListViewSpinnerTheme" parent="android:Widget.ListView">
+        <item name="android:listSelector">@drawable/list_selector_holo_light</item>
+    </style>
+
+    <style name="ListViewSpinnerTheme.White" parent="android:Widget.ListView.White">
+        <item name="android:listSelector">@drawable/list_selector_holo_light</item>
+    </style>
+
+    <style name="SpinnerItemTheme"
+        parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+        <item name="android:textColor">#000000</item>
+    </style><!--
+
+    <style name="ProgressBarStyle"
+        parent="android:Widget.ProgressBar.Large">
+        <item name="android:indeterminateDrawable">@drawable/progressbar</item>
+    </style>-->
 </resources>

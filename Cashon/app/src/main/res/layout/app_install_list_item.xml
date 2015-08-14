@@ -65,20 +65,6 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="@dimen/app_install_list_item_description_width"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:singleLine="false"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:id="@+id/app_install_list_item_description"
-            android:layout_marginTop="@dimen/app_install_item_button_margin_top"
-            android:layout_marginLeft="@dimen/app_install_item_button_margin_left"
-            android:layout_marginBottom="@dimen/app_install_item_button_margin_bottom"
-            android:layout_marginRight="@dimen/app_install_item_button_margin_right"
-            android:textColor="@color/black"/>
         <Button
             android:id="@+id/app_install_list_item_Button"
             android:layout_width="wrap_content"
@@ -93,5 +79,19 @@
             android:layout_marginBottom="@dimen/app_install_item_button_margin_bottom"
             android:layout_marginRight="@dimen/app_install_item_button_margin_right"
             android:textColor="@color/white"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:singleLine="false"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:id="@+id/app_install_list_item_description"
+            android:layout_marginTop="@dimen/app_install_item_button_margin_top"
+            android:layout_marginLeft="@dimen/app_install_item_button_margin_left"
+            android:layout_marginBottom="@dimen/app_install_item_button_margin_bottom"
+            android:layout_marginRight="@dimen/app_install_item_button_margin_right"
+            android:textColor="@color/black"
+            android:layout_toLeftOf="@id/app_install_list_item_Button"/>
     </RelativeLayout>
 </LinearLayout>

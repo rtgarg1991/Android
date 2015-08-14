@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+
+                <!-- API 14 theme customizations can go here. -->
+                <item name="android:spinnerStyle">@style/SpinnerAppTheme</item>
+                <item name="android:dropDownListViewStyle">@style/ListViewAppTheme</item>
+                <item name="android:listViewStyle">@style/ListViewAppTheme</item>
+                <item name="android:listChoiceIndicatorSingle">@drawable/btn_radio_holo_light</item>
+                <item name="android:editTextBackground">@drawable/edit_text_holo_light</item>
+                <item name="android:listChoiceIndicatorMultiple">@drawable/btn_check_holo_light</item>
+                <!--<item name="android:progressBarStyleLarge">@style/ProgressBarStyle</item>-->
+        </style>
+</resources>

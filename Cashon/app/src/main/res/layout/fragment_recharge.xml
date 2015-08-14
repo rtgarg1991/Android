@@ -95,7 +95,8 @@
                     android:inputType="phone"
                     android:hint="@string/recharge_mobile_hint_text"
                     android:textColor="@color/black"
-                    android:textColorHint="@color/black_double_dim"/>
+                    android:textColorHint="@color/black_double_dim"
+                    android:textSize="@dimen/text_size_title_17"/>
 
                 <EditText
                     android:layout_width="0dp"
@@ -106,7 +107,8 @@
                     android:id="@+id/recharge_amount"
                     android:hint="@string/recharge_amount_hint_text"
                     android:textColor="@color/black"
-                    android:textColorHint="@color/black_double_dim"/>
+                    android:textColorHint="@color/black_double_dim"
+                    android:textSize="@dimen/text_size_title_17"/>
             </LinearLayout>
 
 
@@ -170,7 +172,8 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/black_double_dim"
                 android:layout_marginTop="@dimen/recharge_default_item_margin_top"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:textSize="@dimen/text_size_title_17"/>
 
             <Button
                 android:layout_width="wrap_content"
