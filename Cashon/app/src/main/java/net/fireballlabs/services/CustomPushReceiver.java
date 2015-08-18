@@ -8,6 +8,8 @@ import android.util.Log;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
 import net.fireballlabs.helper.model.Referrals;
+
+import com.crashlytics.android.Crashlytics;
 import com.parse.ParsePushBroadcastReceiver;
 
 import org.json.JSONException;
@@ -33,12 +35,13 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
         try {
             obj = new JSONObject(intent.getStringExtra("com.parse.Data"));
         } catch (JSONException ex) {
+            Crashlytics.logException(ex);
             Logger.doSecureLogging(Log.WARN, "Exception occurred while getting data from push notification");
         }
         if(obj != null) {
             if (obj.has("code") && obj.has("email")) {
                 if(Constants.PUSH_NOTIFICATION_REFERRAL == obj.optInt("code")) {
-                    Referrals.verifyReferralAndCredit(obj.optString("email", null));
+//                    Referrals.verifyReferralAndCredit(obj.optString("email", null));
                 } else if(Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION == obj.optInt("code")) {
                     //Referrals.verifyReferralAndCredit(obj.optString("email", null));
                     // do nothing for now

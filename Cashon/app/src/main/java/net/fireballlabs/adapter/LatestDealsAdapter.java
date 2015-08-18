@@ -6,6 +6,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +22,11 @@ import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.model.LatestDeal;
 import net.fireballlabs.helper.model.Offer;
 import net.fireballlabs.helper.model.UsedOffer;
+import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.Utility;
 import net.fireballlabs.ui.LatestDealsFragment;
 
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 
@@ -65,7 +69,7 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
             holder.setDescriptionText(mOffers.get(position).getDescription());
         } else {
             // because for refer code based deals, we don't need title and description text view will serve as single text based source
-            holder.setDescriptionText(String.format(Locale.US, mOffers.get(position).getTitle(), couponCode));
+            holder.setDescriptionText(Html.fromHtml(String.format(Locale.US, mOffers.get(position).getTitle(), "<b>" + couponCode + "</b>")), TextView.BufferType.SPANNABLE);
         }
         String url = Offer.IMAGE_SERVER_URL
                 + String.format(Locale.ENGLISH, mOffers.get(position).getImageName(), Utility.getDeviceDensity(mContext));
@@ -74,6 +78,10 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!Utility.isInternetConnected(mContext)) {
+                    HardwareAccess.access(mContext, mFragment, HardwareAccess.ACCESS_INTERNET);
+                    return;
+                }
                 if (mOffers.get(position).getPackageName() == null || mOffers.get(position).getType() == LatestDeal.TYPE_REFER_CODE_DEAL) {
                     handleDealUrl();
                 } else {
@@ -127,10 +135,10 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
                 final WebView webView = new WebView(mContext);
                 final String affUrl;
                 if(mOffers.get(position).getType() == LatestDeal.TYPE_REFER_CODE_DEAL) {
-                    affUrl = mOffers.get(position).getAppAffUrl();
+                    affUrl = String.format(mOffers.get(position).getAppAffUrl(), ParseUser.getCurrentUser().getObjectId());
                 } else {
                     affUrl = Utility.getRefUrlString(mOffers.get(position).getAppAffUrl(),
-                            ParseUser.getCurrentUser().getObjectId(), mOffers.get(position).getId());
+                            ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getObjectId(), mOffers.get(position).getId());
                 }
 
                 final String trackId = ParseUser.getCurrentUser().getObjectId() + "_" + mOffers.get(position).getId() + "_" + 1;
@@ -142,13 +150,21 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
                             UsedOffer.recordInstallAttempt(trackId, mContext);
                             url = url.replace("https://play.google.com/store/apps/details", "market://details");
                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                            mContext.startActivity(browserIntent);
+                            if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                mContext.startActivity(browserIntent);
+                            } else {
+                                // do nothing for now as there is no Play Store app there in this device
+                            }
                             Utility.showProgress(mContext, false, null);
                             return true;
                         } else if (url.contains("market://details")) {
                             UsedOffer.recordInstallAttempt(trackId, mContext);
                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                            mContext.startActivity(browserIntent);
+                            if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                mContext.startActivity(browserIntent);
+                            } else {
+                                // do nothing for now as there is no Play Store app there in this device
+                            }
                             Utility.showProgress(mContext, false, null);
                             return true;
                         }
@@ -161,13 +177,21 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
                     UsedOffer.recordInstallAttempt(trackId, mContext);
                     url = url.replace("https://play.google.com/store/apps/details", "market://details");
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    mContext.startActivity(browserIntent);
+                    if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                        mContext.startActivity(browserIntent);
+                    } else {
+                        // do nothing for now as there is no Play Store app there in this device
+                    }
                     Utility.showProgress(mContext, false, null);
                 } else if (affUrl.contains("market://details")) {
                     String url = affUrl;
                     UsedOffer.recordInstallAttempt(trackId, mContext);
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    mContext.startActivity(browserIntent);
+                    if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                        mContext.startActivity(browserIntent);
+                    } else {
+                        // do nothing for now as there is no Play Store app there in this device
+                    }
                     Utility.showProgress(mContext, false, null);
                 } else {
                     webView.loadUrl(affUrl);
@@ -246,6 +270,12 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
                 Picasso.with(mContext)
                         .load(url)
                         .into(this.imageView);
+            }
+        }
+
+        public void setDescriptionText(Spanned spanned, TextView.BufferType spannable) {
+            if (textViewDescription != null) {
+                textViewDescription.setText(spanned, spannable);
             }
         }
     }

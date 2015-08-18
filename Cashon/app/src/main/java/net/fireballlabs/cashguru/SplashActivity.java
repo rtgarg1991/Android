@@ -3,6 +3,7 @@ package net.fireballlabs.cashguru;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import net.fireballlabs.helper.Constants;
+import net.fireballlabs.helper.PreferenceManager;
 import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.SimpleDelayHandler;
 import net.fireballlabs.helper.Logger;
@@ -46,10 +48,35 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
             actionBar.hide();
         }
 
+        boolean newInstallation = PreferenceManager.getDefaultSharedPreferenceValue(this, Constants.PREF_FIRST_TIME, MODE_PRIVATE, true);
+        /*if(newInstallation) {
+            addShortcut();
+
+            SharedPreferences prefs = PreferenceManager.getSharedPreferences(this, MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(Constants.PREF_FIRST_TIME, false);
+            editor.commit();
+        }*/
+
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
         setContentView(net.fireballlabs.cashguru.R.layout.activity_splash);
 
         ProgressBar progressBar = (ProgressBar)findViewById(net.fireballlabs.cashguru.R.id.splashProgressBar);
+    }
+    private void addShortcut() {
+        //Adding shortcut for MainActivity
+        //on Home screen
+        Intent shortcutIntent = new Intent(getApplicationContext(), SplashActivity.class);
+        shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        Intent addIntent = new Intent();
+        addIntent.putExtra("duplicate", false);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "CashGuru");
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.logo));
+        addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        getApplicationContext().sendBroadcast(addIntent);
     }
 
     @Override

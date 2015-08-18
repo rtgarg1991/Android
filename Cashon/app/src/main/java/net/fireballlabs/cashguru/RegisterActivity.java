@@ -33,6 +33,8 @@ import net.fireballlabs.helper.model.Referrals;
 import net.fireballlabs.helper.model.UserHelper;
 import net.fireballlabs.impl.SimpleAsyncTask;
 import net.fireballlabs.impl.Utility;
+
+import com.crashlytics.android.Crashlytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
@@ -64,8 +66,6 @@ public class RegisterActivity extends Activity {
     // UI references.
     private EditText mEmailView;
     private EditText mMobileView;
-    private EditText mPasswordView;
-    private EditText mNameView;
     private View mProgressView;
     private View mLoginFormView;
     private Spinner mCountrySpinner;
@@ -80,7 +80,6 @@ public class RegisterActivity extends Activity {
 
         // Set up the login form.
         mEmailView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.textEmail);
-        mNameView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.textName);
 
         mMobileView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.textMobileNumber);
         mMobileView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -94,7 +93,6 @@ public class RegisterActivity extends Activity {
                 return false;
             }
         });
-        mPasswordView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.textPassword);
         mCountrySpinner = (Spinner)findViewById(net.fireballlabs.cashguru.R.id.spinnerCountryCode);
         mReferralView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.textReferral);
 
@@ -113,6 +111,14 @@ public class RegisterActivity extends Activity {
                 net.fireballlabs.cashguru.R.array.country_codes, net.fireballlabs.cashguru.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(net.fireballlabs.cashguru.R.layout.simple_spinner_dropdown_item);
         mCountrySpinner.setAdapter(adapter);
+
+        Intent intent = getIntent();
+        if(intent != null && intent.hasExtra(Constants.MOBILE_NUMBER)) {
+            String extra = intent.getStringExtra(Constants.MOBILE_NUMBER);
+            if(extra != null && !"".equals(extra)) {
+                mMobileView.setText(extra);
+            }
+        }
     }
 
     @Override
@@ -148,15 +154,14 @@ public class RegisterActivity extends Activity {
         // Reset errors.
         mEmailView.setError(null);
         mMobileView.setError(null);
-        mNameView.setError(null);
+//        mNameView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         email = email.trim();
         String mobile = mMobileView.getText().toString();
         mobile = mobile.trim();
-        String name = mNameView.getText().toString();
-        String password = mPasswordView.getText().toString();
+//        String name = mNameView.getText().toString();
         String referral = mReferralView.getText().toString();
 
         boolean cancel = false;
@@ -179,19 +184,12 @@ public class RegisterActivity extends Activity {
         }
 
         // Check for a valid Name
-        if (TextUtils.isEmpty(name)) {
+        /*if (TextUtils.isEmpty(name)) {
             Logger.doSecureLogging(Log.DEBUG, "Wrong Name Entered by User, set error in EditText");
             mNameView.setError(getString(net.fireballlabs.cashguru.R.string.error_field_required));
             focusView = mNameView;
             cancel = true;
-        }
-
-        // check if password is acceptable
-        if (!TextUtils.isEmpty(password) && !Utility.isPasswordValid(password)) {
-            mPasswordView.setError(getString(net.fireballlabs.cashguru.R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
+        }*/
 
         if(TextUtils.isEmpty(referral)) {
             referral = null;
@@ -205,27 +203,24 @@ public class RegisterActivity extends Activity {
             Logger.doSecureLogging(Log.INFO, "Lets try to register user on Server!");
             showProgress(true);
             // Show a progress spinner, and try to register the user in Parse
-            tryRegister(email, mobile, name, password, referral);
+            tryRegister(email, mobile, referral);
         }
     }
 
-    private void tryRegister(String email, String mobile, String name, String password, final String referral) {
-        String deviceId = generateDeviceUniqueId();
+    private void tryRegister(String email, String mobile, final String referral) {
         String countryCode = mCountrySpinner.getSelectedItem().toString();
         // e.g of country code is +91 (IN), so lets just pull out 91 from it
         countryCode = countryCode.substring(1, 3);
 
         final ParseUser user = new ParseUser();
-        user.setUsername(email);
-        user.setPassword(password);
+        user.setUsername(mobile);
+        user.setPassword(mobile);
         user.setEmail(email);
 
         // other fields related to this user
         user.put(UserHelper.PARSE_TABLE_COLUMN_MOBILE, mobile);
         user.put(UserHelper.PARSE_TABLE_COLUMN_COUNTRY_CODE, countryCode);
-        user.put(UserHelper.PARSE_TABLE_COLUMN_DEVICE_ID, deviceId);
         user.put(UserHelper.PARSE_TABLE_COLUMN_MOBILE_VERIFIED, false);
-
 
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {
@@ -242,7 +237,7 @@ public class RegisterActivity extends Activity {
 
                     // add referral for current signup
                     if(referral != null) {
-                        Referrals.addReferral(ParseUser.getCurrentUser().getUsername(), referral);
+                        Referrals.addReferral(ParseUser.getCurrentUser().getObjectId(), referral);
                     }
 
                     // save current installation
@@ -250,7 +245,7 @@ public class RegisterActivity extends Activity {
                         ParseInstallation.getCurrentInstallation().save();
                     } catch (ParseException e1) {
                         ParseInstallation.getCurrentInstallation().saveInBackground();
-                        e1.printStackTrace();
+                        Crashlytics.logException(e1);
                     }
 
                     if(usr != null) {
@@ -268,7 +263,7 @@ public class RegisterActivity extends Activity {
                                         }
                                         usr.saveEventually();
                                     } catch (JSONException e) {
-                                        e.printStackTrace();
+                                        Crashlytics.logException(e);
                                     }
                                 }
 
@@ -280,7 +275,7 @@ public class RegisterActivity extends Activity {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e1) {
-                        e1.printStackTrace();
+                        Crashlytics.logException(e1);
                     }
 
                     // Open Main Activity notifying the user is registered
@@ -291,15 +286,16 @@ public class RegisterActivity extends Activity {
                     startActivity(intent);
                     showProgress(false);
                 } else {
+                    Crashlytics.logException(e);
                     // Sign up didn't succeed. Look at the ParseException
                     // to figure out what went wrong
                     if(e.getCode() == ParseException.USERNAME_TAKEN) {
-                        mEmailView.setError(e.getMessage());
+                        mMobileView.setError(mMobileView.getText().toString() + " already registered!");
                     } else if(e.getCode() == ParseException.TIMEOUT) {
-                        mEmailView.setError(e.getMessage());
+                        mMobileView.setError(e.getMessage());
                     } else {
                         // TODO need to check for all type of errors
-                        mEmailView.setError(e.getMessage());
+                        mMobileView.setError(e.getMessage());
                     }
                     showProgress(false);
                 }
@@ -351,26 +347,5 @@ public class RegisterActivity extends Activity {
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }*/
-    }
-
-    private String generateDeviceUniqueId() {
-        // GET DEVICE ID
-        // as per Android blog
-        // this unique id has bug in major manufacturer, so lets leave it for now
-        final String deviceId = Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-
-        // serial number of the device
-        // it is helpful where telephony services are not available
-        final String deviceSerialNumber = Build.SERIAL;
-
-        // GET IMEI NUMBER
-        TelephonyManager tManager = (TelephonyManager) getBaseContext()
-                .getSystemService(Context.TELEPHONY_SERVICE);
-        String deviceIMEI = tManager.getDeviceId();
-        // lets just return device imei id for now
-        // for wifi devices, it will be garbage entry
-        // for devices without telephony this will be garbage
-        return deviceIMEI;
     }
 }

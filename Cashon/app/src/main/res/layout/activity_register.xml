@@ -19,20 +19,8 @@
         <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical">
 
-            <EditText android:id="@+id/textName" android:layout_width="match_parent"
-                android:hint="@string/prompt_Name" android:inputType="textCapWords"
-                android:imeOptions="actionUnspecified"
-                style="@style/edittext_single_line_style"/>
-
             <EditText android:id="@+id/textEmail" android:layout_width="match_parent"
                 android:hint="@string/prompt_email" android:inputType="textEmailAddress"
-                style="@style/edittext_single_line_style" />
-
-            <EditText android:id="@+id/textPassword" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/prompt_password"
-                android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_register"
-                android:imeOptions="actionUnspecified" android:inputType="textPassword"
                 style="@style/edittext_single_line_style" />
 
             <LinearLayout android:layout_width="match_parent"

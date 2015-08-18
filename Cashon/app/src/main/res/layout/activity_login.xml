@@ -19,17 +19,12 @@
         <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical">
 
-            <EditText android:id="@+id/email" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/prompt_email"
-                android:inputType="textEmailAddress"
-                style="@style/edittext_single_line_style" />
-
-            <EditText android:id="@+id/password" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/prompt_password"
-                android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_sign_in"
-                android:imeOptions="actionUnspecified" android:inputType="textPassword"
-                style="@style/edittext_single_line_style" />
+            <EditText android:id="@+id/login_mobile_number"
+                android:layout_width="match_parent" android:hint="@string/prompt_mobile"
+                android:imeOptions="actionUnspecified" android:inputType="phone"
+                android:imeActionId="@+id/login" android:maxLength="10"
+                style="@style/edittext_single_line_style"
+                android:layout_marginLeft="5dp"/>
 
             <Button android:id="@+id/email_sign_in_button"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -50,7 +45,7 @@
 
                 />
 
-            <Button android:id="@+id/email_register_button"
+            <!--<Button android:id="@+id/email_register_button"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="@string/action_register"
                 style="@style/edittext_single_line_style"
@@ -66,7 +61,7 @@
                 android:paddingRight="@dimen/login_edit_text_padding_right"
                 android:paddingTop="@dimen/login_edit_text_padding_top"
                 android:paddingBottom="@dimen/login_edit_text_padding_bottom"
-                android:textColor="@color/white" />
+                android:textColor="@color/white" />-->
 
         </LinearLayout>
     </ScrollView>

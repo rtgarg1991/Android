@@ -9,6 +9,8 @@ import android.util.Log;
 import net.fireballlabs.helper.Logger;
 import net.fireballlabs.sql.CashGuruSqliteOpenHelper;
 import net.fireballlabs.sql.SQLWrapper;
+
+import com.crashlytics.android.Crashlytics;
 import com.parse.GetCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
@@ -29,30 +31,25 @@ public class UsedOffer {
 
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID = "userId";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID = "deviceId";
-    public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_EMAIL_ID = "emailId";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OFFER_ID = "offerId";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PAYOUT = "payout";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_INSTALL_DATE = "installDate";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_UNINSTALL_DATE = "uninstallDate";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CONVERTED = "converted";
-    public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CREDITED = "credited";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OUT_AFFILIATION = "ourAffiliation";
-    public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME = "packageName";
-    public static String PARSE_TABLE_NAME_INSTALLED_OFFERS = "InstalledOffers";
+    public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME = "package";
+    public static String PARSE_TABLE_NAME_INSTALLS = "Installs";
 
     private static long MAX_ALLOWED_TIME_SINCE_LAST_ATTEMPT = 6 * 60 * 60 * 1000;
 
-    String emailId;
     String userId;
     String deviceId;
     String offerId;
     int payout;
     boolean converted;
-    boolean credited;
     boolean ourAffiliation;
     Date installDate;
     Date uninstallDate;
-    Date creditedDate;
     String packageName;
 
     public String getDeviceId() {
@@ -61,14 +58,6 @@ public class UsedOffer {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public String getEmailId() {
-        return emailId;
-    }
-
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
     }
 
     public String getUserId() {
@@ -103,14 +92,6 @@ public class UsedOffer {
         this.converted = converted;
     }
 
-    public boolean isCredited() {
-        return credited;
-    }
-
-    public void setCredited(boolean credited) {
-        this.credited = credited;
-    }
-
     public Date getInstallDate() {
         return installDate;
     }
@@ -125,14 +106,6 @@ public class UsedOffer {
 
     public void setUninstallDate(Date uninstallDate) {
         this.uninstallDate = uninstallDate;
-    }
-
-    public Date getCreditedDate() {
-        return creditedDate;
-    }
-
-    public void setCreditedDate(Date creditedDate) {
-        this.creditedDate = creditedDate;
     }
 
     public String getPackageName() {
@@ -200,10 +173,10 @@ public class UsedOffer {
         String[] whereArgs = new String[]{packageName};
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String currentDateandTime = sdf.format(new Date());
+        String currentDateAndTime = sdf.format(new Date());
 
         ContentValues values = new ContentValues();
-        values.put(CashGuruSqliteOpenHelper.TABLE_INSTALLED_APPS_COLUMN_UNINSTALL_DATE, currentDateandTime);
+        values.put(CashGuruSqliteOpenHelper.TABLE_INSTALLED_APPS_COLUMN_UNINSTALL_DATE, currentDateAndTime);
 
         // update data in DB
         int rowsUpdated = database.update(CashGuruSqliteOpenHelper.TABLE_INSTALLED_APPS, values, whereClause, whereArgs);
@@ -237,12 +210,12 @@ public class UsedOffer {
                     // TODO record that package not added on server
                     return true;
                 }
-                offer.setEmailId(user.getUsername());
                 offer.setUserId(user.getObjectId());
+                offer.setDeviceId(installation.getObjectId());
 
-                ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLED_OFFERS);
-                query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_EMAIL_ID, offer.getEmailId());
+                ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLS);
                 query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, offer.getUserId());
+                query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, offer.getDeviceId());
                 query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OFFER_ID, offer.getOfferId());
 
                 query.getFirstInBackground(new GetCallback<ParseObject>() {
@@ -250,14 +223,12 @@ public class UsedOffer {
                     public void done(ParseObject parseObject, ParseException e) {
                         if (e == null) {
                             if (parseObject == null) {
-                                ParseObject object = new ParseObject(PARSE_TABLE_NAME_INSTALLED_OFFERS);
+                                ParseObject object = new ParseObject(PARSE_TABLE_NAME_INSTALLS);
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getObjectId());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
-                                object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_EMAIL_ID, offer.getEmailId());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OFFER_ID, offer.getOfferId());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PAYOUT, offer.getPayout());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CONVERTED, offer.isConverted());
-                                object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CREDITED, offer.isCredited());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OUT_AFFILIATION, offer.isOurAffiliation());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_INSTALL_DATE, date);
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME, offer.getPackageName());
@@ -274,16 +245,17 @@ public class UsedOffer {
                                 // just return
                             }
                         } else {
+                            if(e.getCode() != ParseException.OBJECT_NOT_FOUND) {
+                                Crashlytics.logException(e);
+                            }
                             // TODO handle error
                             // lets just send our new installation to server
-                            ParseObject object = new ParseObject(PARSE_TABLE_NAME_INSTALLED_OFFERS);
+                            ParseObject object = new ParseObject(PARSE_TABLE_NAME_INSTALLS);
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getObjectId());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
-                            object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_EMAIL_ID, offer.getEmailId());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OFFER_ID, offer.getOfferId());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PAYOUT, offer.getPayout());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CONVERTED, offer.isConverted());
-                            object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CREDITED, offer.isCredited());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OUT_AFFILIATION, offer.isOurAffiliation());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_INSTALL_DATE, date);
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME, offer.getPackageName());
@@ -294,12 +266,16 @@ public class UsedOffer {
                             groupACL.setPublicReadAccess(true);
                             object.setACL(groupACL);
 
-                            object.saveEventually();
+                            try {
+                                object.save();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
                         }
                     }
                 });
             } catch (ParseException e) {
-                e.printStackTrace();
+                Crashlytics.logException(e);
                 return true;
             }
         }
@@ -322,13 +298,13 @@ public class UsedOffer {
                     return true;
                 }
 
-                offer.setEmailId(user.getUsername());
                 offer.setUserId(user.getObjectId());
+                offer.setDeviceId(installation.getObjectId());
 
-                ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLED_OFFERS);
+                ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLS);
                 query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME, packageName);
                 query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
-                query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_EMAIL_ID, user.getUsername());
+                query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, offer.getDeviceId());
 
                 query.getFirstInBackground(new GetCallback<ParseObject>() {
                     @Override
@@ -336,14 +312,12 @@ public class UsedOffer {
                         if(e == null) {
                             if(parseObject == null) {
                                 // no object to update, but lets add uninstall info on server
-                                ParseObject object = new ParseObject(PARSE_TABLE_NAME_INSTALLED_OFFERS);
+                                ParseObject object = new ParseObject(PARSE_TABLE_NAME_INSTALLS);
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getObjectId());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
-                                object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_EMAIL_ID, offer.getEmailId());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OFFER_ID, offer.getOfferId());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PAYOUT, offer.getPayout());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CONVERTED, offer.isConverted());
-                                object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CREDITED, offer.isCredited());
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_UNINSTALL_DATE, date);
                                 object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME, offer.getPackageName());
 
@@ -359,16 +333,17 @@ public class UsedOffer {
                                 parseObject.saveEventually();
                             }
                         } else {
+                            if(e.getCode() != ParseException.OBJECT_NOT_FOUND) {
+                                Crashlytics.logException(e);
+                            }
                             // TODO handle error
                             // no object to update, but lets add uninstall info on server
-                            ParseObject object = new ParseObject(PARSE_TABLE_NAME_INSTALLED_OFFERS);
+                            ParseObject object = new ParseObject(PARSE_TABLE_NAME_INSTALLS);
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getObjectId());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
-                            object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_EMAIL_ID, offer.getEmailId());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OFFER_ID, offer.getOfferId());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PAYOUT, offer.getPayout());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CONVERTED, offer.isConverted());
-                            object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CREDITED, offer.isCredited());
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_UNINSTALL_DATE, date);
                             object.put(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME, offer.getPackageName());
 
@@ -383,7 +358,7 @@ public class UsedOffer {
                     }
                 });
             } catch (ParseException e) {
-                e.printStackTrace();
+                Crashlytics.logException(e);
                 return true;
             }
         }
@@ -401,7 +376,7 @@ public class UsedOffer {
 
         long id = database.insert(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_ATTEMPT, null, values);
         if(id == -1) {
-            Logger.doSecureLogging(Log.WARN, "Some problem Occured while adding new install attempt entry : ");
+            Logger.doSecureLogging(Log.WARN, "Some problem Occurred while adding new install attempt entry : ");
         } else {
             Logger.doSecureLogging(Log.INFO, uniqueClick + "Install Attempt added in DB");
         }
@@ -460,9 +435,8 @@ public class UsedOffer {
 
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
         
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLED_OFFERS);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLS);
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CONVERTED, false);
-        query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_EMAIL_ID, user.getUsername());
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getObjectId());
         List<ParseObject> list = query.find();
@@ -507,9 +481,8 @@ public class UsedOffer {
 
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLED_OFFERS);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLS);
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CONVERTED, true);
-        query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_EMAIL_ID, user.getUsername());
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getObjectId());
         List<ParseObject> list = query.find();
@@ -554,8 +527,7 @@ public class UsedOffer {
 
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLED_OFFERS);
-        query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_EMAIL_ID, user.getUsername());
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLS);
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getObjectId());
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OFFER_ID, offer.getId() + "_" + offer.getType());
@@ -567,7 +539,7 @@ public class UsedOffer {
                 return false;
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return false;
     }

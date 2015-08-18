@@ -15,13 +15,15 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.adapter.PendingInstallsAdapter;
 import net.fireballlabs.cashguru.R;
+import net.fireballlabs.impl.HardwareAccess;
+import net.fireballlabs.impl.Utility;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PendingInstallsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PendingInstallsFragment extends Fragment {
+public class PendingInstallsFragment extends Fragment implements HardwareAccess.HardwareAccessCallbacks {
     private static MainActivityCallBacks mCallBacks;
     RecyclerView mRecyclerView;
     PendingInstallsAdapter mAdapter;
@@ -59,6 +61,21 @@ public class PendingInstallsFragment extends Fragment {
                 setUpOffers();
             }
         });
+        mRefreshLayout.setEnabled(false);
+
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition =
+                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                mRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+            }
+        });
         setUpOffers();
 
         // return root view which will be shown in the content area of activity
@@ -75,6 +92,10 @@ public class PendingInstallsFragment extends Fragment {
     }
 
     private void setUpOffers() {
+        if(!Utility.isInternetConnected(getActivity())) {
+            HardwareAccess.access(getActivity(), this, HardwareAccess.ACCESS_INTERNET);
+            return;
+        }
 
         if(mRecyclerView == null || mAdapter == null) {
             // TODO error, need to check if this case can happen
@@ -84,5 +105,10 @@ public class PendingInstallsFragment extends Fragment {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void accessCompleted(int access, boolean isSuccess) {
+        setUpOffers();
     }
 }

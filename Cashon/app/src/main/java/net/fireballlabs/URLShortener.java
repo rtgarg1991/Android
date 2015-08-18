@@ -3,6 +3,8 @@ package net.fireballlabs;
 import android.content.Context;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import net.fireballlabs.cashguru.R;
 
 import org.apache.http.HttpEntity;
@@ -25,7 +27,7 @@ import java.util.Locale;
  */
 public class URLShortener {
     public static final String GOOGLE_URL_SHORTNER_LINK = "https://www.googleapis.com/urlshortener/v1/url?key=%s";
-    private static final String REFERAL_URL = "https://play.google.com/store/apps/details?id=net.fireballlabs.cashguru?sub=%s";
+    private static final String REFERAL_URL = "http://rjmq.adsb4all.com/c/01df781ed2e25320?userId=%s";
 
     static InputStream is = null;
     static JSONObject jObj = null;
@@ -44,9 +46,9 @@ public class URLShortener {
             is = httpEntity.getContent();
 
         } catch (ClientProtocolException e) {
-            e.printStackTrace();
+            Crashlytics.logException(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         try {
@@ -59,16 +61,15 @@ public class URLShortener {
             }
             is.close();
             json = sb.toString();
-            Log.e("JSON", json);
         } catch (Exception e) {
-            Log.e("Buffer Error", "Error converting result " + e.toString());
+            Crashlytics.logException(e);
         }
 
         // Parse the String to a JSON Object
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
-            Log.e("JSON Parser", "Error parsing data " + e.toString());
+            Crashlytics.logException(e);
         }
 
         // Return JSON String

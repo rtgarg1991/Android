@@ -4,15 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/wallet_widget_margin">
-    <TextView
+    <!--<TextView
         android:id="@+id/wallet_widget_title_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
+        android:layout_marginTop="2dp"
         android:text="@string/app_name"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_title"/>
+        android:textSize="@dimen/text_size_title"/>-->
     <TextView
         android:id="@+id/wallet_widget_text_view"
         android:layout_width="wrap_content"
@@ -22,4 +23,21 @@
         android:layout_gravity="center"
         android:layout_alignParentRight="true"
         android:background="@drawable/wallet_widget_background"/>
+    <ImageView
+        android:layout_width="@dimen/wallet_widget_hot_deals_image_view_width"
+        android:layout_height="@dimen/wallet_widget_hot_deals_image_view_height"
+        android:id="@+id/wallet_widget_hot_deals"
+        android:layout_toLeftOf="@id/wallet_widget_text_view"
+        android:background="@drawable/hotdeals_action_bar"
+        android:layout_marginRight="@dimen/wallet_widget_hot_deals_image_view_margin_right"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="@dimen/wallet_widget_hot_deals_image_view_width"
+        android:layout_height="@dimen/wallet_widget_hot_deals_image_view_height"
+        android:id="@+id/wallet_widget_refer"
+        android:layout_toLeftOf="@id/wallet_widget_hot_deals"
+        android:background="@drawable/refericon_action_bar"
+        android:layout_marginRight="@dimen/wallet_widget_refer_image_view_margin_right"
+        android:layout_gravity="center"/>
 </net.fireballlabs.view.WalletWidget>

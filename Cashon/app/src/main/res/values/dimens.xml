@@ -149,4 +149,13 @@
     <dimen name="latest_deals_item_main_margin">5dp</dimen>
 
 
+    <dimen name="mobile_verification_main_padding_left">12dp</dimen>
+    <dimen name="mobile_verification_main_padding_right">12dp</dimen>
+    <dimen name="mobile_verification_main_padding_top">12dp</dimen>
+    <dimen name="mobile_verification_text_margin_right">8dp</dimen>
+
+    <dimen name="wallet_widget_hot_deals_image_view_width">36dp</dimen>
+    <dimen name="wallet_widget_hot_deals_image_view_height">36dp</dimen>
+    <dimen name="wallet_widget_hot_deals_image_view_margin_right">8dp</dimen>
+    <dimen name="wallet_widget_refer_image_view_margin_right">8dp</dimen>
 </resources>

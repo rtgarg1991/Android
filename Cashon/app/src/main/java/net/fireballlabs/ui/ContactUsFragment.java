@@ -21,7 +21,7 @@ import com.parse.ParseUser;
 public class ContactUsFragment extends Fragment implements Utility.DialogCallback {
 
     public static String PARSE_TABLE_NAME_CONTACT_US = "ContactUs";
-    public static String PARSE_TABLE_NAME_COLUMN_EMAIL = "email";
+    public static String PARSE_TABLE_NAME_COLUMN_USER_ID = "userId";
     public static String PARSE_TABLE_NAME_COLUMN_MESSAGE = "message";
     private static MainActivityCallBacks mCallBacks;
 
@@ -59,9 +59,8 @@ public class ContactUsFragment extends Fragment implements Utility.DialogCallbac
                         // TODO track this and noify user that he/she has to login
                         return;
                     } else {
-                        String email = user.getUsername();
                         ParseObject object = new ParseObject(PARSE_TABLE_NAME_CONTACT_US);
-                        object.put(PARSE_TABLE_NAME_COLUMN_EMAIL, email);
+                        object.put(PARSE_TABLE_NAME_COLUMN_USER_ID, user.getObjectId());
                         object.put(PARSE_TABLE_NAME_COLUMN_MESSAGE, et.getText().toString());
 
                         // set public access so that referrer can access this entry

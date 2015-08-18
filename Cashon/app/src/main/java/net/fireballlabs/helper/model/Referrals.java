@@ -3,6 +3,8 @@ package net.fireballlabs.helper.model;
 import android.util.Log;
 
 import net.fireballlabs.helper.Logger;
+
+import com.crashlytics.android.Crashlytics;
 import com.parse.FunctionCallback;
 import com.parse.GetCallback;
 import com.parse.ParseACL;
@@ -15,6 +17,8 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Rohit on 8/8/2015.
@@ -26,48 +30,30 @@ public class Referrals {
     boolean creditedAtReferred;
 
     private static String PARSE_TABLE_NAME_REFERRALS = "Referrals";
-    private static String PARSE_TABLE_COLUMN_USER_EMAIL = "userEmail";
-    private static String PARSE_TABLE_COLUMN_USER_CODE = "userCode";
-    private static String PARSE_TABLE_COLUMN_REFER_CODE = "referCode";
-    private static String PARSE_TABLE_COLUMN_CREDITED_AT_REFERRER = "creditedAtReferrer";
-    private static String PARSE_TABLE_COLUMN_CREDITED_AT_REFERRED = "creditedAtReferred";
+
     private static String PARSE_TABLE_COLUMN_AMOUNT = "amount";
+    private static String PARSE_TABLE_COLUMN_REFERRER = "referrer";
+    private static String PARSE_TABLE_COLUMN_REFERRAL = "referral";
+    private static String PARSE_TABLE_COLUMN_CONVERTED = "converted";
 
-    private static String PARSE_TABLE_COLUMN_TO_USER_EMAIL = "toUserEmail";
-    private static String PARSE_TABLE_COLUMN_FROM_USER_EMAIL = "fromUserEmail";
-    private static String PARSE_TABLE_COLUMN_TO_USER_CODE = "toUserCode";
-    private static String PARSE_TABLE_COLUMN_FROM_USER_CODE = "fromUserCode";
-
-    public static void addReferral(String email, final String referCode) {
-        if (referCode != null) {
-            final ParseUser user = ParseUser.getCurrentUser();
-            final ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-
-            ParseObject object = new ParseObject(PARSE_TABLE_NAME_REFERRALS);
-            object.put(PARSE_TABLE_COLUMN_USER_EMAIL, email);
-            object.put(PARSE_TABLE_COLUMN_USER_CODE, user.getObjectId());
-            object.put(PARSE_TABLE_COLUMN_REFER_CODE, referCode);
-            object.put(PARSE_TABLE_COLUMN_CREDITED_AT_REFERRER, false);
-            object.put(PARSE_TABLE_COLUMN_CREDITED_AT_REFERRED, false);
-            object.put(PARSE_TABLE_COLUMN_AMOUNT, 10);
-
-            // set public access so that referrer can access this entry
-            ParseACL groupACL = new ParseACL(user);
-            groupACL.setPublicWriteAccess(true);
-            groupACL.setPublicReadAccess(true);
-            object.setACL(groupACL);
-
-            // TODO change amount
-            object.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        // TODO log errors
+    public static void addReferral(String referral, final String referrer) {
+        if (referral != null && referrer != null) {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put(PARSE_TABLE_COLUMN_REFERRER, referrer);
+            params.put(PARSE_TABLE_COLUMN_REFERRAL, referral);
+            ParseCloud.callFunctionInBackground("addNewReferral", params, new FunctionCallback<Boolean>() {
+                public void done(Boolean success, ParseException e) {
+                    if (e == null) {
+                        Logger.doSecureLogging(Log.DEBUG, "Referral sent successfully.");
+                    } else {
+                        Logger.doSecureLogging(Log.WARN, "Referral not sent successfully." + e.getCode());
+                        Crashlytics.logException(e);
                     }
                 }
             });
         }
     }
+/*
 
 
     public static void verifyReferralAndCredit(final String email) {
@@ -102,7 +88,7 @@ public class Referrals {
                                             parseObject.saveEventually();
                                         } else {
                                             Logger.doSecureLogging(Log.WARN, "Referral not sent successfully." + e.getCode());
-                                            e.printStackTrace();
+                                            Crashlytics.logException(e);
                                         }
                                     }
                                 });
@@ -113,9 +99,18 @@ public class Referrals {
                         }
                     } else {
                         // TODO handle error
+                        Crashlytics.logException(e);
                     }
                 }
             });
         }
+    }
+*/
+
+    public static class ReferralMap {
+        int referrer;
+        int referral;
+        int installCount;
+        float amount;
     }
 }

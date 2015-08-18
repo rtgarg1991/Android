@@ -9,11 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.fireballlabs.cashguru.R;
+import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.model.Offer;
 import net.fireballlabs.helper.model.UsedOffer;
 import net.fireballlabs.impl.SimpleDelayHandler;
 import net.fireballlabs.impl.Utility;
 import net.fireballlabs.ui.CompletedInstallsFragment;
+
+import com.crashlytics.android.Crashlytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.squareup.picasso.Picasso;
@@ -38,7 +41,7 @@ public class CompletedInstallsAdapter extends RecyclerView.Adapter<CompletedInst
             TextView title = (TextView) v.findViewById(R.id.app_completed_list_item_title);
             TextView subtitle = (TextView) v.findViewById(R.id.app_completed_list_item_subtitle);
             TextView payout = (TextView) v.findViewById(R.id.app_completed_list_item_payout);
-            TextView description = (TextView) v.findViewById(R.id.app_pending_list_item_description);
+            TextView description = (TextView) v.findViewById(R.id.app_completed_list_item_description);
             ImageView image = (ImageView) v.findViewById(R.id.app_completed_list_item_image_view);
             return new ViewHolder(v, title, subtitle, description, payout, image);
         } else {
@@ -51,8 +54,9 @@ public class CompletedInstallsAdapter extends RecyclerView.Adapter<CompletedInst
     public void onBindViewHolder(CompletedInstallsAdapter.ViewHolder holder, final int position) {
         holder.setTextViewTitleText(mOffers.get(position).getTitle());
         holder.setTextViewSubtitleText(mOffers.get(position).getSubTitle());
-        holder.setTextViewPayoutText(String.valueOf(mOffers.get(position).getPayout()));
-        holder.setTextViewDescriptionText(mOffers.get(position).getDescription());
+        holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(mOffers.get(position).getPayout()));
+//        holder.setTextViewDescriptionText(mOffers.get(position).getDescription());
+        holder.setTextViewDescriptionText("Congratulations! Transaction has been completed.");
 
         String url = Offer.IMAGE_SERVER_URL
                 + String.format(Locale.ENGLISH, mOffers.get(position).getImageName(), Utility.getDeviceDensity(mContext));
@@ -64,6 +68,7 @@ public class CompletedInstallsAdapter extends RecyclerView.Adapter<CompletedInst
         try {
             return mOffers.get(position).type;
         } catch(NumberFormatException ex) {
+            Crashlytics.logException(ex);
             return 0;
         }
     }
@@ -91,7 +96,7 @@ public class CompletedInstallsAdapter extends RecyclerView.Adapter<CompletedInst
                     SimpleDelayHandler handler = SimpleDelayHandler.getInstance(context);
                     handler.startDelayed(CompletedInstallsAdapter.this, 0, true);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
             }
         });

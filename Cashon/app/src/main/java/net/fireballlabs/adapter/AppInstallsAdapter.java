@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,16 @@ import android.widget.TextView;
 
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
+import net.fireballlabs.helper.Logger;
+import net.fireballlabs.helper.model.InstallationHelper;
 import net.fireballlabs.helper.model.Offer;
 import net.fireballlabs.helper.model.UsedOffer;
+import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.Utility;
 import net.fireballlabs.ui.AppInstallsFragment;
 
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 
@@ -82,50 +88,76 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
             holder.clickButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final WebView webView = new WebView(mContext);
-                    final String affUrl = Utility.getRefUrlString(mOffers.get(position).getAffLink(),
-                            ParseUser.getCurrentUser().getObjectId(), mOffers.get(position).getId());
-                    final String trackId = ParseUser.getCurrentUser().getObjectId() + "_" + mOffers.get(position).getId() + "_" + 1;
+                    Utility.showInformativeDialog(new Utility.DialogCallback() {
+                        @Override
+                        public void onDialogCallback(boolean success) {
+                            if(!Utility.isInternetConnected(mContext)) {
+                                HardwareAccess.access(mContext, mFragment, HardwareAccess.ACCESS_INTERNET);
+                                return;
+                            }
+                            final WebView webView = new WebView(mContext);
+                            final String affUrl = Utility.getRefUrlString(mOffers.get(position).getAffLink(),
+                                    ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getObjectId(), mOffers.get(position).getId());
+                            final String trackId = ParseUser.getCurrentUser().getObjectId() + "_" + mOffers.get(position).getId() + "_" + 1;
 
-                    webView.setWebViewClient(new WebViewClient() {
-                        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                            webView.setWebViewClient(new WebViewClient() {
+                                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                                    Logger.doSecureLogging(Log.INFO, url);
+                                    if (url.indexOf("https://play.google.com/store/apps/details") == 0) {
+                                        UsedOffer.recordInstallAttempt(trackId, mContext);
+                                        url = url.replace("https://play.google.com/store/apps/details", "market://details");
+                                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                        if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                            mContext.startActivity(browserIntent);
+                                        } else {
+                                            // do nothing for now as there is no Play Store app there in this device
+                                        }
+                                        Utility.showProgress(mContext, false, null);
+                                        return true;
+                                    } else if (url.contains("market://details")) {
+                                        UsedOffer.recordInstallAttempt(trackId, mContext);
+                                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                        if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                            mContext.startActivity(browserIntent);
+                                        } else {
+                                            // do nothing for now as there is no Play Store app there in this device
+                                        }
+                                        Utility.showProgress(mContext, false, null);
+                                        return true;
+                                    }
+                                    view.loadUrl(url);
+                                    return false; // then it is not handled by default action
+                                }
+                            });
 
-                            if (url.contains("play.google.com")) {
+                            if (affUrl.contains("play.google.com")) {
+                                String url = affUrl;
                                 UsedOffer.recordInstallAttempt(trackId, mContext);
                                 url = url.replace("https://play.google.com/store/apps/details", "market://details");
                                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                mContext.startActivity(browserIntent);
+                                if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                    mContext.startActivity(browserIntent);
+                                } else {
+                                    // do nothing for now as there is no Play Store app there in this device
+                                }
                                 Utility.showProgress(mContext, false, null);
-                                return true;
-                            } else if (url.contains("market://details")) {
+                            } else if (affUrl.contains("market://details")) {
+                                String url = affUrl;
                                 UsedOffer.recordInstallAttempt(trackId, mContext);
                                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                mContext.startActivity(browserIntent);
+                                if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                    mContext.startActivity(browserIntent);
+                                } else {
+                                    // do nothing for now as there is no Play Store app there in this device
+                                }
                                 Utility.showProgress(mContext, false, null);
-                                return true;
+                            } else {
+                                webView.loadUrl(affUrl);
+                                Logger.doSecureLogging(Log.INFO, "1" + affUrl);
+                                Utility.showProgress(mContext, true, "Please Wait...");
                             }
-                            view.loadUrl(url);
-                            return false; // then it is not handled by default action
                         }
-                    });
-
-                    if (affUrl.contains("play.google.com")) {
-                        String url = affUrl;
-                        UsedOffer.recordInstallAttempt(trackId, mContext);
-                        url = url.replace("https://play.google.com/store/apps/details", "market://details");
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        mContext.startActivity(browserIntent);
-                        Utility.showProgress(mContext, false, null);
-                    } else if (affUrl.contains("market://details")) {
-                        String url = affUrl;
-                        UsedOffer.recordInstallAttempt(trackId, mContext);
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        mContext.startActivity(browserIntent);
-                        Utility.showProgress(mContext, false, null);
-                    } else {
-                        webView.loadUrl(affUrl);
-                        Utility.showProgress(mContext, true, "Please Wait...");
-                    }
+                    }, mContext, "Description", mOffers.get(position).getDescription(), "OK", true);
                 }
             });
         }
@@ -148,6 +180,7 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                 return mOffers.get(position).getType();
             }
         } catch(NumberFormatException ex) {
+            Crashlytics.logException(ex);
             return 0;
         }
     }

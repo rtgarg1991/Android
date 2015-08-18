@@ -19,6 +19,7 @@ import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.model.InstallationHelper;
 import net.fireballlabs.helper.model.UserHelper;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 
@@ -66,7 +67,7 @@ public class ReferFriendsFragment extends Fragment {
                             }
                             ParseUser.getCurrentUser().saveEventually();
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Crashlytics.logException(e);
                         }
                     }
 

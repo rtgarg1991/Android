@@ -11,8 +11,8 @@
     <string name="title_activity_register">Sign Up</string>
 
     <!-- Strings related to login -->
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_register">Register</string>
+    <string name="action_sign_in">Login/Sign Up</string>
+    <string name="action_register">New User?</string>
 
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
@@ -22,8 +22,8 @@
     <string name="prompt_mobile">Mobile Number</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_email">Email Id</string>
-    <string name="action_Register">Register</string>
-    <string name="prompt_referral">Rererral Code</string>
+    <string name="action_Register">Submit</string>
+    <string name="prompt_referral">Rererral Code (Optional)</string>
 
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_duplicate_email">This email address is already in use</string>
@@ -35,10 +35,10 @@
     <string-array name="country_codes">
         <item>+91 (IN)</item>
     </string-array>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">CashGuru</string>
 
     <string name="referral_code">Your Referral Code is : </string>
-    <string name="referral_conditions">1. Share your unique referral code with friends\r\n\r\n2. When your referrals sign up using your Referral Code, You will be credited with ₹10\r\n\r\nNote: Valid only for new users and activated once your referral installs 2 apps</string>
+    <string name="referral_conditions">How it works : \r\n\r\n1. Share your unique referral code with friends\r\n\r\n2. When your referrals sign up using your Referral Code, You both will be credited with ₹5 each when the referral installs 2 apps.\r\n 3. You will get extra ₹5 referral bonus when the referral installs 4 apps in total (Limited Time) \r\n\r\nNote: Valid only for new users.</string>
     <string name="share_text">Share</string>
     <string name="share_using">Share Referral Code via</string>
 
@@ -50,6 +50,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="send">Send</string>
     <string name="contact_us_title_string">Contact Us</string>
+    <string name="edit_number">Edit Number</string>
+    <string name="update">Update</string>
+    <string name="resend">Resend OTP</string>
 
     <string name="recharge_mobile">Mobile</string>
     <string name="recharge_dth">DTH</string>
@@ -136,8 +139,17 @@
 
     <string name="app_install_install">Try \u0026 Earn</string>
     <string name="new_user_popup_title">Welcome!</string>
-    <string name="new_user_popup_content">Welcome to CashGuru, Earn free recharge for just checking out some of the best Android apps, you will get INSTANT free mobile recharge in minutes!</string>
+    <string name="new_user_popup_content">Welcome to CashGuru, Earn free recharge for just checking out some of the best Android apps, you will get INSTANT mobile recharge in minutes!</string>
     <string name="new_user_popup_button">Start Earning</string>
 
     <string name="google_url_shortner_api_key">AIzaSyAyt-jN1d56M5xu8xDXnHdJ3d4oV74SHvU</string>
+
+    <string name="user_profile_name">Name</string>
+    <string name="user_profile_sex">Sex</string>
+    <string name="user_profile_dob">Date of Birth</string>
+    <string-array name="user_profile_sex_array">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string name="sms_api_key">90753AvkUeeG6pYj55d0da20</string>
 </resources>

@@ -19,10 +19,29 @@
     <color name="black_triple_dim">#11000000</color>
     <color name="secondary">#FF00aba9</color>
 
-    <color name="primary">#FFEE1111</color>
+    <!--<color name="primary">#FFEE1111</color>
     <color name="primary_dim">#AAEE1111</color>
     <color name="primary_dark">#FFE64A19</color>
-    <color name="primary_light">#FFFFCCBC</color>
+    <color name="primary_light">#FFFFCCBC</color>-->
+
+
+    <!--ladoo-->
+    <color name="primary">#FFe35555</color>
+    <color name="primary_dim">#AAe35555</color>
+    <color name="primary_dark">#FFe35555</color>
+    <color name="primary_light">#FFdc5252</color>
+
+    <!-- Green -->
+    <!--<color name="primary">#FF55e355</color>
+    <color name="primary_dim">#AA55e355</color>
+    <color name="primary_dark">#FF66e566</color>
+    <color name="primary_light">#FF52dc52</color>-->
+    <!-- Blue -->
+    <!--<color name="primary">#FF5555e3</color>
+    <color name="primary_dim">#AA5555e3</color>
+    <color name="primary_dark">#FF6666e5</color>
+    <color name="primary_light">#FF5252dc</color>-->
+
     <color name="accent">#FFFFEB3B</color>
     <color name="secondary_text">#FF727272</color>
     <color name="icons">#FFFFFFFF</color>

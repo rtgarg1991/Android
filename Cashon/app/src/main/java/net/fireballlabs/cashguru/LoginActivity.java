@@ -18,9 +18,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.impl.Utility;
+
+import com.crashlytics.android.Crashlytics;
 import com.parse.LogInCallback;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
@@ -40,8 +43,7 @@ public class LoginActivity extends Activity {
     };
 
     // UI references.
-    private EditText mEmailView;
-    private EditText mPasswordView;
+    private EditText mMobileNumberEditText;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -51,10 +53,9 @@ public class LoginActivity extends Activity {
         setContentView(net.fireballlabs.cashguru.R.layout.activity_login);
 
         // Set up the login form.
-        mEmailView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.email);
+        mMobileNumberEditText = (EditText) findViewById(R.id.login_mobile_number);
 
-        mPasswordView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mMobileNumberEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == net.fireballlabs.cashguru.R.id.login || id == EditorInfo.IME_NULL) {
@@ -73,15 +74,16 @@ public class LoginActivity extends Activity {
             }
         });
 
-        Button mRegisterButton = (Button) findViewById(net.fireballlabs.cashguru.R.id.email_register_button);
-        mRegisterButton.setOnClickListener(new OnClickListener() {
+//        Button mRegisterButton = (Button) findViewById(net.fireballlabs.cashguru.R.id.email_register_button);
+        /*mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                intent.putExtra(Constants.MOBILE_NUMBER, mMobileNumberEditText.getText().toString());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
-        });
+        });*/
 
         mLoginFormView = findViewById(net.fireballlabs.cashguru.R.id.login_form);
         mProgressView = findViewById(net.fireballlabs.cashguru.R.id.login_progress);
@@ -111,37 +113,22 @@ public class LoginActivity extends Activity {
     public void attemptLogin() {
 
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        if(mEmailView.hasFocus()) {
-            imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
-        } else if(mPasswordView.hasFocus()) {
-            imm.hideSoftInputFromWindow(mPasswordView.getWindowToken(), 0);
+        if(mMobileNumberEditText.hasFocus()) {
+            imm.hideSoftInputFromWindow(mMobileNumberEditText.getWindowToken(), 0);
         }
         // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
+        mMobileNumberEditText.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        String mobile = mMobileNumberEditText.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !Utility.isPasswordValid(password)) {
-            mPasswordView.setError(getString(net.fireballlabs.cashguru.R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(net.fireballlabs.cashguru.R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!Utility.isValidEmail(email)) {
-            mEmailView.setError(getString(net.fireballlabs.cashguru.R.string.error_invalid_email));
-            focusView = mEmailView;
+        if (!TextUtils.isEmpty(mobile) && !Utility.isValidMobile(mobile)) {
+            mMobileNumberEditText.setError(getString(net.fireballlabs.cashguru.R.string.error_invalid_mobile));
+            focusView = mMobileNumberEditText;
             cancel = true;
         }
 
@@ -153,24 +140,23 @@ public class LoginActivity extends Activity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            ParseUser.logInInBackground(email, password, new LogInCallback() {
+            ParseUser.logInInBackground(mobile, mobile, new LogInCallback() {
                 @Override
                 public void done(ParseUser user, ParseException e) {
                     if (user != null) {
-                        showProgress(false);
 
                         // save current installation
                         try {
                             ParseInstallation.getCurrentInstallation().save();
                         } catch (ParseException e1) {
                             ParseInstallation.getCurrentInstallation().saveInBackground();
-                            e1.printStackTrace();
+                            Crashlytics.logException(e1);
                         }
 
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e1) {
-                            e1.printStackTrace();
+                            Crashlytics.logException(e1);
                         }
 
                         // lets show some offers to the user
@@ -178,16 +164,27 @@ public class LoginActivity extends Activity {
                         intent.putExtra(Constants.IS_NEW_LOGIN, true);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
-                    } else {
                         showProgress(false);
-                        if(e.getCode() == ParseException.EMAIL_MISSING || e.getCode() == ParseException.EMAIL_NOT_FOUND || e.getCode() == ParseException.INVALID_EMAIL_ADDRESS) {
-                            mEmailView.setError(e.getMessage());
-                            mEmailView.requestFocus();
-                        } else if(e.getCode() == ParseException.VALIDATION_ERROR || e.getCode() == ParseException.OBJECT_NOT_FOUND){
-                            mPasswordView.setError(e.getMessage());
-                            mPasswordView.requestFocus();
-                        } else {
-                            // TODO Need to check for other exceptions
+                    } else {
+                        if(e != null) {
+                            Crashlytics.logException(e);
+                            if (e.getCode() == ParseException.VALIDATION_ERROR || e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                                mMobileNumberEditText.setError(e.getMessage());
+                                Crashlytics.logException(e);
+                                mMobileNumberEditText.requestFocus();
+                            } else {
+                                // TODO Need to check for other exceptions
+                                mMobileNumberEditText.setError(e.getMessage());
+                                Crashlytics.logException(e);
+                            }
+                        }
+                        showProgress(false);
+                        if(e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                            Toast.makeText(getApplicationContext(), "Redirecting to Registration Page.", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                            intent.putExtra(Constants.MOBILE_NUMBER, mMobileNumberEditText.getText().toString());
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                         }
                     }
                 }
@@ -220,29 +217,6 @@ public class LoginActivity extends Activity {
             mProgressView.clearAnimation();
             mProgressView.setVisibility(View.GONE);
         }
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            Animation rotation = AnimationUtils.loadAnimation(this, R.anim.progress_bar_holo);
-            rotation.setRepeatCount(Animation.INFINITE);
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.startAnimation(rotation);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.clearAnimation();
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }*/
     }
 }
 

@@ -16,13 +16,16 @@ import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.adapter.LatestDealsAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.model.LatestDeal;
+import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.Utility;
+
+import com.crashlytics.android.Crashlytics;
 import com.parse.ParseException;
 
 import java.util.List;
 
 
-public class LatestDealsFragment extends Fragment {
+public class LatestDealsFragment extends Fragment implements HardwareAccess.HardwareAccessCallbacks {
 
     private static MainActivityCallBacks mCallBacks;
     private SwipeRefreshLayout mRefreshLayout;
@@ -60,6 +63,21 @@ public class LatestDealsFragment extends Fragment {
                 setUpOffers();
             }
         });
+        mRefreshLayout.setEnabled(false);
+
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition =
+                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                mRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+            }
+        });
         setUpOffers();
         return rootView;
     }
@@ -71,6 +89,10 @@ public class LatestDealsFragment extends Fragment {
     }
 
     private void setUpOffers() {
+        if(!Utility.isInternetConnected(getActivity())) {
+            HardwareAccess.access(getActivity(), this, HardwareAccess.ACCESS_INTERNET);
+            return;
+        }
         if(mRecyclerView == null || mAdapter == null) {
             // TODO error, need to check if this case can happen
             return;
@@ -90,6 +112,11 @@ public class LatestDealsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void accessCompleted(int access, boolean isSuccess) {
+        setUpOffers();
+    }
+
     class LatestDealsAsyncTask extends AsyncTask<Void, Void, List<LatestDeal>> {
 
         @Override
@@ -99,7 +126,7 @@ public class LatestDealsFragment extends Fragment {
                 deals = LatestDeal.getAllDeals();
                 return deals;
             } catch (ParseException e) {
-                e.printStackTrace();
+                Crashlytics.logException(e);
             }
             return null;
         }

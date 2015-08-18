@@ -12,6 +12,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import net.fireballlabs.helper.Logger;
 import net.fireballlabs.impl.SimpleDelayHandler;
 
@@ -166,7 +168,7 @@ public class MobileNumberVerificationService extends Service implements SimpleDe
             // now lets register for sms reading
             registerReceiver(smsReceiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
         } catch (IOException e) {
-            e.printStackTrace();
+            Crashlytics.logException(e);
         } finally {
             SimpleDelayHandler handler = SimpleDelayHandler.getInstance(null);
             handler.startDelayed(this, TIMEOUT, false);

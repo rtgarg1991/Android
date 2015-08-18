@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/recharge_main_padding_left"
+            android:paddingRight="@dimen/recharge_main_padding_right"
+            android:paddingTop="@dimen/recharge_main_padding_top">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/recharge_default_item_margin_top"
+                android:paddingLeft="@dimen/recharge_default_item_padding_left"
+                android:paddingRight="@dimen/recharge_default_item_padding_right"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_profile_name"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_title_17"
+                    android:layout_gravity="center_vertical"/>
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/user_profile_name"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_title_17"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/recharge_default_item_margin_top"
+                android:paddingLeft="@dimen/recharge_default_item_padding_left"
+                android:paddingRight="@dimen/recharge_default_item_padding_right"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_profile_sex"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_title_17"
+                    android:layout_gravity="center_vertical"/>
+
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/user_profile_sex"
+                    android:popupBackground="@color/white"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/recharge_default_item_margin_top"
+                android:paddingLeft="@dimen/recharge_default_item_padding_left"
+                android:paddingRight="@dimen/recharge_default_item_padding_right"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_profile_dob"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_title_17"
+                    android:layout_gravity="center_vertical"/>
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/user_profile_dob"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_title_17"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/send"
+                android:id="@+id/user_profile_button"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/default_button_style"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/recharge_default_item_margin_top" />
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

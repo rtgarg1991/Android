@@ -18,6 +18,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.adapter.MainDrawerAdapter;
@@ -25,12 +28,18 @@ import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.model.Conversions;
 import net.fireballlabs.helper.model.InstallationHelper;
 import net.fireballlabs.helper.model.UserHelper;
+import net.fireballlabs.helper.model.UserProfile;
+import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.Utility;
 import net.fireballlabs.ui.ContactUsFragment;
+import net.fireballlabs.ui.MobileNumberVerificationFragment;
 import net.fireballlabs.ui.RechargeFragment;
 import net.fireballlabs.ui.ReferFriendsFragment;
 import net.fireballlabs.ui.SlidingTabFragment;
+import net.fireballlabs.ui.UserProfileFragment;
 import net.fireballlabs.view.WalletWidget;
+
+import com.crashlytics.android.Crashlytics;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
@@ -40,13 +49,14 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements MainDrawerAdapter.DrawerAdapterCallbacks, MainActivityCallBacks {
+public class MainActivity extends FragmentActivity implements MainDrawerAdapter.DrawerAdapterCallbacks, MainActivityCallBacks, HardwareAccess.HardwareAccessCallbacks {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private RecyclerView mDrawerList;
     String mTitle = null;
     String mDrawerTitle = null;
+    private boolean mOnCreateFinished = false;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -69,24 +79,42 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
         final ParseInstallation installation =
                 ParseInstallation.getCurrentInstallation();
         if(installation == null || installation.getObjectId() == null) {
-            finish();
-            super.onCreate(savedInstanceState);
-            return;
+            try {
+                ParseInstallation.getCurrentInstallation().save();
+            } catch (ParseException e) {
+                Crashlytics.logException(e);
+                finish();
+                super.onCreate(savedInstanceState);
+                return;
+            }
+            if(ParseInstallation.getCurrentInstallation() == null || ParseInstallation.getCurrentInstallation().getObjectId() == null) {
+                Crashlytics.logException(new RuntimeException());
+                return;
+            }
         }
-        installation.put(InstallationHelper.PARSE_TABLE_COLUMN_REFER_CODE, ParseUser.getCurrentUser().getObjectId());
-        installation.put(InstallationHelper.PARSE_TABLE_COLUMN_EMAIL, ParseUser.getCurrentUser().getUsername());
-        installation.put(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID, ParseUser.getCurrentUser().get(UserHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
-        installation.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-
-                if(e == null) {
-                    // TODO Empty
-                } else {
-                    // TODO error reporting
+        // show first time popup
+        Intent intent = getIntent();
+        if(intent != null) {
+            boolean isNewLogin = intent.getBooleanExtra(Constants.IS_NEW_LOGIN, false);
+            if(isNewLogin) {
+                Utility.showFirstTimePopup(this, true);
+            }
+            if(isNewLogin) {
+                String deviceId = Utility.generateDeviceUniqueId(this);
+                installation.put(InstallationHelper.PARSE_TABLE_COLUMN_REFER_CODE, ParseUser.getCurrentUser().getObjectId());
+                installation.put(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID, deviceId);
+                try {
+                    installation.save();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Crashlytics.logException(e);
+                    if(ParseUser.getCurrentUser() != null && ParseUser.getCurrentUser().isAuthenticated()) {
+                        ParseUser.getCurrentUser().logOut();
+                        finish();
+                    }
                 }
             }
-        });
+        }
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
         super.onCreate(savedInstanceState);
         setContentView(net.fireballlabs.cashguru.R.layout.activity_main);
@@ -151,14 +179,7 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
             selectFeature(featureList.get(0));
 
         }
-        // show first time popup
-        Intent intent = getIntent();
-        if(intent != null) {
-            boolean isNewLogin = intent.getBooleanExtra(Constants.IS_NEW_LOGIN, false);
-            if(isNewLogin) {
-                Utility.showFirstTimePopup(this, true);
-            }
-        }
+        mOnCreateFinished = true;
     }
 
     @Override
@@ -170,23 +191,50 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
             ActionBar actionBar = getActionBar();
             if (actionBar != null) {
                 actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(net.fireballlabs.cashguru.R.color.primary)));
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                     actionBar.setLogo(net.fireballlabs.cashguru.R.drawable.logo_no_shadow);
-                }
+                }*/
                 actionBar.setCustomView(net.fireballlabs.cashguru.R.layout.wallet_widget);
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_TITLE
+                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
                         | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-                final WalletWidget wallet = (WalletWidget)actionBar.getCustomView();
-                if(wallet != null) {
-                    // TODO update with correct wallet balance
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            wallet.updateWalletBalance(Constants.INR_LABEL, Conversions.getBalance());
-                        }
-                    });
-                    thread.start();
-                }
+                updateWalletWidget(actionBar);
+            }
+        }
+    }
+
+    private void updateWalletWidget(ActionBar actionBar) {
+        if(actionBar != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            final WalletWidget wallet = (WalletWidget) actionBar.getCustomView();
+            if (wallet != null) {
+                // TODO update with correct wallet balance
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        wallet.updateWalletBalance(Constants.INR_LABEL, Conversions.getBalance());
+                    }
+                });
+                thread.start();
+                ImageView hotDeals = (ImageView)wallet.findViewById(R.id.wallet_widget_hot_deals);
+                hotDeals.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectFeature(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_LATEST_DEALS, Constants.ID_APP_LATEST_DEALS, R.drawable.hotdeals_action_bar));
+                    }
+                });
+                ImageView referFriends = (ImageView)wallet.findViewById(R.id.wallet_widget_refer);
+                referFriends.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectFeature(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_REFER, Constants.ID_APP_REFER, R.drawable.refericon_action_bar));
+                    }
+                });
+                TextView walletView = (TextView)wallet.findViewById(R.id.wallet_widget_text_view);
+                walletView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectFeature(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_RECHARGE, Constants.ID_APP_RECHARGE, R.drawable.topup));
+                    }
+                });
             }
         }
     }
@@ -200,6 +248,7 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
         if(intent != null) {
             Utility.showFirstTimePopup(this, false);
         }
+        Utility.showInformativeDialog(null, null, null, null, null, false);
     }
 
     @Override
@@ -210,7 +259,12 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
     }
 
     private void selectFeature(MainDrawerAdapter.MainAppFeature feature) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(!Utility.isInternetConnected(this)) {
+            HardwareAccess.access(this, this, HardwareAccess.ACCESS_INTERNET);
+            return;
+        }
+        updateWalletWidget(getActionBar());
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = null;
         // select which fragment to be shown on the screen
         switch (feature.id) {
@@ -226,6 +280,71 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
                 fragment = ContactUsFragment.newInstance(this);
                 break;
             case Constants.ID_APP_RECHARGE:
+                /*if(UserProfile.needProfileUpdation()) {
+                    Utility.showInformativeDialog(new Utility.DialogCallback() {
+                        @Override
+                        public void onDialogCallback(boolean success) {
+                            Fragment fragment = UserProfileFragment.newInstance(MainActivity.this);
+                            transaction.replace(net.fireballlabs.cashguru.R.id.content_fragment, fragment);
+                            transaction.commitAllowingStateLoss();
+
+                            mDrawerLayout.closeDrawer(mDrawerList);
+                        }
+                    }, this, "Need Action!", "You need to complete your User Profile before you can access Recharge page."
+                    , "Take me to Profile Page", true);
+                    return;
+                }*/
+                /*if(!ParseUser.getCurrentUser().getBoolean("emailVerified")) {
+                    try {
+                        ParseUser.getCurrentUser().fetch();
+                        if(!ParseUser.getCurrentUser().getBoolean("emailVerified")) {
+                            Utility.showInformativeDialog(new Utility.DialogCallback() {
+                                @Override
+                                public void onDialogCallback(boolean success) {
+                                    ParseUser user = ParseUser.getCurrentUser();
+                                    String email = user.getEmail();
+                                    user.setEmail(email);
+                                    try {
+                                        user.save();
+                                        Toast.makeText(MainActivity.this, "Verification email has been sent!", Toast.LENGTH_LONG).show();
+                                    } catch (ParseException e) {
+                                        Crashlytics.logException(e);
+//                                        e.printStackTrace();
+                                    }
+                                }
+                            }, this, "Need Action!", "You need to verify your Email before you can access Recharge page."
+                                    , "Resend me verification email", true);
+                            return;
+                        }
+                    } catch (ParseException e) {
+                        Crashlytics.logException(e);
+                    }
+                }*/
+                if(!ParseUser.getCurrentUser().getBoolean("mobileVerified")) {
+//                    try {
+//                        ParseUser.getCurrentUser().fetch();
+//                        if(!ParseUser.getCurrentUser().getBoolean("mobileVerified")) {
+                            Utility.showInformativeDialog(new Utility.DialogCallback() {
+                                @Override
+                                public void onDialogCallback(boolean success) {
+                                    Fragment fragment = MobileNumberVerificationFragment.newInstance(MainActivity.this);
+                                    transaction.replace(net.fireballlabs.cashguru.R.id.content_fragment, fragment);
+
+                                    transaction.addToBackStack(null);
+
+                                    transaction.commitAllowingStateLoss();
+
+                                    mDrawerLayout.closeDrawer(mDrawerList);
+                                }
+                            }, this, "Need Action!",
+                                    "You need to verify your Mobile Number before you can access Recharge page."
+                                    , "Verify Now!", true);
+                            return;
+//                        }
+                    /*} catch (ParseException e) {
+                        Crashlytics.logException(e);
+                    }*/
+                }
                 fragment = RechargeFragment.newInstance(this);
                 break;
             case Constants.ID_APP_REFER:
@@ -243,9 +362,15 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
                 mDrawerLayout.closeDrawer(mDrawerList);
                 return;
             }
+            case Constants.ID_APP_PROFILE:
+                fragment = UserProfileFragment.newInstance(this);
+                break;
         }
         transaction.replace(net.fireballlabs.cashguru.R.id.content_fragment, fragment);
-        transaction.commit();
+        if(mOnCreateFinished) {
+            transaction.addToBackStack(null);
+        }
+        transaction.commitAllowingStateLoss();
 
         mDrawerLayout.closeDrawer(mDrawerList);
 
@@ -268,5 +393,10 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
     @Override
     public void setFragment(MainDrawerAdapter.MainAppFeature feature) {
         selectFeature(feature);
+    }
+
+    @Override
+    public void accessCompleted(int access, boolean isSuccess) {
+
     }
 }

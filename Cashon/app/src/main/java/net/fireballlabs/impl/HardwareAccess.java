@@ -13,7 +13,7 @@ import net.fireballlabs.helper.Logger;
  * Created by Rohit on 6/14/2015.
  */
 public class HardwareAccess {
-    private static final String MESSAGE_INTERNET_CONNECT = "Please check your internet connection.";
+    private static final String MESSAGE_INTERNET_CONNECT = "Oops!! Connection lost. Please check your Mobile Data or WiFi settings.";
     private static final String POSITIVE_INTERNET_CONNECT = "WiFi";
     private static final String NEUTRAL_INTERNET_CONNECT = "Mobile Network";
     private static final String NEGATIVE_INTERNET_CONNECT = "Try again";

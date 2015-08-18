@@ -14,7 +14,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/drawer_list_item_margin_bottom">
         <ImageView
             android:layout_width="@dimen/drawer_list_image_view_width"
             android:layout_height="@dimen/drawer_list_image_view_height"
@@ -31,9 +32,8 @@
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_title"
             android:layout_marginLeft="@dimen/drawer_list_item_text_margin_right"
-            android:layout_marginRight="@dimen/drawer_list_item_margin_right"
-            android:layout_marginBottom="@dimen/drawer_list_item_margin_bottom"/>
-        </LinearLayout>
+            android:layout_marginRight="@dimen/drawer_list_item_margin_right"/>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

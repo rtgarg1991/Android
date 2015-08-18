@@ -3,10 +3,15 @@ package net.fireballlabs.impl;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.Crashlytics;
+
 import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
@@ -71,7 +76,7 @@ public class Utility {
      * @return whether provided text is valid email id or not
      */
     public static boolean isValidMobile(String mobile) {
-        if(TextUtils.isEmpty(mobile) || mobile.length() < 10) {
+        if(TextUtils.isEmpty(mobile) || mobile.length() < 10 || mobile.charAt(0) < 7) {
             return false;
         }
         return true;
@@ -95,6 +100,7 @@ public class Utility {
         List<MainDrawerAdapter.MainAppFeature> featureList = new ArrayList<MainDrawerAdapter.MainAppFeature>();
         featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
         featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_LATEST_DEALS, Constants.ID_APP_LATEST_DEALS, R.drawable.hotdeals));
+        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_PROFILE, Constants.ID_APP_PROFILE, R.drawable.profile));
         featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_REFER, Constants.ID_APP_REFER, R.drawable.refericon));
         featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_RECHARGE, Constants.ID_APP_RECHARGE, R.drawable.topup));
         featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_CONTACT_US, Constants.ID_APP_CONTACT_US, R.drawable.contactus));
@@ -159,6 +165,7 @@ public class Utility {
 
     public static String BASE = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     public static final String AFF_LINK_USER_ID = "{user_id}";
+    public static final String AFF_LINK_DEVICE_ID = "{device_id}";
     public static final String AFF_LINK_OFFER_ID = "{offer_id}";
     public static final String AFF_LINK_TYPE = "{type}";
     public static final String AFF_LINK_S_ID = "{sid}";
@@ -169,11 +176,12 @@ public class Utility {
     public static final String DENSITY_XXHDPI = "xxhdpi";
     public static final String DENSITY_XXXHDPI = "xxxhdpi";
 
-    public static String getRefUrlString(String affLink, String userId, String offerId) {
+    public static String getRefUrlString(String affLink, String userId, String deviceId, String offerId) {
         return affLink.replace(AFF_LINK_USER_ID, userId)
+                .replace(AFF_LINK_DEVICE_ID, deviceId)
                 .replace(AFF_LINK_OFFER_ID, offerId)
                 .replace(AFF_LINK_TYPE, "1")
-                .replace(AFF_LINK_S_ID, userId + "_" + offerId + "_" + 1);
+                .replace(AFF_LINK_S_ID, userId + "_" + deviceId + "_" + offerId + "_" + 1);
 //        return userId + "_" + id + "_" + 1;
 //        return String.format(Locale.US, REF_URL_STRING, userId, generateRandomString());
     }
@@ -205,6 +213,7 @@ public class Utility {
                         .progress(true, 0)
                         .autoDismiss(false)
                         .cancelable(false)
+                        .widgetColor(context.getResources().getColor(R.color.primary))
                         .show();
             }
         } else {
@@ -212,6 +221,7 @@ public class Utility {
 //                shown--;
 //                if(shown == 0) {
                     mProgressDialog.dismiss();
+                mProgressDialog = null;
 //                }
             }
         }
@@ -227,6 +237,7 @@ public class Utility {
                 return false;
             }
         } catch (NumberFormatException ex) {
+            Crashlytics.logException(ex);
             return false;
         }
     }
@@ -235,7 +246,13 @@ public class Utility {
     public static void showFirstTimePopup(Context context, boolean show) {
         if(show) {
             if(firstTimeDialog != null && firstTimeDialog.isShowing()) {
-                firstTimeDialog.dismiss();
+                try {
+                    firstTimeDialog.dismiss();
+                    firstTimeDialog = null;
+                } catch(IllegalArgumentException ex) {
+                    firstTimeDialog = null;
+                    Crashlytics.logException(ex);
+                }
             }
             firstTimeDialog = new MaterialDialog.Builder(context)
                     .title(R.string.new_user_popup_title)
@@ -255,6 +272,7 @@ public class Utility {
         } else {
             if(firstTimeDialog != null && firstTimeDialog.isShowing()) {
                 firstTimeDialog.dismiss();
+                firstTimeDialog = null;
             }
         }
     }
@@ -265,11 +283,13 @@ public class Utility {
         if(show) {
             if (mInformationDialog != null && mInformationDialog.isShowing()) {
                 mInformationDialog.dismiss();
+                mInformationDialog = null;
             }
             mInformationDialog = new MaterialDialog.Builder(context)
                     .content(content)
                     .positiveText(positiveButtonText == null ? "OK" : positiveButtonText)
                     .title(title)
+                    .positiveColor(context.getResources().getColor(R.color.primary))
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
@@ -283,6 +303,7 @@ public class Utility {
         } else {
             if (mInformationDialog != null && mInformationDialog.isShowing()) {
                 mInformationDialog.dismiss();
+                mInformationDialog = null;
             }
         }
     }
@@ -308,5 +329,25 @@ public class Utility {
 
     public interface DialogCallback {
         public void onDialogCallback(boolean success);
+    }
+
+    public static String generateDeviceUniqueId(Context context) {
+        // GET DEVICE ID
+        // as per Android blog
+        // this unique id has bug in major manufacturer, so lets leave it for now
+        /*final String deviceId = Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);*/
+
+        // serial number of the device
+        // it is helpful where telephony services are not available
+        final String deviceSerialNumber = Build.SERIAL;
+
+        // GET IMEI NUMBER
+        TelephonyManager tManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String deviceIMEI = tManager.getDeviceId();
+        // lets just return device imei id for now
+        // for wifi devices, it will be garbage entry
+        // for devices without telephony this will be garbage
+        return deviceIMEI;
     }
 }

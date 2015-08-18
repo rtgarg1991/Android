@@ -31,7 +31,7 @@ import com.parse.ParseUser;
 public class RechargeFragment extends Fragment implements Utility.DialogCallback {
 
     public static String PARSE_TABLE_NAME_RECHARGE = "Recharge";
-    public static String PARSE_TABLE_COLUMN_DEVICE_ID = "deviceId";
+    public static String PARSE_TABLE_COLUMN_USER_ID = "userId";
     public static String PARSE_TABLE_COLUMN_EMAIL_ID = "emailId";
     public static String PARSE_TABLE_COLUMN_AMOUNT = "amount";
     public static String PARSE_TABLE_COLUMN_NUMBER = "number";
@@ -67,7 +67,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recharge, container, false);
 
-        RadioGroup typeRadioGroup = (RadioGroup)view.findViewById(R.id.recharge_radio_group_type);
+        /*RadioGroup typeRadioGroup = (RadioGroup)view.findViewById(R.id.recharge_radio_group_type);
         final RadioGroup prePostRadioGroup = (RadioGroup)view.findViewById(R.id.recharge_radio_group_pre_post);
 
         final RadioButton radioButtonMobile = (RadioButton)view.findViewById(R.id.recharge_radio_button_mobile);
@@ -75,7 +75,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
         final RadioButton radioButtonDatacard = (RadioButton)view.findViewById(R.id.recharge_radio_button_data_card);
 
         RadioButton radioButtonPostpaid = (RadioButton)view.findViewById(R.id.recharge_radio_button_postpaid);
-        final RadioButton radioButtonPrepaid = (RadioButton)view.findViewById(R.id.recharge_radio_button_prepaid);
+        final RadioButton radioButtonPrepaid = (RadioButton)view.findViewById(R.id.recharge_radio_button_prepaid);*/
 
         final Spinner spinnerCompanyName = (Spinner)view.findViewById(R.id.recharge_spinner_company);
 
@@ -102,7 +102,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
         });
         thread.start();
 
-        CompoundButton.OnCheckedChangeListener prePostChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        /*CompoundButton.OnCheckedChangeListener prePostChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
@@ -188,7 +188,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
         radioButtonDatacard.setOnCheckedChangeListener(typeChangeListener);
 
         radioButtonPostpaid.setOnCheckedChangeListener(prePostChangeListener);
-        radioButtonPrepaid.setOnCheckedChangeListener(prePostChangeListener);
+        radioButtonPrepaid.setOnCheckedChangeListener(prePostChangeListener);*/
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.recharge_mobile_prepaid_company, R.layout.simple_spinner_item);
@@ -223,15 +223,13 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
                         // TODO track this and noify user that he/she has to login
                         return;
                     }
-                    if (radioButtonDTH.isChecked()) {
-                        String email = user.getUsername();
+                    /*if (radioButtonDTH.isChecked()) {
                         ParseObject object = new ParseObject(PARSE_TABLE_NAME_RECHARGE);
                         object.put(PARSE_TABLE_COLUMN_AMOUNT, editTextAmount.getText().toString());
                         object.put(PARSE_TABLE_COLUMN_NUMBER, editTextNumber.getText().toString());
                         object.put(PARSE_TABLE_COLUMN_COMMENT, editTextMessage.getText().toString());
-                        object.put(PARSE_TABLE_COLUMN_DEVICE_ID, user.getObjectId());
+                        object.put(PARSE_TABLE_COLUMN_USER_ID, user.getObjectId());
                         object.put(PARSE_TABLE_COLUMN_COMPANY, spinnerCompanyName.getSelectedItem().toString());
-                        object.put(PARSE_TABLE_COLUMN_EMAIL_ID, email);
                         object.put(PARSE_TABLE_COLUMN_TYPE, TYPE_DTH);
 
                         // set public access so that referrer can access this entry
@@ -244,18 +242,18 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
                         if(isVisible()) {
                             Utility.showInformativeDialog(RechargeFragment.this, getActivity(), null, Constants.RECHARGE_SENT_SUCCESSFUL, null, false);
                         }
-                    } else {
+                    } else {*/
                         if (Utility.isValidMobile(editTextNumber.getText().toString())) {
-                            String email = user.getUsername();
                             ParseObject object = new ParseObject(PARSE_TABLE_NAME_RECHARGE);
                             object.put(PARSE_TABLE_COLUMN_AMOUNT, editTextAmount.getText().toString());
                             object.put(PARSE_TABLE_COLUMN_COMMENT, editTextMessage.getText().toString());
                             object.put(PARSE_TABLE_COLUMN_NUMBER, editTextNumber.getText().toString());
                             object.put(PARSE_TABLE_COLUMN_COMPANY, spinnerCompanyName.getSelectedItem().toString());
-                            object.put(PARSE_TABLE_COLUMN_DEVICE_ID, user.getObjectId());
-                            object.put(PARSE_TABLE_COLUMN_EMAIL_ID, email);
-                            object.put(PARSE_TABLE_COLUMN_IS_PREPAID, radioButtonPrepaid.isChecked());
-                            object.put(PARSE_TABLE_COLUMN_TYPE, (radioButtonMobile.isChecked() ? TYPE_MOBILE : TYPE_DATA_CARD));
+                            object.put(PARSE_TABLE_COLUMN_USER_ID, user.getObjectId());
+                            /*object.put(PARSE_TABLE_COLUMN_IS_PREPAID, radioButtonPrepaid.isChecked());
+                            object.put(PARSE_TABLE_COLUMN_TYPE, (radioButtonMobile.isChecked() ? TYPE_MOBILE : TYPE_DATA_CARD));*/
+                            object.put(PARSE_TABLE_COLUMN_IS_PREPAID, true);
+                            object.put(PARSE_TABLE_COLUMN_TYPE, TYPE_MOBILE);
 
                             // set public access so that referrer can access this entry
                             ParseACL groupACL = new ParseACL(user);
@@ -270,7 +268,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
                         } else {
                             editTextNumber.setError("Number Not valid");
                         }
-                    }
+                    //}
                 } else {
                     editTextAmount.setError("Recharge Amount Should be in range " + Constants.RECHARGE_AMOUNT_MIN + " to " + Constants.RECHARGE_AMOUNT_MAX
                             + " and should be less than available balance credits");

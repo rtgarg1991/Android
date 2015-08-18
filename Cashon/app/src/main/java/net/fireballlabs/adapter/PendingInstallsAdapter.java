@@ -9,12 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.fireballlabs.cashguru.R;
+import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.model.Offer;
 import net.fireballlabs.helper.model.UsedOffer;
 import net.fireballlabs.impl.SimpleDelayHandler;
 import net.fireballlabs.ui.PendingInstallsFragment;
 import net.fireballlabs.impl.Utility;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.squareup.picasso.Picasso;
@@ -52,7 +54,7 @@ public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstalls
     public void onBindViewHolder(PendingInstallsAdapter.ViewHolder holder, final int position) {
         holder.setTextViewTitleText(mOffers.get(position).getTitle());
         holder.setTextViewSubtitleText(mOffers.get(position).getSubTitle());
-        holder.setTextViewPayoutText(String.valueOf(mOffers.get(position).getPayout()));
+        holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(mOffers.get(position).getPayout()));
         holder.setTextViewDescriptionText(mOffers.get(position).getDescription());
 
         String url = Offer.IMAGE_SERVER_URL
@@ -65,6 +67,7 @@ public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstalls
         try {
             return mOffers.get(position).type;
         } catch(NumberFormatException ex) {
+            Crashlytics.logException(ex);
             return 0;
         }
     }
@@ -92,7 +95,7 @@ public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstalls
                     SimpleDelayHandler handler = SimpleDelayHandler.getInstance(context);
                     handler.startDelayed(PendingInstallsAdapter.this, 0, true);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
             }
         });
