@@ -211,7 +211,7 @@ public class UsedOffer {
                     return true;
                 }
                 offer.setUserId(user.getObjectId());
-                offer.setDeviceId(installation.getObjectId());
+                offer.setDeviceId(installation.getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
 
                 ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLS);
                 query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, offer.getUserId());
@@ -299,7 +299,7 @@ public class UsedOffer {
                 }
 
                 offer.setUserId(user.getObjectId());
-                offer.setDeviceId(installation.getObjectId());
+                offer.setDeviceId(installation.getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
 
                 ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLS);
                 query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME, packageName);
@@ -438,7 +438,7 @@ public class UsedOffer {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLS);
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CONVERTED, false);
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
-        query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getObjectId());
+        query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
         List<ParseObject> list = query.find();
 
         List<Offer> offers = new ArrayList<Offer>();
@@ -484,7 +484,7 @@ public class UsedOffer {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLS);
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CONVERTED, true);
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
-        query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getObjectId());
+        query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
         List<ParseObject> list = query.find();
 
         List<Offer> offers = new ArrayList<Offer>();
@@ -529,7 +529,7 @@ public class UsedOffer {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_INSTALLS);
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
-        query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getObjectId());
+        query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
         query.whereEqualTo(PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OFFER_ID, offer.getId() + "_" + offer.getType());
         try {
             List<ParseObject> list = query.find();

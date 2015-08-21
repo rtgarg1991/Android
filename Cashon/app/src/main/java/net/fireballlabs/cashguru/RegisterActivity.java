@@ -220,7 +220,6 @@ public class RegisterActivity extends Activity {
         // other fields related to this user
         user.put(UserHelper.PARSE_TABLE_COLUMN_MOBILE, mobile);
         user.put(UserHelper.PARSE_TABLE_COLUMN_COUNTRY_CODE, countryCode);
-        user.put(UserHelper.PARSE_TABLE_COLUMN_MOBILE_VERIFIED, false);
 
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {
@@ -253,11 +252,11 @@ public class RegisterActivity extends Activity {
                         Thread thread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                JSONObject json = URLShortener.getJSONFromUrl(RegisterActivity.this, usr.getObjectId());
+                                JSONObject json = URLShortener.getJSONFromUrl(RegisterActivity.this, usr.getString(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE));
                                 if (json != null) {
                                     try {
                                         String url = json.getString("id");
-                                        usr.put(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE, usr.getObjectId());
+//                                        usr.put(UserHelper.PARSE_TABLE_COLUMN_USER_ID, usr.getObjectId());
                                         if (url != null) {
                                             usr.put(UserHelper.PARSE_TABLE_COLUMN_REFER_URL, url);
                                         }

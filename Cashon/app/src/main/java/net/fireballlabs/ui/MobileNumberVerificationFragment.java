@@ -8,14 +8,11 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -24,6 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.parse.ParseException;
+import com.parse.ParseInstallation;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import net.fireballlabs.MainActivityCallBacks;
@@ -41,21 +42,27 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
-public class MobileNumberVerificationFragment extends Fragment {
+public class MobileNumberVerificationFragment extends Fragment implements View.OnClickListener {
 
+    public static final String VERIFICATION_DONE = "Verification Done!";
+    public static final String PHONE_SUCCESSFULLY_VERIFIED = "Your Phone is successfully verified";
+    public static final String WRONG_OTP = "Provided OTP is wrong.";
+    public static final String DONE = "Done";
     private static MainActivityCallBacks mCallBacks;
     private boolean mDetatched;
 
     static MobileNumberVerificationFragment fr;
 
-    private EditText mNameEditText;
-    private ProgressBar mMobileVerificationProgressWheel;
-    private Button mMobileVerificationEditButton;
-    private Button mMobileVerificationResendButton;
-    private TextView mMobileVerificationTickTextView;
-    private LinearLayout mMobileVerificationUpdateLayout;
 
     private final static String OTP_SENDER_ID = "Cashgu";
+    private EditText mOtpEditText;
+    private Button mOtpVerificationButton;
+    private LinearLayout mEditLayout;
+    private ProgressBar mProgressBar;
+    private EditText mMobileEditText;
+    private Button mMobileSubmitButton;
+    private TextView mProgressTextView;
+    private ParseUser user;
 
     public static MobileNumberVerificationFragment newInstance(MainActivityCallBacks callBacks) {
         MobileNumberVerificationFragment fragment = new MobileNumberVerificationFragment();
@@ -78,76 +85,52 @@ public class MobileNumberVerificationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_mobile_verification, container, false);
-        final TextView mobileVerificationTextView = (TextView)rootView.findViewById(R.id.mobile_verification_text_view);
-        final EditText mobileVerificationMobileNumberEditText = (EditText)rootView.findViewById(R.id.mobile_verification_mobile_number);
-        Button mobileVerificationUpdateButton = (Button)rootView.findViewById(R.id.mobile_verification_update_button);
 
-        mMobileVerificationUpdateLayout = (LinearLayout)rootView.findViewById(R.id.mobile_verification_update_layout);
-        mMobileVerificationProgressWheel = (ProgressBar)rootView.findViewById(R.id.mobile_verification_progress_bar);
-        mMobileVerificationEditButton = (Button)rootView.findViewById(R.id.mobile_verification_edit_button);
-        mMobileVerificationResendButton = (Button)rootView.findViewById(R.id.mobile_verification_resend_button);
-        mMobileVerificationTickTextView = (TextView)rootView.findViewById(R.id.mobile_verification_tick_text_view);
-        final ParseUser user = ParseUser.getCurrentUser();
+        mOtpEditText = (EditText)rootView.findViewById(R.id.mobile_verification_otp_edit_text);
+        mOtpVerificationButton = (Button) rootView.findViewById(R.id.mobile_verification_submit_button);
+        mProgressBar = (ProgressBar)rootView.findViewById(R.id.mobile_verification_progress_bar);
+        mEditLayout = (LinearLayout)rootView.findViewById(R.id.mobile_verification_edit_layout);
+        mMobileEditText = (EditText)rootView.findViewById(R.id.mobile_verification_mobile_number_edit_text);
+        mMobileSubmitButton = (Button)rootView.findViewById(R.id.mobile_verification_mobile_number_edit_button);
+        mProgressTextView = (TextView)rootView.findViewById(R.id.mobile_verification_progress_text_view);
 
-        mobileVerificationTextView.setText("We have sent verification SMS to " + user.getUsername() + " and we will verify automatically");
+        mOtpVerificationButton.setOnClickListener(this);
+        mMobileSubmitButton.setOnClickListener(this);
 
-        mMobileVerificationEditButton.setVisibility(View.GONE);
-        mMobileVerificationResendButton.setVisibility(View.GONE);
-        mMobileVerificationEditButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMobileVerificationUpdateLayout.setVisibility(View.VISIBLE);
-                mobileVerificationMobileNumberEditText.setText(user.getUsername());
-            }
-        });
+        user = ParseUser.getCurrentUser();
 
-        mMobileVerificationResendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendVerificationMessage();
-            }
-        });
-
-        mobileVerificationUpdateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String mobile = mobileVerificationMobileNumberEditText.getText().toString();
-                if(Utility.isValidMobile(mobile)) {
-                    user.setUsername(mobile);
-                    user.setPassword(mobile);
-                    user.put(UserHelper.PARSE_TABLE_COLUMN_MOBILE, mobile);
-                    user.saveEventually();
-                    mobileVerificationTextView.setText("We have sent verification SMS to " + user.getUsername() + " and we will verify automatically");
-                    sendVerificationMessage();
-                }
-            }
-        });
+        mMobileEditText.setText(user.getUsername());
         sendVerificationMessage();
         return rootView;
     }
 
-    private void sendVerificationMessage() {
-        mMobileVerificationEditButton.setVisibility(View.GONE);
-        mMobileVerificationResendButton.setVisibility(View.GONE);
-        mMobileVerificationUpdateLayout.setVisibility(View.GONE);
+    private void editMobileNumber() {
+        String mobile = mMobileEditText.getText().toString();
+        if(Utility.isValidMobile(mobile)) {
+            user.setUsername(mobile);
+            user.setPassword(mobile);
+            user.put(UserHelper.PARSE_TABLE_COLUMN_MOBILE, mobile);
+            user.saveEventually();
+            sendVerificationMessage();
+        }
+    }
 
-        mMobileVerificationTickTextView.setText(String.valueOf(6000 / 10));
-        mMobileVerificationProgressWheel.setVisibility(View.VISIBLE);
-        mMobileVerificationTickTextView.setVisibility(View.VISIBLE);
+    private void sendVerificationMessage() {
+        mEditLayout.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressTextView.setVisibility(View.VISIBLE);
+
         new CountDownTimer(60000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 if(isVisible()) {
-                    mMobileVerificationTickTextView.setText(String.valueOf(millisUntilFinished / 1000));
+                    mProgressTextView.setText(String.valueOf(millisUntilFinished / 1000));
                 }
             }
 
             public void onFinish() {
-                mMobileVerificationEditButton.setVisibility(View.VISIBLE);
-                mMobileVerificationResendButton.setVisibility(View.VISIBLE);
-                mMobileVerificationProgressWheel.clearAnimation();
-                mMobileVerificationProgressWheel.setVisibility(View.GONE);
-                mMobileVerificationTickTextView.setVisibility(View.GONE);
+                mProgressTextView.setVisibility(View.GONE);
+                mProgressTextView.setVisibility(View.GONE);
             }
         }.start();
 
@@ -218,20 +201,51 @@ public class MobileNumberVerificationFragment extends Fragment {
             String sender = shortMessage.getOriginatingAddress();
             String message = shortMessage.getDisplayMessageBody();
 
-            if(sender.length() > OTP_SENDER_ID.length() && OTP_SENDER_ID.equals(sender.substring(sender.length() - OTP_SENDER_ID.length()))) {
-                String tempMessage = String.format(Constants.OTP_MESSAGE, generateOTP());
-                if(tempMessage.equals(message)) {
-                    ParseUser user = ParseUser.getCurrentUser();
-                    user.put(UserHelper.PARSE_TABLE_COLUMN_MOBILE_VERIFIED, true);
-                    user.saveEventually();
-                    if(isVisible()) {
-                        Toast.makeText(getActivity(), "Your mobile number is verified.", Toast.LENGTH_SHORT).show();
-                    }
-                    mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
-                }
-            }
+            verifyNumber(sender, message);
         }
     };
+
+    private void verifyNumber(String sender, String message) {
+        String tempMessage = null;
+        if(sender != null) {
+            if (sender.length() > OTP_SENDER_ID.length() && OTP_SENDER_ID.equals(sender.substring(sender.length() - OTP_SENDER_ID.length()))) {
+                tempMessage = String.format(Constants.OTP_MESSAGE, generateOTP());
+            }
+        } else {
+            tempMessage = generateOTP();
+
+        }
+        if (tempMessage != null && tempMessage.equals(message)) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("MobileVerifications");
+            query.whereEqualTo("deviceId", ParseInstallation.getCurrentInstallation().get("deviceId"));
+            query.whereEqualTo("userId", ParseInstallation.getCurrentInstallation().get("userId"));
+            try {
+                ParseObject obj = query.getFirst();
+                obj.put("verified", true);
+                obj.saveEventually();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (isVisible()) {
+                Toast.makeText(getActivity(), "Your mobile number is verified.", Toast.LENGTH_SHORT).show();
+            }
+            Utility.showInformativeDialog(new Utility.DialogCallback() {
+                @Override
+                public void onDialogCallback(boolean success) {
+                    mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
+                }
+            }, getActivity(), VERIFICATION_DONE, PHONE_SUCCESSFULLY_VERIFIED, DONE, true);
+
+        } else if(sender == null) {
+
+            Utility.showInformativeDialog(new Utility.DialogCallback() {
+                @Override
+                public void onDialogCallback(boolean success) {
+                    mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
+                }
+            }, getActivity(), null, WRONG_OTP, DONE, true);
+        }
+    }
 
     @Override
     public void onStart() {
@@ -242,6 +256,7 @@ public class MobileNumberVerificationFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        Utility.showInformativeDialog(null, null, null, null, null, false);
         getActivity().unregisterReceiver(smsReceiver);
     }
 
@@ -276,5 +291,22 @@ public class MobileNumberVerificationFragment extends Fragment {
         a = a % 100;
         b = b % 100;
         return String.valueOf(a) + String.valueOf(b);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.mobile_verification_submit_button:
+                verifyNumber(null, mOtpEditText.getText().toString());
+                break;
+            case R.id.mobile_verification_mobile_number_edit_button:
+                if(mMobileEditText.isEnabled()) {
+                    editMobileNumber();
+                    mMobileEditText.setEnabled(false);
+                } else {
+                    mMobileEditText.setEnabled(true);
+                }
+                break;
+        }
     }
 }

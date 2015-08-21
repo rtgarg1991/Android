@@ -1,11 +1,117 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorControlNormal">@color/primary_dim</item>
-        <item name="colorControlActivated">@color/primary</item>
-        <item name="colorControlHighlight">@color/primary</item>
-    </style>-->
+    <style name="EditTextcashguru" parent="android:Widget.EditText">
+        <item name="android:background">@drawable/cashguru_edit_text_holo_light</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="AutoCompleteTextViewcashguru" parent="android:Widget.AutoCompleteTextView">
+        <item name="android:dropDownSelector">@drawable/cashguru_list_selector_holo_light</item>
+        <item name="android:background">@drawable/cashguru_edit_text_holo_light</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="CheckBoxcashguru" parent="android:Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/cashguru_btn_check_holo_light</item>
+    </style>
+
+    <style name="RadioButtoncashguru" parent="android:Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/cashguru_btn_radio_holo_light</item>
+    </style>
+
+    <style name="Buttoncashguru" parent="android:Widget.Button">
+        <item name="android:background">@drawable/cashguru_btn_default_holo_light</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:minWidth">64dip</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="ImageButtoncashguru" parent="android:Widget.ImageButton">
+        <item name="android:background">@drawable/cashguru_btn_default_holo_light</item>
+    </style>
+
+    <style name="Spinnercashguru" parent="android:Widget.Spinner">
+        <item name="android:background">@drawable/cashguru_spinner_background_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/cashguru_list_selector_holo_light</item>
+    </style>
+
+    <style name="SpinnerDropDownItemcashguru" parent="android:Widget.DropDownItem.Spinner">
+        <item name="android:checkMark">@drawable/cashguru_btn_radio_holo_light</item>
+    </style>
+    <style name="Tabcashguru">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingLeft">16dip</item>
+        <item name="android:paddingRight">16dip</item>
+        <item name="android:background">@drawable/cashguru_tab_indicator_holo</item>
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:minWidth">80dip</item>
+    </style>
+
+    <style name="TabTextcashguru">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <!-- v14 <item name="android:textAllCaps">true</item> -->
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:maxWidth">180dip</item>
+    </style>
+
+    <style name="ProgressBarcashguru" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/cashguru_progress_horizontal_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/cashguru_progress_indeterminate_horizontal_holo_light</item>
+        <item name="android:minHeight">16dip</item>
+        <item name="android:maxHeight">16dip</item>
+    </style>
+
+    <style name="SeekBarcashguru" parent="android:Widget.SeekBar">
+        <item name="android:progressDrawable">@drawable/cashguru_scrubber_progress_horizontal_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/cashguru_scrubber_progress_horizontal_holo_light</item>
+        <item name="android:minHeight">13dip</item>
+        <item name="android:maxHeight">13dip</item>
+        <item name="android:thumb">@drawable/cashguru_scrubber_control_selector_holo_light</item>
+        <item name="android:thumbOffset">16dip</item>
+        <item name="android:paddingLeft">16dip</item>
+        <item name="android:paddingRight">16dip</item>
+    </style>
+
+    <style name="RatingBarcashguru" parent="android:Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/cashguru_ratingbar_full_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/cashguru_ratingbar_full_holo_light</item>
+    </style>
+
+    <style name="RatingBarBigcashguru" parent="android:Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/cashguru_ratingbar_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/cashguru_ratingbar_holo_light</item>
+        <item name="android:minHeight">35dip</item>
+        <item name="android:maxHeight">35dip</item>
+    </style>
+
+    <style name="RatingBarSmallcashguru" parent="android:Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/cashguru_ratingbar_small_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/cashguru_ratingbar_small_holo_light</item>
+        <item name="android:minHeight">16dip</item>
+        <item name="android:maxHeight">16dip</item>
+    </style>
+
+    <style name="Togglecashguru" parent="android:Widget.Button.Toggle">
+        <item name="android:background">@drawable/cashguru_btn_toggle_holo_light</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="ListViewcashguru" parent="android:Widget.ListView">
+        <item name="android:listSelector">@drawable/cashguru_list_selector_holo_light</item>
+    </style>
+
+    <style name="ListViewcashguru.White" parent="android:Widget.ListView.White">
+        <item name="android:listSelector">@drawable/cashguru_list_selector_holo_light</item>
+    </style>
+
+    <style name="SpinnerItemcashguru" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+        <item name="android:textColor">#000000</item>
+    </style>
 
     <!-- EditText Style-->
     <style name="textview_style">
@@ -69,21 +175,21 @@
     </style>
 
     <style name="SpinnerTheme" parent="android:Widget.Spinner">
-        <item name="android:background">@drawable/spinner_background_holo_light</item>
-        <item name="android:dropDownSelector">@drawable/list_selector_holo_light</item>
+        <item name="android:background">@drawable/cashguru_spinner_background_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/cashguru_list_selector_holo_light</item>
     </style>
 
     <!-- Changes the spinner drop down item radio button style -->
     <style name="DropDownItemSpinnerTheme" parent="android:Widget.DropDownItem.Spinner">
-        <item name="android:checkMark">@drawable/btn_radio_holo_light</item>
+        <item name="android:checkMark">@drawable/cashguru_btn_radio_holo_light</item>
     </style>
 
     <style name="ListViewSpinnerTheme" parent="android:Widget.ListView">
-        <item name="android:listSelector">@drawable/list_selector_holo_light</item>
+        <item name="android:listSelector">@drawable/cashguru_list_selector_holo_light</item>
     </style>
 
     <style name="ListViewSpinnerTheme.White" parent="android:Widget.ListView.White">
-        <item name="android:listSelector">@drawable/list_selector_holo_light</item>
+        <item name="android:listSelector">@drawable/cashguru_list_selector_holo_light</item>
     </style>
 
     <style name="SpinnerItemTheme"

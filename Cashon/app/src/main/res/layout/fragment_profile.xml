@@ -103,7 +103,6 @@
                 android:text="@string/send"
                 android:id="@+id/user_profile_button"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/default_button_style"
                 android:textColor="@color/white"
                 android:layout_marginTop="@dimen/recharge_default_item_margin_top" />
         </LinearLayout>

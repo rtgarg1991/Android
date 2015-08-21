@@ -7,6 +7,7 @@ import android.util.Log;
 
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
+import net.fireballlabs.helper.PreferenceManager;
 import net.fireballlabs.helper.model.Referrals;
 
 import com.crashlytics.android.Crashlytics;
@@ -30,7 +31,6 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
 
     @Override
     protected void onPushReceive(Context context, Intent intent) {
-        super.onPushReceive(context, intent);
         JSONObject obj = null;
         try {
             obj = new JSONObject(intent.getStringExtra("com.parse.Data"));
@@ -39,12 +39,17 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
             Logger.doSecureLogging(Log.WARN, "Exception occurred while getting data from push notification");
         }
         if(obj != null) {
-            if (obj.has("code") && obj.has("email")) {
-                if(Constants.PUSH_NOTIFICATION_REFERRAL == obj.optInt("code")) {
+            if (obj.has("code")) {
+                if(Constants.PUSH_NOTIFICATION_CLOUD_DATA_CHANGED == obj.optInt("code")) {
+                    PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_CLOUD_DATA_CHANGED, context.MODE_PRIVATE, true);
+                } else if(obj.has("email")) {
+                    super.onPushReceive(context, intent);
+                    if (Constants.PUSH_NOTIFICATION_REFERRAL == obj.optInt("code")) {
 //                    Referrals.verifyReferralAndCredit(obj.optString("email", null));
-                } else if(Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION == obj.optInt("code")) {
-                    //Referrals.verifyReferralAndCredit(obj.optString("email", null));
-                    // do nothing for now
+                    } else if (Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION == obj.optInt("code")) {
+                        //Referrals.verifyReferralAndCredit(obj.optString("email", null));
+                        // do nothing for now
+                    }
                 }
             }
         }

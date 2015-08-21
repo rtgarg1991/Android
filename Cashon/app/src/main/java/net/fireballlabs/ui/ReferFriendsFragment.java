@@ -51,14 +51,14 @@ public class ReferFriendsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_refer_friends, container, false);
-        final String referralCode = (String)ParseInstallation.getCurrentInstallation().get(InstallationHelper.PARSE_TABLE_COLUMN_REFER_CODE);
+        final String referralCode = (String)ParseUser.getCurrentUser().get(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE);
         referralUrl = (String) ParseUser.getCurrentUser().get(UserHelper.PARSE_TABLE_COLUMN_REFER_URL);
 
         if(referralUrl == null) {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    JSONObject json = URLShortener.getJSONFromUrl(getActivity(), ParseUser.getCurrentUser().getObjectId());
+                    JSONObject json = URLShortener.getJSONFromUrl(getActivity(), ParseUser.getCurrentUser().getString(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE));
                     if (json != null) {
                         try {
                             referralUrl = json.getString("id");

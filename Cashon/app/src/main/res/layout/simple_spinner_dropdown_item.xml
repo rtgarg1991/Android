@@ -8,5 +8,4 @@
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
     android:textColor="@color/black"
-    android:layout_marginTop="@dimen/spinner_default_item_margin_top"
-    android:background="@drawable/edittext_style"/>
+    android:layout_marginTop="@dimen/spinner_default_item_margin_top"/>

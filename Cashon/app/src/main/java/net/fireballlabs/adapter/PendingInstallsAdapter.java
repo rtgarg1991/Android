@@ -80,10 +80,10 @@ public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstalls
     public PendingInstallsAdapter(final Context context, PendingInstallsFragment fragment) {
         mContext = context;
 
-        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        /*ParseInstallation installation = ParseInstallation.getCurrentInstallation();
         if(installation == null) {
             return;
-        }
+        }*/
         mFragment = fragment;
 
         Thread thread = new Thread(new Runnable() {

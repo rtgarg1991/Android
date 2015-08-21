@@ -1,14 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-        <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <style name="cashguru" parent="@style/_cashguru"/>
+        <style name="_cashguru" parent="android:Theme.Holo.Light.DarkActionBar">
 
                 <!-- API 14 theme customizations can go here. -->
-                <item name="android:spinnerStyle">@style/SpinnerAppTheme</item>
+                <item name="android:dropDownSpinnerStyle">@style/Spinnercashguru</item>
+                <item name="android:listChoiceIndicatorSingle">@drawable/cashguru_btn_radio_holo_light</item>
+                <item name="android:editTextBackground">@drawable/cashguru_edit_text_holo_light</item>
+                <item name="android:listChoiceIndicatorMultiple">@drawable/cashguru_btn_check_holo_light</item>
+                <!--<item name="android:progressBarStyleLarge">@style/ProgressBarStyle</item>-->
                 <item name="android:dropDownListViewStyle">@style/ListViewAppTheme</item>
                 <item name="android:listViewStyle">@style/ListViewAppTheme</item>
-                <item name="android:listChoiceIndicatorSingle">@drawable/btn_radio_holo_light</item>
-                <item name="android:editTextBackground">@drawable/edit_text_holo_light</item>
-                <item name="android:listChoiceIndicatorMultiple">@drawable/btn_check_holo_light</item>
-                <!--<item name="android:progressBarStyleLarge">@style/ProgressBarStyle</item>-->
+
+                <item name="android:textColorHighlight">#99e35555</item>
+                <item name="android:textSelectHandleLeft">@drawable/cashguru_text_select_handle_left</item>
+                <item name="android:textSelectHandleRight">@drawable/cashguru_text_select_handle_right</item>
+                <item name="android:textSelectHandle">@drawable/cashguru_text_select_handle_middle</item>
+
+                <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewcashguru</item>
+
+                <item name="android:buttonStyle">@style/Buttoncashguru</item>
+
+                <item name="android:imageButtonStyle">@style/ImageButtoncashguru</item>
+
+                <item name="android:progressBarStyleHorizontal">@style/ProgressBarcashguru</item>
+
+                <item name="android:seekBarStyle">@style/SeekBarcashguru</item>
+
+                <item name="android:ratingBarStyle">@style/RatingBarcashguru</item>
+
+                <item name="android:ratingBarStyleIndicator">@style/RatingBarBigcashguru</item>
+
+                <item name="android:ratingBarStyleSmall">@style/RatingBarSmallcashguru</item>
+
+                <item name="android:buttonStyleToggle">@style/Togglecashguru</item>
+
+                <item name="android:listChoiceBackgroundIndicator">@drawable/cashguru_list_selector_holo_light</item>
+
+                <item name="android:activatedBackgroundIndicator">@drawable/cashguru_activated_background_holo_light</item>
+
+                <item name="android:fastScrollThumbDrawable">@drawable/cashguru_fastscroll_thumb_holo</item>
         </style>
 </resources>

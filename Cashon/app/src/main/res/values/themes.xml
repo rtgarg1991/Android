@@ -2,15 +2,46 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="android:Theme.Light">
-        <item name="android:spinnerStyle">@style/SpinnerTheme</item>
-        <item name="android:spinnerDropDownItemStyle">@style/DropDownItemSpinnerTheme</item>
-        <item name="android:listViewStyle">@style/ListViewSpinnerTheme</item>
-        <item name="android:listViewWhiteStyle">@style/ListViewSpinnerTheme.White</item>
-        <item name="android:spinnerItemStyle">@style/SpinnerItemTheme</item>
-        <item name="android:listChoiceIndicatorSingle">@drawable/btn_radio_holo_light</item>
-        <item name="android:editTextBackground">@drawable/edit_text_holo_light</item>
-        <item name="android:listChoiceIndicatorMultiple">@drawable/btn_check_holo_light</item>
+    <style name="cashguru" parent="@style/_cashguru"/>
+
+    <style name="_cashguru" parent="Theme.AppCompat.Light">
+
+        <item name="android:editTextStyle">@style/EditTextcashguru</item>
+
+        <item name="android:textColorHighlight">#99e35555</item>
+
+        <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewcashguru</item>
+
+        <item name="android:checkboxStyle">@style/CheckBoxcashguru</item>
+
+        <item name="android:radioButtonStyle">@style/RadioButtoncashguru</item>
+
+        <item name="android:buttonStyle">@style/Buttoncashguru</item>
+
+        <item name="android:imageButtonStyle">@style/ImageButtoncashguru</item>
+
+        <item name="android:spinnerStyle">@style/Spinnercashguru</item>
+
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemcashguru</item>
+
+        <item name="android:progressBarStyleHorizontal">@style/ProgressBarcashguru</item>
+
+        <item name="android:seekBarStyle">@style/SeekBarcashguru</item>
+
+        <item name="android:ratingBarStyle">@style/RatingBarcashguru</item>
+
+        <item name="android:ratingBarStyleIndicator">@style/RatingBarBigcashguru</item>
+
+        <item name="android:ratingBarStyleSmall">@style/RatingBarSmallcashguru</item>
+
+        <item name="android:buttonStyleToggle">@style/Togglecashguru</item>
+
+        <item name="android:listViewStyle">@style/ListViewcashguru</item>
+
+        <item name="android:listViewWhiteStyle">@style/ListViewcashguru.White</item>
+
+        <item name="android:spinnerItemStyle">@style/SpinnerItemcashguru</item>
+
     </style>
 
 </resources>

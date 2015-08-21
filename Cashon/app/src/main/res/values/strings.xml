@@ -22,7 +22,7 @@
     <string name="prompt_mobile">Mobile Number</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_email">Email Id</string>
-    <string name="action_Register">Submit</string>
+    <string name="action_Submit">Submit</string>
     <string name="prompt_referral">Rererral Code (Optional)</string>
 
     <string name="error_invalid_email">This email address is invalid</string>
@@ -38,7 +38,7 @@
     <string name="title_activity_main">CashGuru</string>
 
     <string name="referral_code">Your Referral Code is : </string>
-    <string name="referral_conditions">How it works : \r\n\r\n1. Share your unique referral code with friends\r\n\r\n2. When your referrals sign up using your Referral Code, You both will be credited with ₹5 each when the referral installs 2 apps.\r\n 3. You will get extra ₹5 referral bonus when the referral installs 4 apps in total (Limited Time) \r\n\r\nNote: Valid only for new users.</string>
+    <string name="referral_conditions">How it works : \r\n\r\n1. Share your unique referral code with friends\r\n\r\n2. When your referrals sign up using your Referral Code, You both will be credited with ₹5 each when the referral installs 2 apps.\r\n\r\n3. You will get extra ₹5 referral bonus when the referral installs 4 apps in total (Limited Time) \r\n\r\nNote: Valid only for new users.</string>
     <string name="share_text">Share</string>
     <string name="share_using">Share Referral Code via</string>
 
@@ -124,7 +124,7 @@
     </string-array>
 
     <string name="recharge_text_balance">Your Balance : </string>
-    <string name="recharge_text_top_up">Top up your Phone, DTH or Data Card</string>
+    <string name="recharge_text_top_up">Top up your Phone</string>
     <string name="recharge_mobile_hint_text">Mobile Number</string>
     <string name="recharge_amount_hint_text">Amount</string>
     <string name="recharge_message_hint_text">Any Special recharge (2G/3G/SMS etc.)</string>
@@ -152,4 +152,7 @@
         <item>Female</item>
     </string-array>
     <string name="sms_api_key">90753AvkUeeG6pYj55d0da20</string>
+    <string name="msg_sit_back">Sit back &amp; Relax! while we verify your mobile number</string>
+    <string name="lbl_enter_otp">Enter OTP</string>
+    <string name="msg_manual_otp">(Enter the OTP below in case if we fail to detect the SMS automatically)</string>
 </resources>

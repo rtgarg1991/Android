@@ -97,7 +97,7 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                             }
                             final WebView webView = new WebView(mContext);
                             final String affUrl = Utility.getRefUrlString(mOffers.get(position).getAffLink(),
-                                    ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getObjectId(), mOffers.get(position).getId());
+                                    ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID), mOffers.get(position).getId());
                             final String trackId = ParseUser.getCurrentUser().getObjectId() + "_" + mOffers.get(position).getId() + "_" + 1;
 
                             webView.setWebViewClient(new WebViewClient() {

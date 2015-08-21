@@ -29,14 +29,13 @@
                 android:layout_height="wrap_content"
                 android:background="@color/black_triple_dim">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/referral_conditions" style="@style/edittext_style"/>
+                    android:text="@string/referral_conditions"/>
             </LinearLayout>
 
             <Button
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:id="@+id/buttonShareReferal" android:text="@string/share_text"
                 android:layout_gravity="center"
-                android:background="@drawable/default_button_style"
                 android:textColor="@color/white"
                 android:layout_marginTop="@dimen/refer_friends_default_item_margin_top"/>
         </LinearLayout>

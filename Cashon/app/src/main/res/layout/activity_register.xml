@@ -47,10 +47,9 @@
 
             <Button android:id="@+id/buttonRegister" style="?android:textAppearanceSmall"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="@string/action_Register"
+                android:text="@string/action_Submit"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:background="@drawable/default_button_style"
                 android:singleLine="true"
                 android:layout_marginLeft="@dimen/login_edit_text_margin_left"
                 android:layout_marginRight="@dimen/login_edit_text_margin_right"

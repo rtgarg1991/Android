@@ -31,7 +31,6 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:background="@drawable/default_button_style"
                 android:singleLine="true"
                 android:layout_marginLeft="@dimen/login_edit_text_margin_left"
                 android:layout_marginRight="@dimen/login_edit_text_margin_right"

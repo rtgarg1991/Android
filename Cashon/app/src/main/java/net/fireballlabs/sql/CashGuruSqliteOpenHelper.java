@@ -27,6 +27,7 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_PACKAGE_NAME = "_packageName";
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_IMAGE = "_image";
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_PAYOUT = "_payout";
+    public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_IS_AVAILABLE = "_isAvailable";
 
     public static final String TABLE_APP_INSTALL_PAYOUT_COLUMN_ID = "_id";
     public static final String TABLE_APP_INSTALL_PAYOUT_COLUMN_OFFER_AFFID = "_oid";
@@ -58,7 +59,8 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
             + " integer not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_PAYOUT
             + " integer not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_PACKAGE_NAME
             + " text not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_IMAGE
-            + " text not null);";
+            + " text not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_IS_AVAILABLE
+            + " integer not null);";
 
     private static final String DATABASE_CREATE_TABLE_APP_INSTALL_PAYOUT = "create table "
             + TABLE_APP_INSTALL_PAYOUT + "(" + TABLE_APP_INSTALL_PAYOUT_COLUMN_ID

@@ -3,89 +3,120 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/primary"
     android:paddingLeft="@dimen/mobile_verification_main_padding_left"
     android:paddingRight="@dimen/mobile_verification_main_padding_right"
-    android:paddingTop="@dimen/mobile_verification_main_padding_top">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
-        <TextView
-            android:layout_width="0px"
-            android:layout_weight="3"
-            android:layout_height="wrap_content"
-            android:id="@+id/mobile_verification_text_view"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_title_17"
-            android:layout_marginRight="@dimen/mobile_verification_text_margin_right"/>
-        <Button
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/mobile_verification_edit_button"
-            android:text="@string/edit_number"
-            android:background="@drawable/default_button_style"
-            android:textColor="@color/white"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:orientation="horizontal"
-        android:id="@+id/mobile_verification_update_layout"
-        android:visibility="gone"
-        android:layout_marginBottom="8dp">
-        <EditText
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:id="@+id/mobile_verification_mobile_number"
-            android:inputType="phone"
-            android:hint="@string/recharge_mobile_hint_text"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black_double_dim"
-            android:textSize="@dimen/text_size_title_17"
-            android:layout_marginRight="@dimen/mobile_verification_text_margin_right"/>
-        <Button
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/mobile_verification_update_button"
-            android:text="@string/update"
-            android:background="@drawable/default_button_style"
-            android:textColor="@color/white"/>
-    </LinearLayout>
+    android:paddingTop="@dimen/mobile_verification_main_padding_top"
+    android:gravity="center_horizontal">
+    <ImageView
+        android:layout_width="@dimen/mobile_verification_image_view_width"
+        android:layout_height="@dimen/mobile_verification_image_view_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/mobile_verification_image_view_margin_bottom"
+        android:layout_marginTop="@dimen/mobile_verification_image_view_margin_top"
+        android:src="@drawable/logo"
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/mobile_verification_sit_back_view_margin_bottom"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/mobile_verification_text_view_padding_left"
+        android:paddingRight="@dimen/mobile_verification_text_view_padding_right"
+        android:text="@string/msg_sit_back"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_title_17" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/mobile_verification_text_view_padding_left"
+        android:paddingRight="@dimen/mobile_verification_text_view_padding_right"
+        android:text="@string/msg_manual_otp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_12" />
+
+    <EditText
+        android:id="@+id/mobile_verification_otp_edit_text"
+        android:layout_width="@dimen/mobile_verification_edit_text_width"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center_horizontal"
+        android:hint="@string/lbl_enter_otp"
+        android:inputType="number"
+        android:maxLength="4"
+        android:padding="@dimen/mobile_verification_edit_text_padding_left"
+        android:textCursorDrawable="@null"
+        android:textSize="@dimen/text_size_title_17" />
+
     <Button
+        android:id="@+id/mobile_verification_submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/mobile_verification_resend_button"
-        android:text="@string/resend"
-        android:background="@drawable/default_button_style"
-        android:textColor="@color/white"
-        android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
-        android:padding="6dp"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/mobile_verification_button_submit_margin_top"
+        android:background="@color/primary_dark"
+        android:paddingLeft="@dimen/mobile_verification_button_submit_padding_left"
+        android:paddingRight="@dimen/mobile_verification_button_submit_padding_right"
+        android:text="@string/action_Submit"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_primary" />
+
+    <LinearLayout
+        android:id="@+id/mobile_verification_edit_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/mobile_verification_edit_layout_margin_bottom"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/mobile_verification_mobile_number_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_16"
+            android:enabled="false"/>
+
+        <ImageButton
+            android:id="@+id/mobile_verification_mobile_number_edit_button"
+            android:layout_width="@dimen/mobile_verification_image_button_width"
+            android:layout_height="@dimen/mobile_verification_image_button_height"
+            android:layout_marginLeft="10dp"
+            android:background="@null"
+            android:src="@drawable/mode_edit" />
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
         <ProgressBar
-            android:layout_width="120dp"
-            android:layout_height="120dp"
             android:id="@+id/mobile_verification_progress_bar"
-            android:layout_centerInParent="true"
-            android:progressTint="@color/primary"
+            android:layout_width="@dimen/mobile_verification_progress_bar_width"
+            android:layout_height="@dimen/mobile_verification_progress_bar_height"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/mobile_verification_progress_bar_margin_bottom"
             android:indeterminateTint="@color/primary"
-            />
+            android:indeterminateTintMode="src_atop"
+            android:visibility="gone" />
         <TextView
+            android:id="@+id/mobile_verification_progress_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/mobile_verification_tick_text_view"
-            android:layout_centerInParent="true"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black_double_dim"
-            android:textSize="@dimen/text_size_title_24" />
-
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/mobile_verification_progress_bar_margin_bottom"
+            android:visibility="gone" />
     </RelativeLayout>
 </LinearLayout>

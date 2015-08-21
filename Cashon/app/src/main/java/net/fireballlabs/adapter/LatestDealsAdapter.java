@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
+import net.fireballlabs.helper.model.InstallationHelper;
 import net.fireballlabs.helper.model.LatestDeal;
 import net.fireballlabs.helper.model.Offer;
 import net.fireballlabs.helper.model.UsedOffer;
@@ -138,7 +139,7 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
                     affUrl = String.format(mOffers.get(position).getAppAffUrl(), ParseUser.getCurrentUser().getObjectId());
                 } else {
                     affUrl = Utility.getRefUrlString(mOffers.get(position).getAppAffUrl(),
-                            ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getObjectId(), mOffers.get(position).getId());
+                            ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID), mOffers.get(position).getId());
                 }
 
                 final String trackId = ParseUser.getCurrentUser().getObjectId() + "_" + mOffers.get(position).getId() + "_" + 1;

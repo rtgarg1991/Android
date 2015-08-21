@@ -18,7 +18,6 @@ public class UserHelper {
 
     public static String PARSE_TABLE_COLUMN_COUNTRY_CODE = "countryCode";
     public static String PARSE_TABLE_COLUMN_MOBILE = "mobile";
-    public static String PARSE_TABLE_COLUMN_MOBILE_VERIFIED = "mobileVerified";
     public static String PARSE_TABLE_COLUMN_REFER_CODE = "referCode";
     public static String PARSE_TABLE_COLUMN_REFER_URL = "referUrl";
 

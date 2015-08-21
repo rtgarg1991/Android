@@ -76,10 +76,12 @@ public class Utility {
      * @return whether provided text is valid email id or not
      */
     public static boolean isValidMobile(String mobile) {
-        if(TextUtils.isEmpty(mobile) || mobile.length() < 10 || mobile.charAt(0) < 7) {
+        /*if(TextUtils.isEmpty(mobile) || mobile.length() < 10 || mobile.charAt(0) < 7) {
             return false;
         }
-        return true;
+        return true;*/
+        String regEx = "^[0-9]{10}$";
+        return mobile.matches(regEx);
     }
 
 

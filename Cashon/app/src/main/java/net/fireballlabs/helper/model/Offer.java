@@ -13,12 +13,16 @@ import net.fireballlabs.impl.Utility;
 import net.fireballlabs.sql.CashGuruSqliteOpenHelper;
 import net.fireballlabs.sql.SQLWrapper;
 import net.fireballlabs.ui.AppInstallsFragment;
+
+import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -229,6 +233,7 @@ public class Offer {
     public static String PARSE_TABLE_OFFERS_COLUMN_PAYOUT = "payout";
     public static String PARSE_TABLE_OFFERS_COLUMN_TYPE = "type";
     public static String PARSE_TABLE_OFFERS_COLUMN_IS_AVAILABLE = "isAvailable";
+    public static String PARSE_TABLE_OFFERS_COLUMN_CLOUD_SUB_OFFERS = "subOffers";
 
     public static String PARSE_TABLE_PAYOUT_COLUMN_OFFER_ID = "offerId";
     public static String PARSE_TABLE_PAYOUT_COLUMN_OFFER_TYPE = "offerType";
@@ -239,7 +244,8 @@ public class Offer {
 
     public static List<Offer> getAllOffers(Context context) throws ParseException {
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_OFFERS);
+        // old approach, no cloud function usage
+        /*ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_OFFERS);
         query.whereEqualTo(PARSE_TABLE_OFFERS_COLUMN_IS_AVAILABLE, true);
         List<ParseObject> list = query.find();
 
@@ -282,6 +288,53 @@ public class Offer {
                     checkAndAddOffer(offers, offer);
                 }
             }
+        }*/
+        // lets try cloud function to retrieve data
+        ParseUser user = ParseUser.getCurrentUser();
+        if(user == null || !user.isAuthenticated()) {
+            return null;
+        }
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OFFER_ID, user.getObjectId());
+        params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, ParseInstallation.getCurrentInstallation().getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
+        ArrayList<HashMap<String, Object>> cloudOffers = ParseCloud.callFunction("GetAllOffers", params);
+        List<Offer> offers = new ArrayList<Offer>();
+        for(int i = 0; i < cloudOffers.size(); i++) {
+            Offer offer = new Offer();
+            offer.setId((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_ID));
+            offer.setImageName((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_IMAGE_NAME));
+            offer.setPackageName((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_PACKAGE_NAME));
+            offer.setAffLink((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_AFF_LINK));
+            offer.setTitle((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_TITLE));
+            offer.setSubTitle((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_SUB_TITLE));
+            offer.setDescription((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_DESCRIPTION));
+            offer.setPayout((Integer) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_PAYOUT));
+            offer.setType((Integer) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_TYPE));
+            offer.setIsAvailable(true);
+            ArrayList<HashMap<String, Object>> subOffers = (ArrayList<HashMap<String, Object>>) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_CLOUD_SUB_OFFERS);
+            for(int j = 0; j < subOffers.size(); j++) {
+                Payout p = offer.new Payout();
+                p.setOfferType((Integer) subOffers.get(j).get(PARSE_TABLE_PAYOUT_COLUMN_OFFER_TYPE));
+                p.setDescription((String)subOffers.get(j).get(PARSE_TABLE_PAYOUT_COLUMN_DESCRIPTION));
+                p.setPayout((Integer)subOffers.get(j).get(PARSE_TABLE_PAYOUT_COLUMN_OFFER_PAYOUT));
+
+                if(offer.payouts == null) {
+                    offer.payouts = new ArrayList<Payout>();
+                }
+                offer.payouts.add(p);
+            }
+            PackageManager pm = context.getPackageManager();
+            // get all installed applications
+            try {
+                PackageInfo info= pm.getPackageInfo(offer.getPackageName(), PackageManager.GET_META_DATA);
+                if(info == null && offer.isAvailable()) {
+                    checkAndAddOffer(offers, offer);
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                if(offer.isAvailable()) {
+                    checkAndAddOffer(offers, offer);
+                }
+            }
         }
 
         return offers;
@@ -308,6 +361,7 @@ public class Offer {
             values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_DESCRIPTION, description);
             values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_PAYOUT, payout);
             values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_TYPE, type);
+            values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_IS_AVAILABLE, isAvailable ? 1 : 0);
             long id1 = db.insert(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS, null, values);
             if(id1 == -1) {
                 // TODO do Parse error reporting
@@ -361,6 +415,7 @@ public class Offer {
                     offer.description = cursor.getString(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_DESCRIPTION));
                     offer.payout = cursor.getInt(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_PAYOUT));
                     offer.type = cursor.getInt(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_TYPE));
+                    offer.isAvailable = cursor.getInt(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_IS_AVAILABLE)) == 1 ? true : false;
 
                     int dbId = cursor.getInt(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_AFFID));
                     String whereClause = CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_PAYOUT_COLUMN_OFFER_AFFID + " = ?";
@@ -387,7 +442,18 @@ public class Offer {
                         }
                         cursor2.close();
                     }
-                    offers.add(offer);
+                    PackageManager pm = context.getPackageManager();
+                    // get all installed applications
+                    try {
+                        PackageInfo info= pm.getPackageInfo(offer.getPackageName(), PackageManager.GET_META_DATA);
+                        if(info == null && offer.isAvailable()) {
+                            checkAndAddOffer(offers, offer);
+                        }
+                    } catch (PackageManager.NameNotFoundException e) {
+                        if(offer.isAvailable()) {
+                            checkAndAddOffer(offers, offer);
+                        }
+                    }
                     cursor.moveToNext();
                 }
                 cursor.close();
@@ -437,5 +503,19 @@ public class Offer {
                 return Float.parseFloat(payout);
             }
         }
+    }
+
+    public static void clearCurrentDataFromDB(Context context) {
+
+        SQLiteDatabase db = SQLWrapper.getWritableSqLiteDatabase(context);
+        if(db != null) {
+            db.delete(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS, null, null);
+            db.delete(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_PAYOUT, null, null);
+        } else {
+            // TODO do Parse error reporting
+            Logger.doSecureLogging(Log.WARN, AppInstallsFragment.class.getName()
+                    + " An Error occured while retrieving Writable Database");
+        }
+        db.close();
     }
 }

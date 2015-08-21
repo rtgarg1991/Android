@@ -69,7 +69,7 @@ public class Referrals {
                         if(parseObject == null) {
                             // TODO no such referral present
                         } else {
-                            if(parseObject.get(PARSE_TABLE_COLUMN_REFER_CODE).equals(user.getObjectId())
+                            if(parseObject.get(PARSE_TABLE_COLUMN_USER_ID).equals(user.getObjectId())
                                     && !((Boolean)parseObject.get(PARSE_TABLE_COLUMN_CREDITED_AT_REFERRER))) {
 
                                 // credit amount in current user's account

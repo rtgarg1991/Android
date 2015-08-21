@@ -43,6 +43,7 @@ public class Constants {
     public static final String PREF_USER_REGISTERED = "user_registered";
     public static final String PREF_FINISHED_SYNC = "sync_done";
     public static final String PREF_FIRST_TIME = "first_time";
+    public static final String PREF_CLOUD_DATA_CHANGED = "cloud_data_changed";
 
     // Custom Exception Messages [START]
     public static final String EXCEPTION_INVALID_CONTEXT = "Context Invalid";
@@ -87,6 +88,7 @@ public class Constants {
     public static final String TEXT_REFERAL = "Hey! Checkout CashGuru, Its the best way to get free recharge. Install now and get ₹5 bonus on installing any 2 apps! Use referral code : %s. Get CashGuru %s";
     public static final int PUSH_NOTIFICATION_REFERRAL = 1;
     public static final int PUSH_NOTIFICATION_INSTALL_CONVERSION = 2;
+    public static final int PUSH_NOTIFICATION_CLOUD_DATA_CHANGED = 11;
     public static final int MAX_PAYOUT_APP_INSTALL = 15;
     public static final String IS_NEW_LOGIN = "is_new_login";
     public static final String OTP_MESSAGE = "Your OTP is %s";

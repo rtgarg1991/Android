@@ -26,7 +26,7 @@
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:logo="@drawable/logo"
-        android:theme="@style/AppTheme">
+        android:theme="@style/cashguru">
         <activity
             android:name="net.fireballlabs.cashguru.SplashActivity"
             android:label="@string/app_name"

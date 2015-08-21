@@ -70,6 +70,8 @@
     <dimen name="text_size_payout">24dp</dimen>
     <dimen name="text_size_primary">14dp</dimen>
     <dimen name="edittext_style_layout_height">40dp</dimen>
+    <dimen name="text_size_12">12dp</dimen>
+    <dimen name="text_size_16">16dp</dimen>
 
     <!-- Drawer List Dimens [START]-->
     <dimen name="drawer_list_layout_width">220dp</dimen>
@@ -158,4 +160,23 @@
     <dimen name="wallet_widget_hot_deals_image_view_height">36dp</dimen>
     <dimen name="wallet_widget_hot_deals_image_view_margin_right">8dp</dimen>
     <dimen name="wallet_widget_refer_image_view_margin_right">8dp</dimen>
+
+    <dimen name="mobile_verification_image_view_width">60dp</dimen>
+    <dimen name="mobile_verification_image_view_height">60dp</dimen>
+    <dimen name="mobile_verification_image_view_margin_bottom">25dp</dimen>
+    <dimen name="mobile_verification_image_view_margin_top">100dp</dimen>
+    <dimen name="mobile_verification_sit_back_view_margin_bottom">15dp</dimen>
+    <dimen name="mobile_verification_text_view_padding_left">40dp</dimen>
+    <dimen name="mobile_verification_text_view_padding_right">40dp</dimen>
+    <dimen name="mobile_verification_edit_text_width">120dp</dimen>
+    <dimen name="mobile_verification_edit_text_padding_left">10dp</dimen>
+    <dimen name="mobile_verification_button_submit_margin_top">25dp</dimen>
+    <dimen name="mobile_verification_button_submit_padding_left">20dp</dimen>
+    <dimen name="mobile_verification_button_submit_padding_right">20dp</dimen>
+    <dimen name="mobile_verification_progress_bar_width">30dp</dimen>
+    <dimen name="mobile_verification_progress_bar_height">30dp</dimen>
+    <dimen name="mobile_verification_progress_bar_margin_bottom">60dp</dimen>
+    <dimen name="mobile_verification_edit_layout_margin_bottom">50dp</dimen>
+    <dimen name="mobile_verification_image_button_width">40dp</dimen>
+    <dimen name="mobile_verification_image_button_height">40dp</dimen>
 </resources>

@@ -1,6 +1,7 @@
 package net.fireballlabs.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import net.fireballlabs.adapter.AppInstallsAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
+import net.fireballlabs.helper.PreferenceManager;
 import net.fireballlabs.helper.model.Offer;
 import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.sql.SQLWrapper;
@@ -138,7 +140,7 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
 
         @Override
         protected List<Offer> doInBackground(Void... params) {
-            if(Constants.appInstallSyncNeeded) {
+            if(PreferenceManager.getDefaultSharedPreferenceValue(getActivity(), Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, true)) {
 
                 try {
                     List<Offer> offers = Offer.getAllOffers(getActivity());
@@ -146,7 +148,7 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
                     if(getActivity() != null) {
                         synchronized (getActivity()) {
                             if (Constants.appInstallSyncNeeded) {
-                                SQLWrapper.Offer.clearCurrentDataFromDB(getActivity());
+                                Offer.clearCurrentDataFromDB(getActivity());
                                 for (Offer offer : offers) {
                                     offer.saveData(getActivity());
                                 }
@@ -154,6 +156,7 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
                             }
                         }
                     }
+                    PreferenceManager.setDefaultSharedPreferenceValue(getActivity(), Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, false);
                     return offers;
                 } catch (ParseException e) {
                     Logger.doSecureLogging(Log.WARN, getClass().getSimpleName()

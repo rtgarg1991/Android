@@ -25,20 +25,6 @@ public class SQLWrapper {
         public Images images;
         public List<Payout> payouts;
 
-        public static void clearCurrentDataFromDB(Context context) {
-
-            SQLiteDatabase db = getWritableSqLiteDatabase(context);
-            if(db != null) {
-                db.delete(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS, null, null);
-                db.delete(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_PAYOUT, null, null);
-            } else {
-                // TODO do Parse error reporting
-                Logger.doSecureLogging(Log.WARN, AppInstallsFragment.class.getName()
-                        + " An Error occured while retrieving Writable Database");
-            }
-            db.close();
-        }
-
         public static class Images {
             public String ldpi;
             public String mdpi;

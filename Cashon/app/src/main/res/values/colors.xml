@@ -28,8 +28,8 @@
     <!--ladoo-->
     <color name="primary">#FFe35555</color>
     <color name="primary_dim">#AAe35555</color>
-    <color name="primary_dark">#FFe35555</color>
-    <color name="primary_light">#FFdc5252</color>
+    <color name="primary_dark">#FFd75555</color>
+    <color name="primary_light">#FFf35555</color>
 
     <!-- Green -->
     <!--<color name="primary">#FF55e355</color>

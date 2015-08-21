@@ -1,11 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="AutoCompleteTextViewcashguru" parent="android:Widget.Holo.Light.AutoCompleteTextView">
+        <item name="android:dropDownSelector">@drawable/cashguru_list_selector_holo_light</item>
+        <item name="android:background">@drawable/cashguru_edit_text_holo_light</item>
+    </style>
 
+    <style name="Buttoncashguru" parent="android:Widget.Holo.Light.Button">
+        <item name="android:background">@drawable/cashguru_btn_default_holo_light</item>
+    </style>
+
+    <style name="ImageButtoncashguru" parent="android:Widget.Holo.Light.ImageButton">
+        <item name="android:background">@drawable/cashguru_btn_default_holo_light</item>
+    </style>
+
+    <style name="Spinnercashguru" parent="android:Widget.Holo.Light.Spinner">
+        <item name="android:background">@drawable/cashguru_spinner_background_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/cashguru_list_selector_holo_light</item>
+    </style>
+
+    <style name="ProgressBarcashguru" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/cashguru_progress_horizontal_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/cashguru_progress_indeterminate_horizontal_holo_light</item>
+    </style>
+
+    <style name="SeekBarcashguru" parent="android:Widget.Holo.Light.SeekBar">
+        <item name="android:progressDrawable">@drawable/cashguru_scrubber_progress_horizontal_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/cashguru_scrubber_progress_horizontal_holo_light</item>
+        <item name="android:thumb">@drawable/cashguru_scrubber_control_selector_holo_light</item>
+    </style>
+
+    <style name="RatingBarcashguru" parent="android:Widget.Holo.Light.RatingBar">
+        <item name="android:progressDrawable">@drawable/cashguru_ratingbar_full_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/cashguru_ratingbar_full_holo_light</item>
+    </style>
+
+    <style name="RatingBarBigcashguru" parent="android:Widget.Holo.Light.RatingBar.Indicator">
+        <item name="android:progressDrawable">@drawable/cashguru_ratingbar_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/cashguru_ratingbar_holo_light</item>
+    </style>
+
+    <style name="RatingBarSmallcashguru" parent="android:Widget.Holo.Light.RatingBar.Small">
+        <item name="android:progressDrawable">@drawable/cashguru_ratingbar_small_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/cashguru_ratingbar_small_holo_light</item>
+    </style>
+
+    <style name="Togglecashguru" parent="android:Widget.Holo.Light.Button.Toggle">
+        <item name="android:background">@drawable/cashguru_btn_toggle_holo_light</item>
+    </style>
     <style name="SpinnerTheme.DropDown">
         <item name="android:spinnerMode">dropdown</item>
     </style>
     <style name="SpinnerTheme" parent="android:Widget.Holo.Light.Spinner">
-        <item name="android:background">@drawable/spinner_background_holo_light</item>
-        <item name="android:dropDownSelector">@drawable/list_selector_holo_light</item>
+        <item name="android:background">@drawable/cashguru_spinner_background_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/cashguru_list_selector_holo_light</item>
     </style>
 </resources>
