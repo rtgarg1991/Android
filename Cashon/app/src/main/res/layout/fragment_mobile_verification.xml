@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
+    android:background="@color/primary_dim"
     android:paddingLeft="@dimen/mobile_verification_main_padding_left"
     android:paddingRight="@dimen/mobile_verification_main_padding_right"
     android:paddingTop="@dimen/mobile_verification_main_padding_top"
@@ -26,7 +26,7 @@
         android:paddingRight="@dimen/mobile_verification_text_view_padding_right"
         android:text="@string/msg_sit_back"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_title_17" />
+        android:textSize="@dimen/text_size_17" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -51,7 +51,7 @@
         android:maxLength="4"
         android:padding="@dimen/mobile_verification_edit_text_padding_left"
         android:textCursorDrawable="@null"
-        android:textSize="@dimen/text_size_title_17" />
+        android:textSize="@dimen/text_size_17" />
 
     <Button
         android:id="@+id/mobile_verification_submit_button"
@@ -64,7 +64,7 @@
         android:paddingRight="@dimen/mobile_verification_button_submit_padding_right"
         android:text="@string/action_Submit"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_primary" />
+        android:textSize="@dimen/text_size_14" />
 
     <LinearLayout
         android:id="@+id/mobile_verification_edit_layout"
@@ -90,22 +90,23 @@
             android:layout_height="@dimen/mobile_verification_image_button_height"
             android:layout_marginLeft="10dp"
             android:background="@null"
-            android:src="@drawable/mode_edit" />
+            android:src="@drawable/mode_edit"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"/>
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginTop="@dimen/mobile_verification_button_submit_margin_top">
 
         <ProgressBar
             android:id="@+id/mobile_verification_progress_bar"
             android:layout_width="@dimen/mobile_verification_progress_bar_width"
             android:layout_height="@dimen/mobile_verification_progress_bar_height"
-            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/mobile_verification_progress_bar_margin_bottom"
+            android:layout_centerInParent="true"
             android:indeterminateTint="@color/primary"
             android:indeterminateTintMode="src_atop"
             android:visibility="gone" />
@@ -113,10 +114,9 @@
             android:id="@+id/mobile_verification_progress_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/mobile_verification_progress_bar_margin_bottom"
-            android:visibility="gone" />
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:textColor="@color/white"/>
     </RelativeLayout>
 </LinearLayout>

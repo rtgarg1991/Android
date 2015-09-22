@@ -30,7 +30,7 @@ import java.util.Locale;
 public class CompletedInstallsAdapter extends RecyclerView.Adapter<CompletedInstallsAdapter.ViewHolder> implements SimpleDelayHandler.SimpleDelayHandlerCallback {
     CompletedInstallsFragment mFragment = null;
     Context mContext;
-    List<Offer> mOffers;
+    List<String> mOffers;
 
     @Override
     public CompletedInstallsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int type) {
@@ -52,21 +52,22 @@ public class CompletedInstallsAdapter extends RecyclerView.Adapter<CompletedInst
 
     @Override
     public void onBindViewHolder(CompletedInstallsAdapter.ViewHolder holder, final int position) {
-        holder.setTextViewTitleText(mOffers.get(position).getTitle());
-        holder.setTextViewSubtitleText(mOffers.get(position).getSubTitle());
-        holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(mOffers.get(position).getPayout()));
-//        holder.setTextViewDescriptionText(mOffers.get(position).getDescription());
+        final Offer offer = Offer.getOffer(mOffers.get(position));
+        holder.setTextViewTitleText(offer.getTitle());
+        holder.setTextViewSubtitleText(offer.getSubTitle());
+        holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(offer.getPayout()));
+//        holder.setTextViewDescriptionText(mNotifications.get(position).getDescription());
         holder.setTextViewDescriptionText("Congratulations! Transaction has been completed.");
 
         String url = Offer.IMAGE_SERVER_URL
-                + String.format(Locale.ENGLISH, mOffers.get(position).getImageName(), Utility.getDeviceDensity(mContext));
+                + String.format(Locale.ENGLISH, offer.getImageName(), Utility.getDeviceDensity(mContext));
         holder.setImageView(url);
     }
 
     @Override
     public int getItemViewType(int position) {
         try {
-            return mOffers.get(position).type;
+            return Offer.getOffer(mOffers.get(position)).type;
         } catch(NumberFormatException ex) {
             Crashlytics.logException(ex);
             return 0;
@@ -87,13 +88,18 @@ public class CompletedInstallsAdapter extends RecyclerView.Adapter<CompletedInst
         }*/
         mFragment = fragment;
 
+        updateOfferList();
+    }
+
+    public void updateOfferList() {
+
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    List<Offer> offers = UsedOffer.getCompletedInstallOffers();
+                    List<String> offers = UsedOffer.getCompletedOffers(mContext);
                     mOffers = offers;
-                    SimpleDelayHandler handler = SimpleDelayHandler.getInstance(context);
+                    SimpleDelayHandler handler = SimpleDelayHandler.getInstance(mContext);
                     handler.startDelayed(CompletedInstallsAdapter.this, 0, true);
                 } catch (ParseException e) {
                     Crashlytics.logException(e);
@@ -101,6 +107,7 @@ public class CompletedInstallsAdapter extends RecyclerView.Adapter<CompletedInst
             }
         });
         thread.start();
+        notifyDataSetChanged();
     }
 
     @Override

@@ -55,7 +55,7 @@ public class LoginActivity extends Activity {
         // Set up the login form.
         mMobileNumberEditText = (EditText) findViewById(R.id.login_mobile_number);
 
-        mMobileNumberEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        /*mMobileNumberEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == net.fireballlabs.cashguru.R.id.login || id == EditorInfo.IME_NULL) {
@@ -64,7 +64,7 @@ public class LoginActivity extends Activity {
                 }
                 return false;
             }
-        });
+        });*/
 
         Button mEmailSignInButton = (Button) findViewById(net.fireballlabs.cashguru.R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {

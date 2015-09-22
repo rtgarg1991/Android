@@ -146,7 +146,7 @@ public class UserProfileFragment extends Fragment implements DatePickerDialog.On
                             Utility.showProgress(getActivity(), true, getActivity().getResources().getText(R.string.please_wait).toString());
                             object.save();
                             Utility.showProgress(getActivity(), false, null);
-                            mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
+                            mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall), null);
                         } catch (ParseException e) {
                             Crashlytics.logException(e);
                         }
@@ -224,7 +224,7 @@ public class UserProfileFragment extends Fragment implements DatePickerDialog.On
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         mDobEditText.setText((dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth)) + "/"
-                + (monthOfYear < 10 ? "0" + monthOfYear : String.valueOf(monthOfYear)) + "/"
+                + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : String.valueOf(monthOfYear + 1)) + "/"
                 + String.valueOf(year));
     }
 
@@ -241,9 +241,9 @@ public class UserProfileFragment extends Fragment implements DatePickerDialog.On
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current time as the default values for the picker
             final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
+            int year = 2003;//c.get(Calendar.YEAR);
+            int month = 01;//c.get(Calendar.MONTH);
+            int day = 01;//c.get(Calendar.DAY_OF_MONTH);
 
             // Create a new instance of TimePickerDialog and return it
             DatePickerDialog dialog = new DatePickerDialog(getActivity(), fr, year,month,day);

@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_size_title"
+            android:textSize="@dimen/text_size_20"
             android:layout_marginLeft="@dimen/drawer_list_item_text_margin_right"
             android:layout_marginRight="@dimen/drawer_list_item_margin_right"/>
     </LinearLayout>

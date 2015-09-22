@@ -28,8 +28,11 @@
     <!--ladoo-->
     <color name="primary">#FFe35555</color>
     <color name="primary_dim">#AAe35555</color>
-    <color name="primary_dark">#FFd75555</color>
+    <color name="primary_dim_double">#66e35555</color>
+    <color name="primary_dark">#FFc65555</color>
     <color name="primary_light">#FFf35555</color>
+
+    <color name="primary_indigo">#FF3F51B5</color>
 
     <!-- Green -->
     <!--<color name="primary">#FF55e355</color>
@@ -47,4 +50,7 @@
     <color name="icons">#FFFFFFFF</color>
     <color name="divider">#FFB6B6B6</color>
     <color name="apptheme_color">#ee1111</color>
+
+    <color name="material_color_teal">#00897B</color>
+    <color name="material_color_red">#E53935</color>
 </resources>

@@ -24,8 +24,8 @@ android {
         applicationId "net.fireballlabs.cashguru"
         minSdkVersion 11
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 7
+        versionName "2.0"
     }
     buildTypes {
         release {
@@ -40,10 +40,12 @@ dependencies {
     compile fileTree(include: 'Parse-*.jar', dir: 'libs')
     compile files('libs/Parse-1.9.2.jar')
     compile files('libs/ParseCrashReporting-1.9.2.jar')
+    compile files('libs/AF-Android-SDK-v2.3.1.18.jar')
     compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.google.android.gms:play-services:7.8.0'
     compile 'com.android.support:support-v4:22.2.0'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:23.0.0'
+    compile 'com.android.support:cardview-v7:23.0.0'
     compile 'com.parse.bolts:bolts-android:1.+'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.afollestad:material-dialogs:0.7.6.0'

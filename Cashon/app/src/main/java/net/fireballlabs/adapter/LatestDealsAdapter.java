@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
@@ -43,6 +45,25 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
     private final LatestDealsFragment mFragment;
     Context mContext;
     List<LatestDeal> mOffers;
+
+    private static final int MSG_TIMEOUT = 1;
+    private static final long TIMEOUT = 15000;
+
+    TimerHandler handler = new TimerHandler();
+
+    public class TimerHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_TIMEOUT:
+                    Utility.showProgress(null, false, null);
+                    Utility.showInformativeDialog(null, mContext, "Timeout", "Connection has timed out.", "Ok", true);
+                    break;
+            }
+        }
+    }
 
     @Override
     public LatestDealsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int type) {
@@ -146,6 +167,9 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
 
                 webView.setWebViewClient(new WebViewClient() {
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        if(handler.hasMessages(MSG_TIMEOUT)) {
+                            handler.removeMessages(MSG_TIMEOUT);
+                        }
 
                         if (url.contains("play.google.com")) {
                             UsedOffer.recordInstallAttempt(trackId, mContext);
@@ -169,6 +193,7 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
                             Utility.showProgress(mContext, false, null);
                             return true;
                         }
+                        handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
                         view.loadUrl(url);
                         return false; // then it is not handled by default action
                     }
@@ -197,6 +222,10 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
                 } else {
                     webView.loadUrl(affUrl);
                     Utility.showProgress(mContext, true, "Please Wait...");
+                    if(handler.hasMessages(MSG_TIMEOUT)) {
+                        handler.removeMessages(MSG_TIMEOUT);
+                    }
+                    handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
                 }
             }
         });

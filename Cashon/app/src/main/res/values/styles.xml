@@ -156,7 +156,7 @@
     <style name="app_install_description_textview_style" parent="app_install_title_textview_style">
         <item name="android:layout_marginLeft">@dimen/app_install_description_style_padding_left</item>
         <item name="android:layout_marginRight">@dimen/app_install_description_style_padding_right</item>
-        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:textSize">@dimen/text_size_14</item>
         <item name="android:gravity">left</item>
     </style>
     <style name="edittext_single_line_style_no_margin" parent="edittext_single_line_style">

@@ -24,14 +24,15 @@
             android:id="@+id/app_install_list_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_title"
+            android:textSize="@dimen/text_size_20"
             android:layout_toRightOf="@id/app_install_list_item_image_view"
             android:layout_alignParentTop="true"
             android:gravity="left"
             android:layout_marginTop="@dimen/app_install_item_title_margin_top"
             android:layout_marginLeft="@dimen/app_install_item_title_margin_left"
             android:layout_marginBottom="@dimen/app_install_item_title_margin_bottom"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            />
         <TextView
             android:id="@+id/app_install_list_item_subtitle"
             android:layout_width="wrap_content"
@@ -44,14 +45,14 @@
             android:layout_marginLeft="@dimen/app_install_item_description_margin_left"
             android:layout_marginBottom="@dimen/app_install_item_description_margin_bottom"
             android:textColor="@color/primary_dim"
-            android:textSize="@dimen/text_size_subtitle"/>
+            android:textSize="@dimen/text_size_14"/>
 
         <TextView
             android:id="@+id/app_install_list_item_payout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:textSize="@dimen/text_size_payout"
+            android:textSize="@dimen/text_size_24"
             android:textStyle="bold"
             android:gravity="left"
             android:layout_marginTop="@dimen/app_install_item_payout_margin_top"
@@ -68,11 +69,11 @@
         <Button
             android:id="@+id/app_install_list_item_Button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:background="@drawable/app_install_round_button"
-            android:textSize="@dimen/text_size_title_17"
+            android:textSize="@dimen/text_size_17"
             android:text="@string/app_install_install"
             android:layout_marginTop="@dimen/app_install_item_button_margin_top"
             android:layout_marginLeft="@dimen/app_install_item_button_margin_left"
@@ -87,6 +88,7 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:id="@+id/app_install_list_item_description"
+            android:layout_alignParentTop="true"
             android:layout_marginTop="@dimen/app_install_item_button_margin_top"
             android:layout_marginLeft="@dimen/app_install_item_button_margin_left"
             android:layout_marginBottom="@dimen/app_install_item_button_margin_bottom"

@@ -140,6 +140,12 @@ public class SlidingTabFragment extends Fragment {
             } else if(Constants.TITLE_APP_LATEST_DEALS.equals(mTitle)
                     && mFragmentId == Constants.ID_APP_LATEST_DEALS) {
                 return LatestDealsFragment.newInstance(mTitle, mCallbacks);
+            } else if(Constants.TITLE_APP_RECHARGE.equals(mTitle)
+                    && mFragmentId == Constants.ID_APP_RECHARGE) {
+                return RechargeFragment.newInstance(mTitle, mCallbacks);
+            } else if(Constants.TITLE_APP_RECHARGE_HISTORY.equals(mTitle)
+                    && mFragmentId == Constants.ID_APP_RECHARGE_HISTORY) {
+                return RechargeHistoryFragment.newInstance(mTitle, mCallbacks);
             }
             return null;
         }

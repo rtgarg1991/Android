@@ -8,6 +8,7 @@ import android.util.Log;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
 import net.fireballlabs.helper.PreferenceManager;
+import net.fireballlabs.helper.model.NotificationHelper;
 import net.fireballlabs.helper.model.Referrals;
 
 import com.crashlytics.android.Crashlytics;
@@ -42,13 +43,19 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
             if (obj.has("code")) {
                 if(Constants.PUSH_NOTIFICATION_CLOUD_DATA_CHANGED == obj.optInt("code")) {
                     PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_CLOUD_DATA_CHANGED, context.MODE_PRIVATE, true);
-                } else if(obj.has("email")) {
+                } else if(Constants.PUSH_NOTIFICATION_RECHARGE_DONE == obj.optInt("code")) {
+                    super.onPushReceive(context, intent);
+                    PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_MOBILE_RECHARGE_DONE, context.MODE_PRIVATE, obj.optString("amount"));
+                    NotificationHelper.addNotification(context, Integer.parseInt(obj.optString("amount")), obj.optInt("code"),
+                            obj.optString("extra"), obj.optString("alert"), obj.optString("refId"));
+                } else {
                     super.onPushReceive(context, intent);
                     if (Constants.PUSH_NOTIFICATION_REFERRAL == obj.optInt("code")) {
-//                    Referrals.verifyReferralAndCredit(obj.optString("email", null));
+                        NotificationHelper.addNotification(context, Integer.parseInt(obj.optString("amount")), obj.optInt("code"),
+                                obj.optString("extra"), obj.optString("alert"), "");
                     } else if (Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION == obj.optInt("code")) {
-                        //Referrals.verifyReferralAndCredit(obj.optString("email", null));
-                        // do nothing for now
+                        NotificationHelper.addNotification(context, Integer.parseInt(obj.optString("amount")), obj.optInt("code"),
+                                obj.optString("extra"), obj.optString("alert"), obj.optString("refId"));
                     }
                 }
             }

@@ -14,12 +14,20 @@ import android.widget.Toast;
 
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.PreferenceManager;
+import net.fireballlabs.helper.model.Offer;
 import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.SimpleDelayHandler;
 import net.fireballlabs.helper.Logger;
 import net.fireballlabs.impl.Utility;
+
+import com.appsflyer.AppsFlyerLib;
+import com.crashlytics.android.Crashlytics;
 import com.parse.ParseAnalytics;
+import com.parse.ParseException;
 import com.parse.ParseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SplashActivity extends Activity implements SimpleDelayHandler.SimpleDelayHandlerCallback, HardwareAccess.HardwareAccessCallbacks {
 
@@ -29,10 +37,15 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
 
     private boolean isInternetConnected = false;
     private boolean isUserDeviceRegistered = false;
+    private boolean mStopped;
+    private boolean mDataSynced = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppsFlyerLib.setAppsFlyerKey("g4pnvQJmRGE9k3ic9RVSHa");
+        AppsFlyerLib.sendTracking(getApplicationContext());
 
         if (Build.VERSION.SDK_INT < 16) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -49,6 +62,7 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
         }
 
         boolean newInstallation = PreferenceManager.getDefaultSharedPreferenceValue(this, Constants.PREF_FIRST_TIME, MODE_PRIVATE, true);
+
         /*if(newInstallation) {
             addShortcut();
 
@@ -62,6 +76,11 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
         setContentView(net.fireballlabs.cashguru.R.layout.activity_splash);
 
         ProgressBar progressBar = (ProgressBar)findViewById(net.fireballlabs.cashguru.R.id.splashProgressBar);
+
+        /*Intent i = new Intent("com.android.vending.INSTALL_REFERRER");
+        i.setPackage("net.fireballlabs.cashguru"); //referrer is a composition of the parameter of the campaign
+        i.putExtra("referrer", "af_tranid=C6G39N5ENDS9R9W&c=ZZZYX&pid=User_invite");
+        sendBroadcast(i);*/
     }
     private void addShortcut() {
         //Adding shortcut for MainActivity
@@ -102,6 +121,36 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
         if(Utility.isInternetConnected(this)) {
             isInternetConnected = true;
         }
+
+        // get all offers from Parse and sync data to local db
+        boolean newInstallation = PreferenceManager.getDefaultSharedPreferenceValue(this, Constants.PREF_FIRST_TIME, MODE_PRIVATE, true);
+
+        if(newInstallation && isInternetConnected) {
+            mDataSynced = false;
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        List<Offer> offers = Offer.getAllOffers(SplashActivity.this);
+                        if(offers != null) {
+                            for (Offer offer : offers) {
+                                offer.saveData(SplashActivity.this);
+                            }
+                        }
+                        PreferenceManager.setDefaultSharedPreferenceValue(SplashActivity.this, Constants.PREF_FIRST_TIME, MODE_PRIVATE, false);
+                        mDataSynced = true;
+                    } catch (ParseException e) {
+                        Crashlytics.logException(e);
+                        PreferenceManager.setDefaultSharedPreferenceValue(SplashActivity.this, Constants.PREF_FIRST_TIME, MODE_PRIVATE, false);
+                        mDataSynced = true;
+                    }
+                }
+            });
+            thread.start();
+        } else {
+            mDataSynced = true;
+        }
+
         ParseUser user = ParseUser.getCurrentUser();
 
         if(user != null && user.isAuthenticated()) {
@@ -112,10 +161,20 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
 //        isInternetConnected = true;
 //        isUserDeviceRegistered = true;
 
+        mStopped = false;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mStopped = true;
     }
 
     @Override
     public void handleDelayedHandlerCallback() {
+        if(mStopped) {
+            return;
+        }
         Logger.doSecureLogging(Log.DEBUG, "Checking Status of User Account.");
         if(!isInternetConnected) {
             Logger.doSecureLogging(Log.DEBUG, "Internet not Connected, lets show a dialog to connect to Internet");
@@ -138,6 +197,10 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
                     Toast.makeText(getApplicationContext(), "Internet Not Enabled by the User", Toast.LENGTH_SHORT).show();
                 }
             }
+        } else if(!mDataSynced) {
+            Logger.doSecureLogging(Log.DEBUG, "Parse data not synced, lets wait more so that data might sync by the time next timeout happen!");
+            SimpleDelayHandler simpleDelayHandler = SimpleDelayHandler.getInstance(this);
+            simpleDelayHandler.startDelayed(this, Constants.TEMP_TIMEOUT, true);
         } else if(!isUserDeviceRegistered) {
             Logger.doSecureLogging(Log.DEBUG, "User not registered, lets show Register Activity!");
             //TODO remove Toast

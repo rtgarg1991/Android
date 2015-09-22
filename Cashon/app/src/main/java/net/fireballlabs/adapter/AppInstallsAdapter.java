@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +36,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+
 
 /**
  * Created by Rohit on 6/16/2015.
@@ -41,7 +45,26 @@ import java.util.Locale;
 public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.ViewHolder> {
     private final AppInstallsFragment mFragment;
     Context mContext;
-    List<Offer> mOffers;
+    List<String> mOffers;
+
+    private static final int MSG_TIMEOUT = 1;
+    private static final long TIMEOUT = 15000;
+
+    TimerHandler handler = new TimerHandler();
+
+    public class TimerHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_TIMEOUT:
+                    Utility.showProgress(null, false, null);
+                    Utility.showInformativeDialog(null, mContext, "Timeout", "Connection has timed out.", "Ok", true);
+                    break;
+            }
+        }
+    }
 
     @Override
     public AppInstallsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int type) {
@@ -55,11 +78,11 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
             TextView description = (TextView) v.findViewById(R.id.app_install_list_item_description);
             ImageView image = (ImageView) v.findViewById(R.id.app_install_list_item_image_view);
             Button button = (Button) v.findViewById(R.id.app_install_list_item_Button);
-            ViewHolder holder = new ViewHolder(v, title, subtitle, payout, description, image, button);
+            ViewHolder holder = new ViewHolder(v, title, subtitle, payout, description, image, button, type);
 
             return holder;
         } else if(type == -1){
-            ViewHolder holder = new ViewHolder(new View(mContext), null, null, null, null, null, null);
+            ViewHolder holder = new ViewHolder(new View(mContext), null, null, null, null, null, null, -1);
             return holder;
         } else {
             // TODO need to check if we need multiple type of offers
@@ -69,19 +92,24 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
 
     @Override
     public void onBindViewHolder(final AppInstallsAdapter.ViewHolder holder, final int position) {
-        holder.setTextViewTitleText(mOffers.get(position).getTitle());
-        holder.setTextViewSubtitleText(mOffers.get(position).getSubTitle());
-        holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(mOffers.get(position).getPayout()));
-        holder.setTextViewDescriptionText(mOffers.get(position).getDescription());
+        final Offer offer = Offer.getOffer(mOffers.get(position));
+        holder.setTextViewTitleText(offer.getTitle());
+        holder.setTextViewSubtitleText(offer.getSubTitle());
+        holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(offer.getPayout()));
+        if(holder.type == 1) {
+            holder.setTextViewDescriptionText("Click here and install this app to earn " + Constants.INR_LABEL + "" + offer.getPayout());
+        } else if(holder.type == 2) {
+            holder.setTextViewDescriptionText("Install this app and register to earn " + Constants.INR_LABEL + "" + offer.getPayout());
+        }
 
         StringBuilder allPayout = new StringBuilder();
         /*for (AppInstallsFragment.Offer.Payout payout:
                 mOffers.get(position).payouts) {
             allPayout.append(payout.description + "\t" + payout.currency + payout.payout);
         }
-        holder.textViewPayoutDescription.setText(allPayout);*/
+        holder.textViewReferenceNumber.setText(allPayout);*/
         String url = Offer.IMAGE_SERVER_URL
-                + String.format(Locale.ENGLISH, mOffers.get(position).getImageName(), Utility.getDeviceDensity(mContext));
+                + String.format(Locale.ENGLISH, offer.getImageName(), Utility.getDeviceDensity(mContext));
         holder.setImageView(url);
 
         if(holder.clickButton != null) {
@@ -96,12 +124,15 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                                 return;
                             }
                             final WebView webView = new WebView(mContext);
-                            final String affUrl = Utility.getRefUrlString(mOffers.get(position).getAffLink(),
-                                    ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID), mOffers.get(position).getId());
-                            final String trackId = ParseUser.getCurrentUser().getObjectId() + "_" + mOffers.get(position).getId() + "_" + 1;
+                            final String affUrl = Utility.getRefUrlString(offer.getAffLink(),
+                                    ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID), offer.getId());
+                            final String trackId = ParseUser.getCurrentUser().getObjectId() + "_" + offer.getId() + "_" + 1;
 
                             webView.setWebViewClient(new WebViewClient() {
                                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                                    if(handler.hasMessages(MSG_TIMEOUT)) {
+                                        handler.removeMessages(MSG_TIMEOUT);
+                                    }
                                     Logger.doSecureLogging(Log.INFO, url);
                                     if (url.indexOf("https://play.google.com/store/apps/details") == 0) {
                                         UsedOffer.recordInstallAttempt(trackId, mContext);
@@ -125,6 +156,7 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                                         Utility.showProgress(mContext, false, null);
                                         return true;
                                     }
+                                    handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
                                     view.loadUrl(url);
                                     return false; // then it is not handled by default action
                                 }
@@ -156,8 +188,12 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                                 Logger.doSecureLogging(Log.INFO, "1" + affUrl);
                                 Utility.showProgress(mContext, true, "Please Wait...");
                             }
+                            if(handler.hasMessages(MSG_TIMEOUT)) {
+                                handler.removeMessages(MSG_TIMEOUT);
+                            }
+                            handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
                         }
-                    }, mContext, "Description", mOffers.get(position).getDescription(), "OK", true);
+                    }, mContext, "Attention!", offer.getDescription(), "OK", true);
                 }
             });
         }
@@ -170,14 +206,14 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
             PackageManager pm = mContext.getPackageManager();
             // get all installed applications
             try {
-                PackageInfo info= pm.getPackageInfo(mOffers.get(position).getPackageName(), PackageManager.GET_META_DATA);
+                PackageInfo info= pm.getPackageInfo(Offer.getOffer(mOffers.get(position)).getPackageName(), PackageManager.GET_META_DATA);
                 if(info != null) {
                     return -1;
                 } else {
-                    return mOffers.get(position).getType();
+                    return Offer.getOffer(mOffers.get(position)).getType();
                 }
             } catch (PackageManager.NameNotFoundException e) {
-                return mOffers.get(position).getType();
+                return Offer.getOffer(mOffers.get(position)).getType();
             }
         } catch(NumberFormatException ex) {
             Crashlytics.logException(ex);
@@ -195,15 +231,15 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
         mFragment = fragment;
     }
 
-    public void addAppInstallOffers(List<Offer> offers) {
+    public void addAppInstallOffers(List<String> offers) {
         if(mOffers == null) {
-            mOffers = new ArrayList<Offer>();
+            mOffers = new ArrayList<String>();
         } else {
             mOffers.clear();
         }
         if(offers == null) {
             mFragment.setEmptyViewVisibility(View.GONE);
-            mOffers.addAll(new ArrayList<Offer>());
+            mOffers.addAll(new ArrayList<String>());
         } else {
             mOffers.addAll(offers);
             if(mOffers != null && mOffers.size() > 0) {
@@ -216,6 +252,7 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private final int type;
         TextView textViewTitle = null;
         TextView textViewSubtitle;
         TextView textViewPayout = null;
@@ -226,13 +263,13 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
         View parent;
 
         public ViewHolder(View itemView, TextView textViewTitle, TextView textViewSubtitle, TextView textViewPayout,
-                          TextView textViewDescription, ImageView imageView, Button clickButton) {
-            this(itemView, textViewTitle, textViewSubtitle, textViewPayout, textViewDescription, null, imageView, clickButton);
+                          TextView textViewDescription, ImageView imageView, Button clickButton, int type) {
+            this(itemView, textViewTitle, textViewSubtitle, textViewPayout, textViewDescription, null, imageView, clickButton, type);
         }
 
         public ViewHolder(View itemView, TextView textViewTitle, TextView textViewSubtitle, TextView textViewPayout,
                           TextView textViewDescription, TextView textViewPayoutDescription,
-                          ImageView imageView, Button clickButton) {
+                          ImageView imageView, Button clickButton, int type) {
             super(itemView);
             this.parent = itemView;
             this.textViewTitle = textViewTitle;
@@ -242,6 +279,7 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
             this.textViewPayoutDescription = textViewPayoutDescription;
             this.imageView = imageView;
             this.clickButton = clickButton;
+            this.type = type;
         }
 
 

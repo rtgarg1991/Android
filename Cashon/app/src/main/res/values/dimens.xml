@@ -39,9 +39,9 @@
     <dimen name="app_install_description_style_padding_left">4dp</dimen>
     <dimen name="app_install_description_style_padding_right">4dp</dimen>
 
-    <dimen name="app_install_item_title_margin_top">4dp</dimen>
+    <dimen name="app_install_item_title_margin_top">6dp</dimen>
     <dimen name="app_install_item_title_margin_left">4dp</dimen>
-    <dimen name="app_install_item_title_margin_bottom">2dp</dimen>
+    <dimen name="app_install_item_title_margin_bottom">1dp</dimen>
     <dimen name="app_install_item_description_margin_top">0dp</dimen>
     <dimen name="app_install_item_description_margin_left">4dp</dimen>
     <dimen name="app_install_item_description_margin_bottom">2dp</dimen>
@@ -49,7 +49,7 @@
     <dimen name="app_install_item_payout_margin_left">4dp</dimen>
     <dimen name="app_install_item_payout_margin_bottom">4dp</dimen>
     <dimen name="app_install_item_payout_margin_right">4dp</dimen>
-    <dimen name="app_install_item_button_margin_top">1dp</dimen>
+    <dimen name="app_install_item_button_margin_top">0dp</dimen>
     <dimen name="app_install_item_button_margin_left">4dp</dimen>
     <dimen name="app_install_item_button_margin_bottom">1dp</dimen>
     <dimen name="app_install_item_button_margin_right">4dp</dimen>
@@ -63,16 +63,14 @@
     <dimen name="drawer_list_item_image_margin_right">6dp</dimen>
     <dimen name="drawer_list_item_text_margin_right">6dp</dimen>
 
-    <dimen name="text_size_title_24">24dp</dimen>
-    <dimen name="text_size_title">20dp</dimen>
-    <dimen name="text_size_title_17">17dp</dimen>
-    <dimen name="text_size_subtitle">14dp</dimen>
-    <dimen name="text_size_payout">24dp</dimen>
-    <dimen name="text_size_primary">14dp</dimen>
-    <dimen name="edittext_style_layout_height">40dp</dimen>
+    <dimen name="text_size_24">24dp</dimen>
+    <dimen name="text_size_20">20dp</dimen>
+    <dimen name="text_size_17">17dp</dimen>
+    <dimen name="text_size_14">14dp</dimen>
     <dimen name="text_size_12">12dp</dimen>
     <dimen name="text_size_16">16dp</dimen>
 
+    <dimen name="edittext_style_layout_height">40dp</dimen>
     <!-- Drawer List Dimens [START]-->
     <dimen name="drawer_list_layout_width">220dp</dimen>
     <dimen name="drawer_list_layout_top_padding">2dp</dimen>
@@ -86,9 +84,9 @@
     <!-- Drawer List TextView Style [END] -->
 
     <!-- Image View , App Install Style [START] -->
-    <dimen name="image_view_app_install_width">48dp</dimen>
-    <dimen name="image_view_app_install_height">48dp</dimen>
-    <dimen name="image_view_app_install_padding">10dp</dimen>
+    <dimen name="image_view_app_install_width">64dp</dimen>
+    <dimen name="image_view_app_install_height">64dp</dimen>
+    <dimen name="image_view_app_install_padding">5dp</dimen>
     <dimen name="image_view_app_install_padding_bottom">0dp</dimen>
     <!-- Image View , App Install Style [END] -->
 
@@ -164,7 +162,7 @@
     <dimen name="mobile_verification_image_view_width">60dp</dimen>
     <dimen name="mobile_verification_image_view_height">60dp</dimen>
     <dimen name="mobile_verification_image_view_margin_bottom">25dp</dimen>
-    <dimen name="mobile_verification_image_view_margin_top">100dp</dimen>
+    <dimen name="mobile_verification_image_view_margin_top">60dp</dimen>
     <dimen name="mobile_verification_sit_back_view_margin_bottom">15dp</dimen>
     <dimen name="mobile_verification_text_view_padding_left">40dp</dimen>
     <dimen name="mobile_verification_text_view_padding_right">40dp</dimen>
@@ -173,10 +171,42 @@
     <dimen name="mobile_verification_button_submit_margin_top">25dp</dimen>
     <dimen name="mobile_verification_button_submit_padding_left">20dp</dimen>
     <dimen name="mobile_verification_button_submit_padding_right">20dp</dimen>
-    <dimen name="mobile_verification_progress_bar_width">30dp</dimen>
-    <dimen name="mobile_verification_progress_bar_height">30dp</dimen>
+    <dimen name="mobile_verification_progress_bar_width">40dp</dimen>
+    <dimen name="mobile_verification_progress_bar_height">40dp</dimen>
     <dimen name="mobile_verification_progress_bar_margin_bottom">60dp</dimen>
     <dimen name="mobile_verification_edit_layout_margin_bottom">50dp</dimen>
-    <dimen name="mobile_verification_image_button_width">40dp</dimen>
-    <dimen name="mobile_verification_image_button_height">40dp</dimen>
+    <dimen name="mobile_verification_image_button_width">16dp</dimen>
+    <dimen name="mobile_verification_image_button_height">16dp</dimen>
+
+    <dimen name="recharge_image_view_margin_bottom">50dp</dimen>
+    <dimen name="recharge_image_view_margin_top">30dp</dimen>
+
+
+    <dimen name="dimen_1">1dp</dimen>
+    <dimen name="dimen_2">2dp</dimen>
+    <dimen name="dimen_3">3dp</dimen>
+    <dimen name="dimen_4">4dp</dimen>
+    <dimen name="dimen_5">5dp</dimen>
+    <dimen name="dimen_8">6dp</dimen>
+    <dimen name="dimen_10">10dp</dimen>
+    <dimen name="dimen_12">12dp</dimen>
+    <dimen name="dimen_15">15dp</dimen>
+    <dimen name="dimen_16">16dp</dimen>
+    <dimen name="dimen_20">20dp</dimen>
+    <dimen name="dimen_22">22dp</dimen>
+    <dimen name="dimen_24">23dp</dimen>
+    <dimen name="dimen_28">28dp</dimen>
+    <dimen name="dimen_30">30dp</dimen>
+    <dimen name="dimen_32">32dp</dimen>
+    <dimen name="dimen_36">36dp</dimen>
+    <dimen name="dimen_40">40dp</dimen>
+    <dimen name="dimen_50">50dp</dimen>
+    <dimen name="dimen_60">60dp</dimen>
+    <dimen name="dimen_80">80dp</dimen>
+    <dimen name="dimen_90">90dp</dimen>
+    <dimen name="dimen_100">100dp</dimen>
+    <dimen name="dimen_110">110dp</dimen>
+    <dimen name="dimen_120">120dp</dimen>
+    <dimen name="dimen_130">130dp</dimen>
+
 </resources>

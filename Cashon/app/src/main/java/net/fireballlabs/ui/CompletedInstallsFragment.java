@@ -30,6 +30,7 @@ public class CompletedInstallsFragment extends Fragment implements HardwareAcces
     MaterialDialog mProgressDialog;
     private SwipeRefreshLayout mRefreshLayout;
     private TextView mEmptyTextView;
+    private LinearLayoutManager mLayoutManager;
 
     public static CompletedInstallsFragment newInstance(String title, MainActivityCallBacks callBacks) {
         CompletedInstallsFragment fragment = new CompletedInstallsFragment();
@@ -48,6 +49,7 @@ public class CompletedInstallsFragment extends Fragment implements HardwareAcces
         View rootView = inflater.inflate(R.layout.fragment_pending_installs, container, false);
         mRefreshLayout = (SwipeRefreshLayout) rootView;
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.pending_installs_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
         //mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.abc_list_divider_mtrl_alpha)));
         mEmptyTextView = (TextView)rootView.findViewById(R.id.app_install_pending_text_view);
         mAdapter = new CompletedInstallsAdapter(getActivity(), this);
@@ -55,9 +57,9 @@ public class CompletedInstallsFragment extends Fragment implements HardwareAcces
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(isVisible()) {
+                /*if(isVisible()) {
                     mAdapter = new CompletedInstallsAdapter(getActivity(), CompletedInstallsFragment.this);
-                }
+                }*/
                 setUpOffers();
             }
         });
@@ -101,10 +103,21 @@ public class CompletedInstallsFragment extends Fragment implements HardwareAcces
             // TODO error, need to check if this case can happen
             return;
         }
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(layoutManager);
+        //if(mLayoutManager == null) {
+            mLayoutManager = new LinearLayoutManager(getActivity());
+            mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+        //}
         mRecyclerView.setAdapter(mAdapter);
         mRefreshLayout.setRefreshing(false);
+        mAdapter.updateOfferList();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setUpOffers();
+
     }
 
     @Override

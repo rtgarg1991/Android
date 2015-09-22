@@ -18,12 +18,19 @@
 
         <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/mobile_verification_image_view_width"
+                android:layout_height="@dimen/mobile_verification_image_view_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/mobile_verification_image_view_margin_bottom"
+                android:layout_marginTop="@dimen/mobile_verification_image_view_margin_top"
+                android:src="@drawable/logo"
+                />
 
             <EditText android:id="@+id/login_mobile_number"
                 android:layout_width="match_parent" android:hint="@string/prompt_mobile"
                 android:imeOptions="actionUnspecified" android:inputType="phone"
-                android:imeActionId="@+id/login" android:maxLength="10"
-                style="@style/edittext_single_line_style"
+                android:maxLength="10" style="@style/edittext_single_line_style"
                 android:layout_marginLeft="5dp"/>
 
             <Button android:id="@+id/email_sign_in_button"

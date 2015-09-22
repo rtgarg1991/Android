@@ -82,7 +82,7 @@ public class RegisterActivity extends Activity {
         mEmailView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.textEmail);
 
         mMobileView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.textMobileNumber);
-        mMobileView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        /*mMobileView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 Logger.doSecureLogging(Log.DEBUG, "User Trying to Register, lets check progress!");
@@ -92,9 +92,9 @@ public class RegisterActivity extends Activity {
                 }
                 return false;
             }
-        });
+        });*/
         mCountrySpinner = (Spinner)findViewById(net.fireballlabs.cashguru.R.id.spinnerCountryCode);
-        mReferralView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.textReferral);
+//        mReferralView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.textReferral);
 
         Button registerButton = (Button) findViewById(net.fireballlabs.cashguru.R.id.buttonRegister);
         registerButton.setOnClickListener(new OnClickListener() {
@@ -129,7 +129,6 @@ public class RegisterActivity extends Activity {
             ActionBar actionBar = getActionBar();
             if (actionBar != null) {
                 actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(net.fireballlabs.cashguru.R.color.primary)));
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                     actionBar.setLogo(net.fireballlabs.cashguru.R.drawable.logo_no_shadow);
                 }
@@ -162,7 +161,9 @@ public class RegisterActivity extends Activity {
         String mobile = mMobileView.getText().toString();
         mobile = mobile.trim();
 //        String name = mNameView.getText().toString();
-        String referral = mReferralView.getText().toString();
+//        String referral = mReferralView.getText().toString();
+        String referral = PreferenceManager.getDefaultSharedPreferenceValue(this,
+                Constants.PREF_REFERRAL_ID, Context.MODE_PRIVATE, "");
 
         boolean cancel = false;
         View focusView = null;
@@ -252,6 +253,13 @@ public class RegisterActivity extends Activity {
                         Thread thread = new Thread(new Runnable() {
                             @Override
                             public void run() {
+                                if(usr.getString(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE) == null) {
+                                    try {
+                                        usr.fetch();
+                                    } catch (ParseException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
                                 JSONObject json = URLShortener.getJSONFromUrl(RegisterActivity.this, usr.getString(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE));
                                 if (json != null) {
                                     try {

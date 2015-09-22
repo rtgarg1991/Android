@@ -15,11 +15,11 @@
             android:orientation="vertical">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@string/referral_code" android:layout_gravity="left"
-                android:textColor="@color/black" android:textSize="@dimen/text_size_title_17"/>
+                android:textColor="@color/black" android:textSize="@dimen/text_size_17"/>
             <TextView android:id="@+id/textReferralCode"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:textColor="@color/white" android:layout_gravity="center" android:gravity="center"
-                android:textSize="@dimen/text_size_title_24" android:textStyle="bold"
+                android:textSize="@dimen/text_size_24" android:textStyle="bold"
                 android:background="@color/secondary" android:minHeight="@dimen/refer_friend_refer_code_min_height"
                 android:layout_marginTop="@dimen/refer_friends_refer_code_margin_top"
                 android:layout_marginBottom="@dimen/refer_friends_refer_code_margin_bottom"/>

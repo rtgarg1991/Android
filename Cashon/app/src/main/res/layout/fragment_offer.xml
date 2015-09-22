@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/offer_fragment_payout_view"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:text="10"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_24"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/offer_fragment_title_view"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:text="Flipkart"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_24"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:maxHeight="200dp"
+        android:id="@+id/offer_fragment_image_view"
+        android:layout_below="@id/offer_fragment_title_view"
+        android:src="@drawable/splash"
+        android:layout_marginTop="@dimen/dimen_12"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/offer_fragment_image_view"
+        android:layout_marginTop="@dimen/dimen_12">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/offer_fragment_description_view">
+
+            <include layout="@layout/offer_description_view"/>
+
+            <include layout="@layout/offer_description_view"/>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

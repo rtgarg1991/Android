@@ -12,10 +12,19 @@ import net.fireballlabs.helper.Logger;
  */
 public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
 
+    // app install offers from parse
     public static final String TABLE_APP_INSTALL_OFFERS = "apps";
+    // app install payouts
     public static final String TABLE_APP_INSTALL_PAYOUT = "app_payouts";
+    // app installs as per cloud db
+    // TODO probably we will use it next time
+    public static final String TABLE_INSTALLS = "installs";
+    // all installed apps in device
     public static final String TABLE_INSTALLED_APPS = "installed_apps";
+    // install attempts for any of our offer
     public static final String TABLE_APP_INSTALL_ATTEMPT = "install_attempt";
+    // notifications
+    public static final String TABLE_NOTIFICATIONS = "notifications";
 
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_ID = "_id";
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_AFFID = "_affid";
@@ -28,6 +37,7 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_IMAGE = "_image";
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_PAYOUT = "_payout";
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_IS_AVAILABLE = "_isAvailable";
+    public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_OPENED = "_opened";
 
     public static final String TABLE_APP_INSTALL_PAYOUT_COLUMN_ID = "_id";
     public static final String TABLE_APP_INSTALL_PAYOUT_COLUMN_OFFER_AFFID = "_oid";
@@ -44,8 +54,23 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_APP_INSTALL_ATTEMPT_COLUMN_OFF_ID = "_oid";
     public static final String TABLE_APP_INSTALL_ATTEMPT_COLUMN_TIME = "_time";
 
+    public static final String TABLE_INSTALLS_COLUMN_ID = "_id";
+    public static final String TABLE_INSTALLS_COLUMN_OFF_ID = "_oid";
+    public static final String TABLE_INSTALLS_COLUMN_TYPE_ID = "_time";
+    public static final String TABLE_INSTALLS_COLUMN_CONVERTED = "_time";
+    public static final String TABLE_INSTALLS_COLUMN_PAYOUT = "_time";
+    public static final String TABLE_INSTALLS_COLUMN_PACKAGE = "_time";
+    public static final String TABLE_INSTALLS_COLUMN_OUR_AFFILIATION = "_time";
+
+    public static final String TABLE_NOTIFICATIONS_COLUMN_ID = "_id";
+    public static final String TABLE_NOTIFICATIONS_COLUMN_AMOUNT = "_amount";
+    public static final String TABLE_NOTIFICATIONS_COLUMN_CODE = "_code";
+    public static final String TABLE_NOTIFICATIONS_COLUMN_MESSAGE = "_message";
+    public static final String TABLE_NOTIFICATIONS_COLUMN_EXTRA = "_extra";
+    public static final String TABLE_NOTIFICATIONS_COLUMN_REF_ID = "_ref_id";
+
     private static final String DATABASE_NAME = "cashon.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 7;
 
     // Database creation sql statement
     private static final String DATABASE_CREATE_TABLE_APP_INSTALL = "create table "
@@ -60,7 +85,8 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
             + " integer not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_PACKAGE_NAME
             + " text not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_IMAGE
             + " text not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_IS_AVAILABLE
-            + " integer not null);";
+            + " integer not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_OPENED
+            + " integer);";
 
     private static final String DATABASE_CREATE_TABLE_APP_INSTALL_PAYOUT = "create table "
             + TABLE_APP_INSTALL_PAYOUT + "(" + TABLE_APP_INSTALL_PAYOUT_COLUMN_ID
@@ -83,6 +109,15 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
             + " text not null, " + TABLE_APP_INSTALL_ATTEMPT_COLUMN_TIME
             + " text);";
 
+    private static final String DATABASE_CREATE_TABLE_NOTIFICATIONS = "create table "
+            + TABLE_NOTIFICATIONS + "(" + TABLE_NOTIFICATIONS_COLUMN_ID
+            + " integer primary key autoincrement, " + TABLE_NOTIFICATIONS_COLUMN_AMOUNT
+            + " integer, " + TABLE_NOTIFICATIONS_COLUMN_CODE
+            + " integer not null, " + TABLE_NOTIFICATIONS_COLUMN_MESSAGE
+            + " text not null, " + TABLE_NOTIFICATIONS_COLUMN_EXTRA
+            + " text not null, " + TABLE_NOTIFICATIONS_COLUMN_REF_ID
+            + " text);";
+
     public CashGuruSqliteOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -93,7 +128,7 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
         db.execSQL(DATABASE_CREATE_TABLE_APP_INSTALL_PAYOUT);
         db.execSQL(DATABASE_CREATE_TABLE_TABLE_INSTALLED_APPS);
         db.execSQL(DATABASE_CREATE_TABLE_APP_INSTALL_ATTEMPT);
-
+        db.execSQL(DATABASE_CREATE_TABLE_NOTIFICATIONS);
     }
 
     @Override
@@ -101,10 +136,21 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
         Logger.doSecureLogging(Log.DEBUG, CashGuruSqliteOpenHelper.class.getName()
                 + "Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
+        switch (newVersion) {
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                return;
+            case 7:
+                break;
+        }
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP_INSTALL_OFFERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP_INSTALL_PAYOUT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_INSTALLED_APPS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP_INSTALL_ATTEMPT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATIONS);
 
         onCreate(db);
     }

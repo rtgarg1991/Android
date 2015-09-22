@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
+import net.fireballlabs.helper.PreferenceManager;
+import net.fireballlabs.helper.model.InstallationHelper;
 import net.fireballlabs.helper.model.UserHelper;
 import net.fireballlabs.impl.Utility;
 
@@ -54,13 +57,13 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
     static MobileNumberVerificationFragment fr;
 
 
-    private final static String OTP_SENDER_ID = "Cashgu";
+    private final static String OTP_SENDER_ID = "DPAMSG";
     private EditText mOtpEditText;
     private Button mOtpVerificationButton;
     private LinearLayout mEditLayout;
     private ProgressBar mProgressBar;
     private EditText mMobileEditText;
-    private Button mMobileSubmitButton;
+    private ImageButton mMobileSubmitButton;
     private TextView mProgressTextView;
     private ParseUser user;
 
@@ -91,7 +94,7 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
         mProgressBar = (ProgressBar)rootView.findViewById(R.id.mobile_verification_progress_bar);
         mEditLayout = (LinearLayout)rootView.findViewById(R.id.mobile_verification_edit_layout);
         mMobileEditText = (EditText)rootView.findViewById(R.id.mobile_verification_mobile_number_edit_text);
-        mMobileSubmitButton = (Button)rootView.findViewById(R.id.mobile_verification_mobile_number_edit_button);
+        mMobileSubmitButton = (ImageButton)rootView.findViewById(R.id.mobile_verification_mobile_number_edit_button);
         mProgressTextView = (TextView)rootView.findViewById(R.id.mobile_verification_progress_text_view);
 
         mOtpVerificationButton.setOnClickListener(this);
@@ -116,7 +119,7 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
     }
 
     private void sendVerificationMessage() {
-        mEditLayout.setEnabled(false);
+        mEditLayout.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         mProgressTextView.setVisibility(View.VISIBLE);
 
@@ -129,8 +132,9 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
             }
 
             public void onFinish() {
+                mProgressBar.setVisibility(View.GONE);
                 mProgressTextView.setVisibility(View.GONE);
-                mProgressTextView.setVisibility(View.GONE);
+                mEditLayout.setVisibility(View.VISIBLE);
             }
         }.start();
 
@@ -153,7 +157,7 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
         String encoded_message = URLEncoder.encode(message);
 
         //Send SMS API
-        String mainUrl = "http://sms.getsetlive.com/sendhttp.php?";
+        String mainUrl = "https://control.msg91.com/sendhttp.php?";
 
         //Prepare parameter string
         StringBuilder sbPostData = new StringBuilder(mainUrl);
@@ -162,6 +166,7 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
         sbPostData.append("&message="+encoded_message);
         sbPostData.append("&route="+route);
         sbPostData.append("&sender="+senderId);
+        sbPostData.append("&campaign="+"CashGuru");
 
         //final string
         mainUrl = sbPostData.toString();
@@ -217,12 +222,13 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
         }
         if (tempMessage != null && tempMessage.equals(message)) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("MobileVerifications");
-            query.whereEqualTo("deviceId", ParseInstallation.getCurrentInstallation().get("deviceId"));
-            query.whereEqualTo("userId", ParseInstallation.getCurrentInstallation().get("userId"));
+            query.whereEqualTo(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID, ParseInstallation.getCurrentInstallation().get(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
+            query.whereEqualTo(InstallationHelper.PARSE_TABLE_COLUMN_USER_ID, user.getObjectId());
             try {
                 ParseObject obj = query.getFirst();
                 obj.put("verified", true);
                 obj.saveEventually();
+                PreferenceManager.setDefaultSharedPreferenceValue(getActivity(), Constants.PREF_MOBILE_VERIFIED, Context.MODE_PRIVATE, true);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -232,7 +238,9 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
             Utility.showInformativeDialog(new Utility.DialogCallback() {
                 @Override
                 public void onDialogCallback(boolean success) {
-                    mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
+                    if (mCallBacks != null) {
+                        mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall), null);
+                    }
                 }
             }, getActivity(), VERIFICATION_DONE, PHONE_SUCCESSFULLY_VERIFIED, DONE, true);
 
@@ -241,7 +249,7 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
             Utility.showInformativeDialog(new Utility.DialogCallback() {
                 @Override
                 public void onDialogCallback(boolean success) {
-                    mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
+                    //mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
                 }
             }, getActivity(), null, WRONG_OTP, DONE, true);
         }
@@ -303,8 +311,10 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
                 if(mMobileEditText.isEnabled()) {
                     editMobileNumber();
                     mMobileEditText.setEnabled(false);
+                    mMobileSubmitButton.setImageResource(R.drawable.mode_edit);
                 } else {
                     mMobileEditText.setEnabled(true);
+                    mMobileSubmitButton.setImageResource(R.drawable.check);
                 }
                 break;
         }

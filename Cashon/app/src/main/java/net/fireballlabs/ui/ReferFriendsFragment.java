@@ -16,10 +16,11 @@ import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.URLShortener;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
-import net.fireballlabs.helper.model.InstallationHelper;
+
 import net.fireballlabs.helper.model.UserHelper;
 
 import com.crashlytics.android.Crashlytics;
+import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 
@@ -51,7 +52,16 @@ public class ReferFriendsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_refer_friends, container, false);
-        final String referralCode = (String)ParseUser.getCurrentUser().get(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE);
+        String referralCode = (String)ParseUser.getCurrentUser().get(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE);
+        if(referralCode == null) {
+            try {
+                ParseUser.getCurrentUser().fetch();
+                referralCode = (String)ParseUser.getCurrentUser().get(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        final String finalReferralCode = referralCode;
         referralUrl = (String) ParseUser.getCurrentUser().get(UserHelper.PARSE_TABLE_COLUMN_REFER_URL);
 
         if(referralUrl == null) {
@@ -102,7 +112,7 @@ public class ReferFriendsFragment extends Fragment {
             public void onClick(View v) {
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, String.format(Constants.TEXT_REFERAL, referralCode, referralUrl));
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, String.format(Constants.TEXT_REFERAL, referralUrl));
                 startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
             }
         });

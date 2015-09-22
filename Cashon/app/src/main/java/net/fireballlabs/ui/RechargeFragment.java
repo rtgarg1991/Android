@@ -3,6 +3,7 @@ package net.fireballlabs.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,25 +21,26 @@ import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
+import net.fireballlabs.helper.Logger;
 import net.fireballlabs.helper.model.Conversions;
+import net.fireballlabs.helper.model.Recharge;
 import net.fireballlabs.impl.Utility;
 
+import com.crashlytics.android.Crashlytics;
+import com.parse.FunctionCallback;
 import com.parse.ParseACL;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RechargeFragment extends Fragment implements Utility.DialogCallback {
 
-    public static String PARSE_TABLE_NAME_RECHARGE = "Recharge";
     public static String PARSE_TABLE_COLUMN_USER_ID = "userId";
-    public static String PARSE_TABLE_COLUMN_EMAIL_ID = "emailId";
-    public static String PARSE_TABLE_COLUMN_AMOUNT = "amount";
-    public static String PARSE_TABLE_COLUMN_NUMBER = "number";
-    public static String PARSE_TABLE_COLUMN_COMPANY = "company";
-    public static String PARSE_TABLE_COLUMN_COMMENT = "comment";
-    public static String PARSE_TABLE_COLUMN_IS_PREPAID = "isPrepaid";
-    public static String PARSE_TABLE_COLUMN_TYPE = "type";
 
     public static String TYPE_MOBILE = "Mobile";
     public static String TYPE_DATA_CARD = "DataCard";
@@ -46,7 +48,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
     private static MainActivityCallBacks mCallBacks;
     private float balance = 0f;
 
-    public static RechargeFragment newInstance(MainActivityCallBacks callBacks) {
+    public static RechargeFragment newInstance(String title, MainActivityCallBacks callBacks) {
         RechargeFragment fragment = new RechargeFragment();
         mCallBacks = callBacks;
         return fragment;
@@ -102,94 +104,6 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
         });
         thread.start();
 
-        /*CompoundButton.OnCheckedChangeListener prePostChangeListener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    switch (buttonView.getId()) {
-                        case R.id.recharge_radio_button_prepaid:
-                            if(radioButtonMobile.isChecked()) {
-                                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                                        R.array.recharge_mobile_prepaid_company, R.layout.simple_spinner_item);
-                                adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-                                spinnerCompanyName.setAdapter(adapter);
-                            } else if(radioButtonDatacard.isChecked()) {
-                                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                                        R.array.recharge_data_card_prepaid_company, R.layout.simple_spinner_item);
-                                adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-                                spinnerCompanyName.setAdapter(adapter);
-                            }
-                            break;
-                        case R.id.recharge_radio_button_postpaid:
-                            if(radioButtonMobile.isChecked()) {
-                                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                                        R.array.recharge_mobile_postpaid_company, R.layout.simple_spinner_item);
-                                adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-                                spinnerCompanyName.setAdapter(adapter);
-                            } else if(radioButtonDatacard.isChecked()) {
-                                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                                        R.array.recharge_data_card_postpaid_company, R.layout.simple_spinner_item);
-                                adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-                                spinnerCompanyName.setAdapter(adapter);
-                            }
-                            break;
-                    }
-                }
-            }
-        };
-
-
-        CompoundButton.OnCheckedChangeListener typeChangeListener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    switch (buttonView.getId()) {
-                        case R.id.recharge_radio_button_mobile:
-                            prePostRadioGroup.setVisibility(View.VISIBLE);
-                            if(radioButtonPrepaid.isChecked()) {
-                                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                                        R.array.recharge_mobile_prepaid_company, R.layout.simple_spinner_item);
-                                adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-                                spinnerCompanyName.setAdapter(adapter);
-                            } else {
-                                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                                        R.array.recharge_mobile_postpaid_company, R.layout.simple_spinner_item);
-                                adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-                                spinnerCompanyName.setAdapter(adapter);
-                            }
-                            break;
-                        case R.id.recharge_radio_button_dth:
-                            prePostRadioGroup.setVisibility(View.GONE);
-                            ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(),
-                                    R.array.recharge_dth_company, R.layout.simple_spinner_item);
-                            adapter1.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-                            spinnerCompanyName.setAdapter(adapter1);
-                            break;
-                        case R.id.recharge_radio_button_data_card:
-                            prePostRadioGroup.setVisibility(View.VISIBLE);
-                            if(radioButtonPrepaid.isChecked()) {
-                                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                                        R.array.recharge_data_card_prepaid_company, R.layout.simple_spinner_item);
-                                adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-                                spinnerCompanyName.setAdapter(adapter);
-                            } else {
-                                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                                        R.array.recharge_data_card_postpaid_company, R.layout.simple_spinner_item);
-                                adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-                                spinnerCompanyName.setAdapter(adapter);
-                            }
-                            break;
-                    }
-                }
-            }
-        };
-        radioButtonMobile.setOnCheckedChangeListener(typeChangeListener);
-        radioButtonDTH.setOnCheckedChangeListener(typeChangeListener);
-        radioButtonDatacard.setOnCheckedChangeListener(typeChangeListener);
-
-        radioButtonPostpaid.setOnCheckedChangeListener(prePostChangeListener);
-        radioButtonPrepaid.setOnCheckedChangeListener(prePostChangeListener);*/
-
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.recharge_mobile_prepaid_company, R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
@@ -223,52 +137,55 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
                         // TODO track this and noify user that he/she has to login
                         return;
                     }
-                    /*if (radioButtonDTH.isChecked()) {
-                        ParseObject object = new ParseObject(PARSE_TABLE_NAME_RECHARGE);
-                        object.put(PARSE_TABLE_COLUMN_AMOUNT, editTextAmount.getText().toString());
-                        object.put(PARSE_TABLE_COLUMN_NUMBER, editTextNumber.getText().toString());
-                        object.put(PARSE_TABLE_COLUMN_COMMENT, editTextMessage.getText().toString());
-                        object.put(PARSE_TABLE_COLUMN_USER_ID, user.getObjectId());
-                        object.put(PARSE_TABLE_COLUMN_COMPANY, spinnerCompanyName.getSelectedItem().toString());
-                        object.put(PARSE_TABLE_COLUMN_TYPE, TYPE_DTH);
+                    if (Utility.isValidMobile(editTextNumber.getText().toString())) {
+                        Map<String, Object> params = new HashMap<String, Object>();
+                        params.put(Recharge.PARSE_TABLE_COLUMN_AMOUNT, editTextAmount.getText().toString());
+                        params.put(Recharge.PARSE_TABLE_COLUMN_COMMENT, editTextMessage.getText().toString());
+                        params.put(Recharge.PARSE_TABLE_COLUMN_NUMBER, editTextNumber.getText().toString());
+                        params.put(Recharge.PARSE_TABLE_COLUMN_COMPANY, spinnerCompanyName.getSelectedItem().toString());
+                        params.put(PARSE_TABLE_COLUMN_USER_ID, user.getObjectId());
+                        params.put(Recharge.PARSE_TABLE_COLUMN_PREPAID, true);
+                        params.put(Recharge.PARSE_TABLE_COLUMN_TYPE, TYPE_MOBILE);
 
-                        // set public access so that referrer can access this entry
-                        ParseACL groupACL = new ParseACL(user);
-                        groupACL.setPublicWriteAccess(true);
-                        groupACL.setPublicReadAccess(true);
-                        object.setACL(groupACL);
 
-                        object.saveEventually();
+                        ParseCloud.callFunctionInBackground("addNewRechargeRequest", params, new FunctionCallback<Boolean>() {
+                            public void done(Boolean success, ParseException e) {
+                                if (e == null) {
+                                    if(success) {
+                                        Utility.showInformativeDialog(new Utility.DialogCallback() {
+                                                      @Override
+                                                      public void onDialogCallback(boolean success) {
+                                                          mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS
+                                                                  , Constants.ID_APP_INSTALLS, R.drawable.offerwall), null);
+                                                      }
+                                                  }, getActivity(), "Recharge Sent Successfully",
+                                            "Recharge request sent successfully, and it will be processed within 48 hours",
+                                            "OK", true);
+                                        Recharge.clearRechargeHistory();
+                                    } else {
+                                        Utility.showInformativeDialog(new Utility.DialogCallback() {
+                                                      @Override
+                                                      public void onDialogCallback(boolean success) {
+                                                          mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS
+                                                                  , Constants.ID_APP_INSTALLS, R.drawable.offerwall), null);
+                                                      }
+                                                  }, getActivity(), "Recharge Not Sent",
+                                            "Recharge request not sent, we already have one pending request for Recharge from your id",
+                                            "OK", true);
+                                    }
+                                } else {
+                                    Logger.doSecureLogging(Log.WARN, "Recharge request not sent successfully." + e.getCode());
+                                    Crashlytics.logException(e);
+                                }
+                            }
+                        });
+
                         if(isVisible()) {
                             Utility.showInformativeDialog(RechargeFragment.this, getActivity(), null, Constants.RECHARGE_SENT_SUCCESSFUL, null, false);
                         }
-                    } else {*/
-                        if (Utility.isValidMobile(editTextNumber.getText().toString())) {
-                            ParseObject object = new ParseObject(PARSE_TABLE_NAME_RECHARGE);
-                            object.put(PARSE_TABLE_COLUMN_AMOUNT, editTextAmount.getText().toString());
-                            object.put(PARSE_TABLE_COLUMN_COMMENT, editTextMessage.getText().toString());
-                            object.put(PARSE_TABLE_COLUMN_NUMBER, editTextNumber.getText().toString());
-                            object.put(PARSE_TABLE_COLUMN_COMPANY, spinnerCompanyName.getSelectedItem().toString());
-                            object.put(PARSE_TABLE_COLUMN_USER_ID, user.getObjectId());
-                            /*object.put(PARSE_TABLE_COLUMN_IS_PREPAID, radioButtonPrepaid.isChecked());
-                            object.put(PARSE_TABLE_COLUMN_TYPE, (radioButtonMobile.isChecked() ? TYPE_MOBILE : TYPE_DATA_CARD));*/
-                            object.put(PARSE_TABLE_COLUMN_IS_PREPAID, true);
-                            object.put(PARSE_TABLE_COLUMN_TYPE, TYPE_MOBILE);
-
-                            // set public access so that referrer can access this entry
-                            ParseACL groupACL = new ParseACL(user);
-                            groupACL.setPublicWriteAccess(true);
-                            groupACL.setPublicReadAccess(true);
-                            object.setACL(groupACL);
-
-                            object.saveEventually();
-                            if(isVisible()) {
-                                Utility.showInformativeDialog(RechargeFragment.this, getActivity(), null, Constants.RECHARGE_SENT_SUCCESSFUL, null, false);
-                            }
-                        } else {
-                            editTextNumber.setError("Number Not valid");
-                        }
-                    //}
+                    } else {
+                        editTextNumber.setError("Number Not valid");
+                    }
                 } else {
                     editTextAmount.setError("Recharge Amount Should be in range " + Constants.RECHARGE_AMOUNT_MIN + " to " + Constants.RECHARGE_AMOUNT_MAX
                             + " and should be less than available balance credits");
@@ -281,7 +198,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
 
     @Override
     public void onDialogCallback(boolean success) {
-        mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_RECHARGE, Constants.ID_APP_RECHARGE, R.drawable.topup));
+        mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_RECHARGE, Constants.ID_APP_RECHARGE, R.drawable.topup), null);
     }
 
     @Override

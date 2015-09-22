@@ -24,7 +24,7 @@
             android:id="@+id/app_pending_list_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_title"
+            android:textSize="@dimen/text_size_20"
             android:layout_toRightOf="@id/app_pending_list_item_image_view"
             android:layout_alignParentTop="true"
             android:gravity="left"
@@ -44,14 +44,14 @@
             android:layout_marginLeft="@dimen/app_install_item_description_margin_left"
             android:layout_marginBottom="@dimen/app_install_item_description_margin_bottom"
             android:textColor="@color/primary_dim"
-            android:textSize="@dimen/text_size_subtitle"/>
+            android:textSize="@dimen/text_size_14"/>
 
         <TextView
             android:id="@+id/app_pending_list_item_payout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:textSize="@dimen/text_size_payout"
+            android:textSize="@dimen/text_size_24"
             android:textStyle="bold"
             android:gravity="left"
             android:layout_marginTop="@dimen/app_install_item_payout_margin_top"

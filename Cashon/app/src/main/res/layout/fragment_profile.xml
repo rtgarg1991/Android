@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/user_profile_name"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_title_17"
+                    android:textSize="@dimen/text_size_17"
                     android:layout_gravity="center_vertical"/>
 
                 <EditText
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/user_profile_name"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_title_17"
+                    android:textSize="@dimen/text_size_17"
                     android:layout_gravity="center_vertical"/>
             </LinearLayout>
 
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/user_profile_sex"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_title_17"
+                    android:textSize="@dimen/text_size_17"
                     android:layout_gravity="center_vertical"/>
 
                 <Spinner
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/user_profile_dob"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_title_17"
+                    android:textSize="@dimen/text_size_17"
                     android:layout_gravity="center_vertical"/>
 
                 <EditText
@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/user_profile_dob"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_title_17"
+                    android:textSize="@dimen/text_size_17"
                     android:layout_gravity="center_vertical"/>
             </LinearLayout>
 

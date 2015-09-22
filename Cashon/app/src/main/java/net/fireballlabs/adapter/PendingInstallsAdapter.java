@@ -21,6 +21,7 @@ import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,7 +31,7 @@ import java.util.Locale;
 public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstallsAdapter.ViewHolder> implements SimpleDelayHandler.SimpleDelayHandlerCallback {
     PendingInstallsFragment mFragment = null;
     Context mContext;
-    List<Offer> mOffers;
+    List<String> mOffers;
 
     @Override
     public PendingInstallsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int type) {
@@ -51,21 +52,29 @@ public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstalls
     }
 
     @Override
-    public void onBindViewHolder(PendingInstallsAdapter.ViewHolder holder, final int position) {
-        holder.setTextViewTitleText(mOffers.get(position).getTitle());
-        holder.setTextViewSubtitleText(mOffers.get(position).getSubTitle());
-        holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(mOffers.get(position).getPayout()));
-        holder.setTextViewDescriptionText(mOffers.get(position).getDescription());
+    public void onBindViewHolder(final PendingInstallsAdapter.ViewHolder holder, final int position) {
+        final Offer offer = Offer.getOffer(mOffers.get(position));
+        holder.setTextViewTitleText(offer.getTitle());
+        holder.setTextViewSubtitleText(offer.getSubTitle());
+        holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(offer.getPayout()));
+        holder.setTextViewDescriptionText("Waiting for Advertiser's confirmation!");
 
         String url = Offer.IMAGE_SERVER_URL
-                + String.format(Locale.ENGLISH, mOffers.get(position).getImageName(), Utility.getDeviceDensity(mContext));
+                + String.format(Locale.ENGLISH, offer.getImageName(), Utility.getDeviceDensity(mContext));
         holder.setImageView(url);
+
+        holder.getParent().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mFragment.setFragment(Constants.ID_APP_OFFER, offer.getId());
+            }
+        });
     }
 
     @Override
     public int getItemViewType(int position) {
         try {
-            return mOffers.get(position).type;
+            return Offer.getOffer(mOffers.get(position)).type;
         } catch(NumberFormatException ex) {
             Crashlytics.logException(ex);
             return 0;
@@ -85,14 +94,18 @@ public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstalls
             return;
         }*/
         mFragment = fragment;
+        updateOfferList();
+    }
+
+    public void updateOfferList() {
 
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    List<Offer> offers = UsedOffer.getPendingInstallOffers();
+                    List<String> offers = UsedOffer.getPendingOffers(mContext);
                     mOffers = offers;
-                    SimpleDelayHandler handler = SimpleDelayHandler.getInstance(context);
+                    SimpleDelayHandler handler = SimpleDelayHandler.getInstance(mContext);
                     handler.startDelayed(PendingInstallsAdapter.this, 0, true);
                 } catch (ParseException e) {
                     Crashlytics.logException(e);
@@ -100,6 +113,7 @@ public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstalls
             }
         });
         thread.start();
+        notifyDataSetChanged();
     }
 
     @Override

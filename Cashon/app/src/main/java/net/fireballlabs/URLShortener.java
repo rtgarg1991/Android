@@ -27,7 +27,7 @@ import java.util.Locale;
  */
 public class URLShortener {
     public static final String GOOGLE_URL_SHORTNER_LINK = "https://www.googleapis.com/urlshortener/v1/url?key=%s";
-    private static final String REFERAL_URL = "http://rjmq.adsb4all.com/c/01df781ed2e25320?userId=%s";
+    private static final String REFERAL_URL = "http://app.appsflyer.com/net.fireballlabs.cashguru?pid=User_invite&c=%s";
 
     static InputStream is = null;
     static JSONObject jObj = null;

@@ -49,6 +49,27 @@ public class PreferenceManager {
     /**
      * Get boolean value of particular key in SharedPreferences
      * @param context Context to be used to get SharedPreferences
+     * @param key Key whose boolean value needs to be found
+     * @param mode Mode to be used for getting SharedPreferences
+     * @param defaultValue Default value, if Key not found then this will be returned
+     * @return Boolean value for the key in SharedPreferences
+     * @throws IllegalArgumentException If context provided is null or key provided is empty or null
+     */
+    public static String getDefaultSharedPreferenceValue(
+            Context context, String key, int mode, String defaultValue)
+            throws IllegalArgumentException{
+        if(key == null || TextUtils.isEmpty(key)) {
+            throw new IllegalArgumentException(Constants.EXCEPTION_INVALID_KEY);
+        }
+        if(context == null) {
+            throw new IllegalArgumentException(Constants.EXCEPTION_INVALID_CONTEXT);
+        }
+        return getSharedPreferences(context, mode).getString(key, defaultValue);
+    }
+
+    /**
+     * Get boolean value of particular key in SharedPreferences
+     * @param context Context to be used to get SharedPreferences
      * @param key Key whose boolean value needs to be set
      * @param mode Mode to be used for getting SharedPreferences
      * @param value value which will be set for provided key
@@ -65,6 +86,28 @@ public class PreferenceManager {
         }
         SharedPreferences.Editor editor = getSharedPreferences(context, mode).edit();
         editor.putBoolean(key, value);
+        editor.commit();
+    }
+
+    /**
+     * Get boolean value of particular key in SharedPreferences
+     * @param context Context to be used to get SharedPreferences
+     * @param key Key whose boolean value needs to be set
+     * @param mode Mode to be used for getting SharedPreferences
+     * @param value value which will be set for provided key
+     * @throws IllegalArgumentException If context provided is null or key provided is empty or null
+     */
+    public static void setDefaultSharedPreferenceValue(
+            Context context, String key, int mode, String value)
+            throws IllegalArgumentException{
+        if(key == null || TextUtils.isEmpty(key)) {
+            throw new IllegalArgumentException(Constants.EXCEPTION_INVALID_KEY);
+        }
+        if(context == null) {
+            throw new IllegalArgumentException(Constants.EXCEPTION_INVALID_CONTEXT);
+        }
+        SharedPreferences.Editor editor = getSharedPreferences(context, mode).edit();
+        editor.putString(key, value);
         editor.commit();
     }
 }

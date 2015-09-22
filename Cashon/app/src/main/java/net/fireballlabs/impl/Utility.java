@@ -282,12 +282,19 @@ public class Utility {
     public static void showInformativeDialog(final DialogCallback callback, Context context, String title,
                                              String content, String positiveButtonText, boolean show) {
 
+        showInformativeDialog(callback, context, title, content, positiveButtonText, null, show);
+    }
+
+    public static void showInformativeDialog(final DialogCallback callback, Context context, String title,
+                                             String content, String positiveButtonText, String negativeButtonText,
+                                             boolean show) {
+
         if(show) {
             if (mInformationDialog != null && mInformationDialog.isShowing()) {
                 mInformationDialog.dismiss();
                 mInformationDialog = null;
             }
-            mInformationDialog = new MaterialDialog.Builder(context)
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
                     .content(content)
                     .positiveText(positiveButtonText == null ? "OK" : positiveButtonText)
                     .title(title)
@@ -297,11 +304,25 @@ public class Utility {
                         public void onPositive(MaterialDialog dialog) {
                             if (dialog.isShowing()) {
                                 dialog.dismiss();
-                                callback.onDialogCallback(true);
+                                if (callback != null) {
+                                    callback.onDialogCallback(true);
+                                }
                             }
                         }
-                    })
-                    .show();
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            if (dialog.isShowing()) {
+                                dialog.dismiss();
+                                if (callback != null) {
+                                    callback.onDialogCallback(false);
+                                }
+                            }
+                        }
+                    });
+            if(negativeButtonText != null) {
+                builder.negativeText(negativeButtonText);
+            }
+            mInformationDialog = builder.show();
         } else {
             if (mInformationDialog != null && mInformationDialog.isShowing()) {
                 mInformationDialog.dismiss();

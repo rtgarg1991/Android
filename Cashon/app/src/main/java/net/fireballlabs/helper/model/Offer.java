@@ -8,7 +8,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
+import net.fireballlabs.helper.ParseConstants;
+import net.fireballlabs.helper.PreferenceManager;
 import net.fireballlabs.impl.Utility;
 import net.fireballlabs.sql.CashGuruSqliteOpenHelper;
 import net.fireballlabs.sql.SQLWrapper;
@@ -16,7 +19,6 @@ import net.fireballlabs.ui.AppInstallsFragment;
 
 import com.parse.ParseCloud;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -29,6 +31,7 @@ import java.util.List;
  * Created by Rohit on 8/3/2015.
  */
 public class Offer {
+    private static List<Offer> offers;
     String id;
     String imageName;
     String packageName;
@@ -169,11 +172,84 @@ public class Offer {
         return offer;
     }
 
+    public static Offer findOffer(List<Offer> offers, String offerId) {
+        if(offers == null || offerId == null) {
+            return null;
+        }
+        for(Offer offer : offers) {
+            if(offer.getId().equals(offerId)) {
+                return offer;
+            }
+        }
+        return null;
+    }
+
+    public Payout getPayout(int typeId) {
+        for(Payout p : getPayouts()) {
+            if(p.getOfferType() == typeId) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public void setPayoutConverted(int typeId, boolean converted) {
+        Payout p = getPayout(typeId);
+        if(p != null) {
+            p.setConverted(converted);
+        }
+    }
+
+    public boolean isConverted() {
+        for(Payout p : payouts) {
+            if(!p.isConverted()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isInstallAvailable() {
+        for(Payout p : payouts) {
+            if(p.isConverted()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static Offer getOffer(String s) {
+        for(Offer offer : offers) {
+            if(offer.id.equals(s)) {
+                return offer;
+            }
+        }
+        return null;
+    }
+
     public class Payout {
         int offerType;
         int payout;
         String description;
         Object extraInfo;
+        boolean converted;
+        boolean installed;
+
+        public boolean isInstalled() {
+            return installed;
+        }
+
+        public void setInstalled(boolean installed) {
+            this.installed = installed;
+        }
+
+        public boolean isConverted() {
+            return converted;
+        }
+
+        public void setConverted(boolean converted) {
+            this.converted = converted;
+        }
 
         public int getOfferType() {
             return offerType;
@@ -289,15 +365,25 @@ public class Offer {
                 }
             }
         }*/
+        // if we already have offers, then lets sync from it
+        if(offers != null || context == null) {
+            if(!PreferenceManager.getDefaultSharedPreferenceValue(context, Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, true)) {
+                return offers;
+            }
+        } else if(!PreferenceManager.getDefaultSharedPreferenceValue(context, Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, true)) {
+            List<Offer> offers = getData(context);
+            if(offers != null) {
+                return offers;
+            }
+        }
+
         // lets try cloud function to retrieve data
         ParseUser user = ParseUser.getCurrentUser();
         if(user == null || !user.isAuthenticated()) {
             return null;
         }
         HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OFFER_ID, user.getObjectId());
-        params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, ParseInstallation.getCurrentInstallation().getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
-        ArrayList<HashMap<String, Object>> cloudOffers = ParseCloud.callFunction("GetAllOffers", params);
+        ArrayList<HashMap<String, Object>> cloudOffers = ParseCloud.callFunction(ParseConstants.FUNCTION_GET_ALL_OFFERS, params);
         List<Offer> offers = new ArrayList<Offer>();
         for(int i = 0; i < cloudOffers.size(); i++) {
             Offer offer = new Offer();
@@ -323,19 +409,12 @@ public class Offer {
                 }
                 offer.payouts.add(p);
             }
-            PackageManager pm = context.getPackageManager();
-            // get all installed applications
-            try {
-                PackageInfo info= pm.getPackageInfo(offer.getPackageName(), PackageManager.GET_META_DATA);
-                if(info == null && offer.isAvailable()) {
-                    checkAndAddOffer(offers, offer);
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                if(offer.isAvailable()) {
-                    checkAndAddOffer(offers, offer);
-                }
+            if(offer.isAvailable()) {
+                checkAndAddOffer(offers, offer);
             }
         }
+
+        Offer.offers = offers;
 
         return offers;
     }
@@ -349,6 +428,7 @@ public class Offer {
 
 
     public void saveData(Context context) {
+        clearCurrentDataFromDB(context);
         SQLiteDatabase db = SQLWrapper.getWritableSqLiteDatabase(context);
         if(db != null) {
             ContentValues values = new ContentValues();
@@ -392,8 +472,10 @@ public class Offer {
         }
     }
 
-
     public static List<Offer> getData(Context context) {
+        if(offers != null) {
+            return offers;
+        }
         SQLiteDatabase db = SQLWrapper.getReadableSqLiteDatabase(context);
         if(db != null) {
             Cursor cursor = db.query(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS, null, null, null, null, null, null);
@@ -458,6 +540,7 @@ public class Offer {
                 }
                 cursor.close();
                 db.close();
+                Offer.offers = offers;
                 return offers;
             }
         } else {

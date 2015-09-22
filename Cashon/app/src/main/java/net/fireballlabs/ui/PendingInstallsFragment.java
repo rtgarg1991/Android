@@ -13,8 +13,10 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import net.fireballlabs.MainActivityCallBacks;
+import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.adapter.PendingInstallsAdapter;
 import net.fireballlabs.cashguru.R;
+import net.fireballlabs.helper.Constants;
 import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.Utility;
 
@@ -30,6 +32,7 @@ public class PendingInstallsFragment extends Fragment implements HardwareAccess.
     MaterialDialog mProgressDialog;
     private SwipeRefreshLayout mRefreshLayout;
     private TextView mEmptyTextView;
+    private LinearLayoutManager mLayoutManager;
 
     public static PendingInstallsFragment newInstance(String title, MainActivityCallBacks callBacks) {
         PendingInstallsFragment fragment = new PendingInstallsFragment();
@@ -48,6 +51,7 @@ public class PendingInstallsFragment extends Fragment implements HardwareAccess.
         View rootView = inflater.inflate(R.layout.fragment_pending_installs, container, false);
         mRefreshLayout = (SwipeRefreshLayout) rootView;
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.pending_installs_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
 //        mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.abc_list_divider_mtrl_alpha)));
         mEmptyTextView = (TextView)rootView.findViewById(R.id.app_install_pending_text_view);
 
@@ -55,9 +59,9 @@ public class PendingInstallsFragment extends Fragment implements HardwareAccess.
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(isVisible()) {
+                /*if(isVisible()) {
                     mAdapter = new PendingInstallsAdapter(getActivity(), PendingInstallsFragment.this);
-                }
+                }*/
                 setUpOffers();
             }
         });
@@ -82,6 +86,13 @@ public class PendingInstallsFragment extends Fragment implements HardwareAccess.
         return rootView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        setUpOffers();
+
+    }
+
     public void setEmptyViewVisibility(int visibility) {
         mEmptyTextView.setVisibility(visibility);
         if(visibility == View.GONE) {
@@ -101,14 +112,22 @@ public class PendingInstallsFragment extends Fragment implements HardwareAccess.
             // TODO error, need to check if this case can happen
             return;
         }
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(layoutManager);
+        //if(mLayoutManager == null) {
+            mLayoutManager = new LinearLayoutManager(getActivity());
+            mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+        //}
         mRecyclerView.setAdapter(mAdapter);
         mRefreshLayout.setRefreshing(false);
+        mAdapter.updateOfferList();
     }
 
     @Override
     public void accessCompleted(int access, boolean isSuccess) {
         setUpOffers();
+    }
+
+    public void setFragment(int idAppOffer, String offId) {
+        mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_OFFER, Constants.ID_APP_OFFER, 0), offId);
     }
 }

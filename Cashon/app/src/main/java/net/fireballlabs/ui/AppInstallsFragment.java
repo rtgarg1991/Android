@@ -22,13 +22,14 @@ import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
 import net.fireballlabs.helper.PreferenceManager;
 import net.fireballlabs.helper.model.Offer;
+import net.fireballlabs.helper.model.UsedOffer;
 import net.fireballlabs.impl.HardwareAccess;
-import net.fireballlabs.sql.SQLWrapper;
 import net.fireballlabs.impl.Utility;
 
 import com.crashlytics.android.Crashlytics;
 import com.parse.ParseException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppInstallsFragment extends Fragment implements HardwareAccess.HardwareAccessCallbacks {
@@ -39,6 +40,8 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
     private SwipeRefreshLayout mRefreshLayout;
     private TextView mEmptyTextView;
     private boolean mDetatched;
+    private List<String> mOffers;
+    private LinearLayoutManager layoutManager;
 
     public static AppInstallsFragment newInstance(String title, MainActivityCallBacks callBacks) {
         AppInstallsFragment fragment = new AppInstallsFragment();
@@ -62,6 +65,7 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
         View rootView = inflater.inflate(R.layout.fragment_app_installs, container, false);
         mRefreshLayout = (SwipeRefreshLayout) rootView;
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.app_installs_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
 //        mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.abc_list_divider_mtrl_alpha)));
         mAdapter = new AppInstallsAdapter(getActivity(), this);
         mEmptyTextView = (TextView)rootView.findViewById(R.id.app_install_empty_text_view);
@@ -114,12 +118,23 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
             // TODO error, need to check if this case can happen
             return;
         }
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(layoutManager);
+        //if(layoutManager == null) {
+            layoutManager = new LinearLayoutManager(getActivity());
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(layoutManager);
+        //}
         mRecyclerView.setAdapter(mAdapter);
 
-        AppInstallAsyncTaks task = new AppInstallAsyncTaks();
-        task.execute((Void) null);
+
+        // if we already have offers loaded, lets just check if we need to remove any offer from this list
+        // and show all the offers to user
+        if(mOffers != null) {
+            mAdapter.addAppInstallOffers(mOffers);
+            showProgress(false);
+        } else {
+            AppInstallAsyncTask task = new AppInstallAsyncTask();
+            task.execute((Void) null);
+        }
     }
 
     public void setEmptyViewVisibility(int visibility) {
@@ -136,36 +151,38 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
         setUpOffers();
     }
 
-    class AppInstallAsyncTaks extends AsyncTask<Void, Void, List<Offer>> {
+    class AppInstallAsyncTask extends AsyncTask<Void, Void, List<String>> {
 
         @Override
-        protected List<Offer> doInBackground(Void... params) {
+        protected List<String> doInBackground(Void... params) {
+            if(getActivity() == null) {
+                return null;
+            }
             if(PreferenceManager.getDefaultSharedPreferenceValue(getActivity(), Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, true)) {
 
                 try {
+                    // sync all offers
                     List<Offer> offers = Offer.getAllOffers(getActivity());
-
-                    if(getActivity() != null) {
-                        synchronized (getActivity()) {
-                            if (Constants.appInstallSyncNeeded) {
-                                Offer.clearCurrentDataFromDB(getActivity());
-                                for (Offer offer : offers) {
-                                    offer.saveData(getActivity());
-                                }
-                                Constants.appInstallSyncNeeded = false;
-                            }
-                        }
+                    UsedOffer.clearSavedData();
+                    for (Offer offer : offers) {
+                        offer.saveData(getActivity());
                     }
                     PreferenceManager.setDefaultSharedPreferenceValue(getActivity(), Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, false);
-                    return offers;
                 } catch (ParseException e) {
                     Logger.doSecureLogging(Log.WARN, getClass().getSimpleName()
                             + " Error  While getting Offer details from Parse");
                     Crashlytics.logException(e);
                 }
-            } else {
-                List<Offer> offers = Offer.getData(getActivity());
-                return offers;
+            }
+            // now retrieve needed offers
+            List<String> availableOffers = null;
+            try {
+                availableOffers = UsedOffer.getAvailableOffers(getActivity());
+                return availableOffers;
+            } catch (ParseException e) {
+                Logger.doSecureLogging(Log.WARN, getClass().getSimpleName()
+                        + " Error  While getting Offer details from Parse");
+                Crashlytics.logException(e);
             }
 
             return null;
@@ -178,10 +195,15 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
         }
 
         @Override
-        protected void onPostExecute(List<Offer> offers) {
+        protected void onPostExecute(List<String> offers) {
             super.onPostExecute(offers);
             showProgress(false);
-            mAdapter.addAppInstallOffers((List<Offer>) offers);
+            if(offers == null) {
+                mAdapter.addAppInstallOffers(new ArrayList<String>());
+            } else {
+                mAdapter.addAppInstallOffers((List<String>) offers);
+            }
+            mOffers = offers;
         }
     }
 

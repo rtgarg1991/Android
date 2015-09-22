@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/contact_us_title_string"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_size_title"
+        android:textSize="@dimen/text_size_20"
         android:layout_marginBottom="@dimen/contact_us_balance_margin_bottom"
         />
     <View
