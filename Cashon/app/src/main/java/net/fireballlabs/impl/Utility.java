@@ -200,10 +200,6 @@ public class Utility {
         return randomStringBuilder.toString();
     }
 
-    public static String getRefUrlStringWithoutOfferSubType(String userId, String id) {
-        return userId + "_" + id;
-    }
-
     public static void showProgress(Context context, boolean show, String text) {
         if(show) {
 //            shown++;

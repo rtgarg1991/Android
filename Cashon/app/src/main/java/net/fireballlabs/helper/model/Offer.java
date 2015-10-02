@@ -12,15 +12,12 @@ import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
 import net.fireballlabs.helper.ParseConstants;
 import net.fireballlabs.helper.PreferenceManager;
-import net.fireballlabs.impl.Utility;
 import net.fireballlabs.sql.CashGuruSqliteOpenHelper;
 import net.fireballlabs.sql.SQLWrapper;
 import net.fireballlabs.ui.AppInstallsFragment;
 
 import com.parse.ParseCloud;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -131,45 +128,6 @@ public class Offer {
 
     public void setIsAvailable(boolean isAvailable) {
         this.isAvailable = isAvailable;
-    }
-
-    public static UsedOffer getOfferData(String packageName, UsedOffer offer, Context context, boolean isInstallCheck) throws ParseException {
-        if(offer == null) {
-            offer = new UsedOffer();
-        }
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_OFFERS);
-        query.whereEqualTo(PARSE_TABLE_OFFERS_COLUMN_PACKAGE_NAME, packageName);
-
-        List<ParseObject> list = query.find();
-
-        if(list != null && list.size() > 0) {
-            ParseObject obj = list.get(0);
-
-            offer.setOfferId(obj.getObjectId() + "_" + OFFER_SUB_TYPE_INSTALL);
-            offer.setPackageName(packageName);
-
-
-            ParseQuery<ParseObject> queryPayout = ParseQuery.getQuery(PARSE_TABLE_NAME_PAYOUT);
-            queryPayout.whereEqualTo(PARSE_TABLE_PAYOUT_COLUMN_OFFER_ID, obj.getObjectId());
-            List<ParseObject> listPayouts = queryPayout.find();
-
-            for(ParseObject payout : listPayouts) {
-                if (payout.getInt(PARSE_TABLE_PAYOUT_COLUMN_OFFER_TYPE) == OFFER_SUB_TYPE_INSTALL) {
-                    offer.setPayout(payout.getInt(PARSE_TABLE_PAYOUT_COLUMN_OFFER_PAYOUT));
-                    break;
-                }
-            }
-        } else {
-            return null;
-        }
-
-        if(isInstallCheck) {
-            offer.setOurAffiliation(UsedOffer.checkIfThisOfferUserHasAttempted(
-                    Utility.getRefUrlStringWithoutOfferSubType(ParseUser.getCurrentUser().getObjectId(),
-                            offer.getOfferId()), context));
-        }
-
-        return offer;
     }
 
     public static Offer findOffer(List<Offer> offers, String offerId) {
@@ -318,7 +276,7 @@ public class Offer {
     // TODO
     /* Category*/
 
-    public static List<Offer> getAllOffers(Context context) throws ParseException {
+    synchronized public static List<Offer> getAllOffers(Context context) throws ParseException {
 
         // old approach, no cloud function usage
         /*ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_OFFERS);
@@ -410,20 +368,17 @@ public class Offer {
                 offer.payouts.add(p);
             }
             if(offer.isAvailable()) {
-                checkAndAddOffer(offers, offer);
+                offers.add(offer);
             }
         }
 
         Offer.offers = offers;
 
-        return offers;
-    }
-
-    private static void checkAndAddOffer(List<Offer> offers, Offer offer) {
-
-        if(!UsedOffer.checkIfUserHasUsedThisOffer(offer)) {
-            offers.add(offer);
+        for(Offer offer :offers) {
+            offer.saveData(context);
         }
+
+        return offers;
     }
 
 
@@ -529,11 +484,11 @@ public class Offer {
                     try {
                         PackageInfo info= pm.getPackageInfo(offer.getPackageName(), PackageManager.GET_META_DATA);
                         if(info == null && offer.isAvailable()) {
-                            checkAndAddOffer(offers, offer);
+                            offers.add(offer);
                         }
                     } catch (PackageManager.NameNotFoundException e) {
                         if(offer.isAvailable()) {
-                            checkAndAddOffer(offers, offer);
+                            offers.add(offer);
                         }
                     }
                     cursor.moveToNext();

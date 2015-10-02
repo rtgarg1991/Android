@@ -6,19 +6,11 @@ import net.fireballlabs.helper.Logger;
 
 import com.crashlytics.android.Crashlytics;
 import com.parse.FunctionCallback;
-import com.parse.GetCallback;
-import com.parse.ParseACL;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by Rohit on 8/8/2015.

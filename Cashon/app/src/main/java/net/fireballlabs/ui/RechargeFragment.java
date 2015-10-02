@@ -12,8 +12,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -28,10 +26,8 @@ import net.fireballlabs.impl.Utility;
 
 import com.crashlytics.android.Crashlytics;
 import com.parse.FunctionCallback;
-import com.parse.ParseACL;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.HashMap;
@@ -91,7 +87,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                balance = Conversions.getBalance();
+                balance = Conversions.getBalance(getActivity(), true);
                 if(getActivity() != null) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override

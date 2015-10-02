@@ -126,7 +126,7 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                             final WebView webView = new WebView(mContext);
                             final String affUrl = Utility.getRefUrlString(offer.getAffLink(),
                                     ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID), offer.getId());
-                            final String trackId = ParseUser.getCurrentUser().getObjectId() + "_" + offer.getId() + "_" + 1;
+                            final String trackId = offer.getPackageName();
 
                             webView.setWebViewClient(new WebViewClient() {
                                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -194,6 +194,11 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                             handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
                         }
                     }, mContext, "Attention!", offer.getDescription(), "OK", true);
+                    if(offer.payout != 10) {
+                        UsedOffer.checkAndAddPackageOnCloud(mContext, offer.getPackageName());
+                    } else {
+                        UsedOffer.checkAndRemovePackageOnCloud(mContext, offer.getPackageName());
+                    }
                 }
             });
         }

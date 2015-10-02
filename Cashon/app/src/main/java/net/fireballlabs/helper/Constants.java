@@ -47,6 +47,8 @@ public class Constants {
     public static final String PREF_MOBILE_VERIFIED = "mobile_verified";
     public static final String PREF_REFERRAL_ID = "referral_id";
     public static final String PREF_MOBILE_RECHARGE_DONE = "mobile_recharge_done";
+    public static final String PREF_NEED_WALLET_REFRESH = "need_wallet_refresh";
+    public static final String PREF_WALLET_BALANCE = "wallet_balance";
 
     // Custom Exception Messages [START]
     public static final String EXCEPTION_INVALID_CONTEXT = "Context Invalid";
