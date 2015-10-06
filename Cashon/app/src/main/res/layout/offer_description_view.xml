@@ -2,36 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:layout_marginTop="@dimen/dimen_4">
-
-    <LinearLayout
-        android:layout_width="@dimen/dimen_40"
+    android:layout_marginTop="@dimen/dimen_4"
+    android:layout_marginLeft="@dimen/dimen_12">
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/offer_description_view_install_image_view"
+        android:src="@drawable/hotdeals"
+        android:layout_margin="2dp"/>
+    <View
+        android:layout_width="2dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_gravity="center_horizontal">
-        <View
-            android:layout_width="2dp"
-            android:layout_height="0dp"
-            android:layout_weight="5"
-            android:background="@color/black_double_dim"
-            android:layout_gravity="center_horizontal"
-            />
-        <View
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/offer_description_view_circle_inactive"
-            android:id="@+id/offer_description_view_center_point_view"
-            android:layout_margin="@dimen/dimen_1"
-            />
-        <View
-            android:layout_width="2dp"
-            android:layout_height="0dp"
-            android:layout_weight="5"
-            android:background="@color/black_double_dim"
-            android:layout_gravity="center_horizontal"
-            />
-    </LinearLayout>
+        android:background="@color/primary"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="2dp"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,35 +28,20 @@
 Register for the Guvera application"
         android:textSize="@dimen/text_size_17"
         android:paddingRight="@dimen/dimen_5"/>
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:background="@color/primary"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="2dp"
+        />
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:id="@+id/offer_description_view_payout_view"
         android:text="10"
-        android:textSize="@dimen/text_size_17"
+        android:textSize="@dimen/text_size_20"
         android:textStyle="bold"
         android:paddingLeft="@dimen/dimen_5"/>
-
-    <LinearLayout
-        android:layout_width="@dimen/dimen_40"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_vertical">
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/offer_description_view_install_image_view"
-            android:src="@drawable/hotdeals"
-            android:layout_margin="2dp"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/offer_description_view_confirmation_image_view"
-            android:src="@drawable/hotdeals"
-            android:layout_margin="2dp"/>
-    </LinearLayout>
 </LinearLayout>

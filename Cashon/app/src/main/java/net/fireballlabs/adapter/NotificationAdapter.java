@@ -43,10 +43,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public NotificationAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int type) {
         LayoutInflater vi = LayoutInflater.from(parent.getContext());
         View v = vi.inflate(R.layout.notification_list_item, parent, false);
-        TextView amount = (TextView) v.findViewById(R.id.notification_list_item_amount_text_view);
-        TextView extra = (TextView) v.findViewById(R.id.notification_list_item_extra_text_view);
+        TextView title = (TextView) v.findViewById(R.id.notification_list_item_type_text_view);
         TextView message = (TextView) v.findViewById(R.id.notification_list_item_message_text_view);
-        ViewHolder holder = new ViewHolder(v, amount, extra, message, type);
+        ViewHolder holder = new ViewHolder(v, title, message, type);
 
         return holder;
     }
@@ -54,9 +53,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(final NotificationAdapter.ViewHolder holder, final int position) {
         NotificationHelper.Notification notification = mNotifications.get(position);
-        holder.setTextViewAmountText(Constants.INR_LABEL + String.valueOf(notification.getAmount()));
         holder.setTextViewMessageText(notification.getMessage());
-        holder.setTextViewExtraText(notification.getExtra());
+
+        switch(notification.getCode()) {
+            case Constants.PUSH_NOTIFICATION_RECHARGE_DONE:
+                holder.setTextViewTitleText("Recharge Successful");
+                break;
+            case Constants.PUSH_NOTIFICATION_REFERRAL:
+                holder.setTextViewTitleText("Referral Credited");
+                break;
+            case Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION:
+                holder.setTextViewTitleText("Credit");
+                break;
+        }
     }
 
     @Override
@@ -88,64 +97,28 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final int type;
-        TextView textViewExtra = null;
+        private final TextView textViewTitle;
         TextView textViewMessage;
-        TextView textViewAmount = null;
         View parent;
 
-        public ViewHolder(View itemView, TextView textViewAmount, TextView textViewExtra,
-                          TextView textViewMessage, int type) {
+        public ViewHolder(View itemView, TextView textViewTitle, TextView textViewMessage, int type) {
             super(itemView);
             this.parent = itemView;
-            this.textViewExtra = textViewExtra;
             this.textViewMessage = textViewMessage;
-            this.textViewAmount = textViewAmount;
+            this.textViewTitle = textViewTitle;
             this.type = type;
-
-            if(type == Constants.PUSH_NOTIFICATION_RECHARGE_DONE) {
-                this.textViewAmount.setBackgroundColor(mContext.getResources().getColor(R.color.material_color_red));
-                this.textViewExtra.setVisibility(View.VISIBLE);
-            } else if(type == Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION) {
-                this.textViewAmount.setBackgroundColor(mContext.getResources().getColor(R.color.material_color_teal));
-                this.textViewExtra.setVisibility(View.VISIBLE);
-            } else if(type == Constants.PUSH_NOTIFICATION_REFERRAL) {
-                this.textViewAmount.setBackgroundColor(mContext.getResources().getColor(R.color.material_color_teal));
-                this.textViewExtra.setVisibility(View.GONE);
-            }
 
             this.parent.setTag(type);
             this.parent.setOnClickListener(NotificationAdapter.this);
         }
 
-
-        public TextView getTextViewExtra() {
-            return textViewExtra;
+        public TextView getTextViewTitle() {
+            return textViewTitle;
         }
 
-        public void setTextViewExtraText(String text) {
-            if(this.textViewExtra != null) {
-                if(text != null) {
-                    try {
-                        if(type == Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION) {
-                            if(Offer.getAllOffers(null) != null) {
-                                Offer offer = Offer.getOffer(text);
-                                if(offer != null) {
-                                    this.textViewExtra.setText(offer.getTitle());
-                                } else {
-                                    this.textViewExtra.setVisibility(View.GONE);
-                                }
-                            } else {
-                                this.textViewExtra.setVisibility(View.GONE);
-                            }
-                        } else {
-                            this.textViewExtra.setText(text);
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    this.textViewExtra.setVisibility(View.GONE);
-                }
+        public void setTextViewTitleText(String text) {
+            if(this.textViewTitle != null) {
+                this.textViewTitle.setText(text);
             }
         }
 
@@ -156,16 +129,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public void setTextViewMessageText(String text) {
             if(this.textViewMessage != null) {
                 this.textViewMessage.setText(text);
-            }
-        }
-
-        public TextView getTextViewAmount() {
-            return textViewAmount;
-        }
-
-        public void setTextViewAmountText(String text) {
-            if(this.textViewAmount != null) {
-                this.textViewAmount.setText(text);
             }
         }
 

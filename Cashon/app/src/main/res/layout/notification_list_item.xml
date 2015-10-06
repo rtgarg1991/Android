@@ -17,34 +17,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/dimen_80" >
-            <TextView
-                android:layout_width="@dimen/dimen_80"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/text_size_24"
-                android:background="@color/material_color_teal"
-                android:id="@+id/notification_list_item_amount_text_view"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:text="R10"/>
 
-
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/message"
+                android:id="@+id/notification_list_item_message_image_view"
+                android:layout_margin="@dimen/dimen_8"
+                android:layout_centerVertical="true"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toRightOf="@id/notification_list_item_amount_text_view" >
+                android:layout_toRightOf="@id/notification_list_item_message_image_view" >
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_16"
-                    android:id="@+id/notification_list_item_extra_text_view"
+                    android:id="@+id/notification_list_item_type_text_view"
                     android:layout_alignParentTop="true"
-                    android:layout_marginLeft="@dimen/dimen_40"
+                    android:layout_marginLeft="@dimen/dimen_20"
                     android:layout_marginTop="@dimen/dimen_5"
-                    android:textColor="@color/black"
-                    android:text="7503650942"/>
+                    android:textColor="@color/primary"
+                    android:text="Credit"/>
 
 
                 <TextView
@@ -52,8 +47,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_14"
                     android:id="@+id/notification_list_item_message_text_view"
-                    android:layout_below="@id/notification_list_item_extra_text_view"
-                    android:layout_marginLeft="@dimen/dimen_40"
+                    android:layout_below="@id/notification_list_item_type_text_view"
+                    android:layout_marginLeft="@dimen/dimen_20"
                     android:textColor="@color/black"
                     android:text="Reference :"/>
             </RelativeLayout>

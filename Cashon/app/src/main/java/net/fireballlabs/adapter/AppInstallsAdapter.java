@@ -112,6 +112,14 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                 + String.format(Locale.ENGLISH, offer.getImageName(), Utility.getDeviceDensity(mContext));
         holder.setImageView(url);
 
+
+        holder.getParent().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mFragment.setFragment(Constants.ID_APP_OFFER, offer.getId());
+            }
+        });
+
         if(holder.clickButton != null) {
             holder.clickButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -194,11 +202,6 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                             handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
                         }
                     }, mContext, "Attention!", offer.getDescription(), "OK", true);
-                    if(offer.payout != 10) {
-                        UsedOffer.checkAndAddPackageOnCloud(mContext, offer.getPackageName());
-                    } else {
-                        UsedOffer.checkAndRemovePackageOnCloud(mContext, offer.getPackageName());
-                    }
                 }
             });
         }

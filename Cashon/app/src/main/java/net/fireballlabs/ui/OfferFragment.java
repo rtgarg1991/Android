@@ -9,10 +9,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
@@ -30,7 +32,6 @@ import net.fireballlabs.impl.Utility;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Objects;
 
 
 public class OfferFragment extends Fragment {
@@ -38,9 +39,13 @@ public class OfferFragment extends Fragment {
     Offer offer;
     private boolean mDetatched;
     private TextView titleTextView;
+    private TextView categoryTextView;
+    private TextView descriptionTextView;
+    private TextView tncTextView;
     private TextView payoutTextView;
     private ImageView imageView;
     private LinearLayout descriptionLinearLayout;
+    private Button installButton;
 
     public static OfferFragment newInstance(MainActivityCallBacks callBacks, String offerId) {
         OfferFragment fragment = new OfferFragment();
@@ -68,9 +73,13 @@ public class OfferFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_offer, container, false);
 
         titleTextView = (TextView) view.findViewById(R.id.offer_fragment_title_view);
+        categoryTextView = (TextView) view.findViewById(R.id.offer_fragment_category_view);
+        descriptionTextView = (TextView) view.findViewById(R.id.offer_fragment_description_text_view);
+        tncTextView = (TextView) view.findViewById(R.id.offer_fragment_tnc_text_view);
         payoutTextView = (TextView) view.findViewById(R.id.offer_fragment_payout_view);
         imageView = (ImageView) view.findViewById(R.id.offer_fragment_image_view);
         descriptionLinearLayout = (LinearLayout) view.findViewById(R.id.offer_fragment_description_view);
+        installButton = (Button) view.findViewById(R.id.offer_fragment_install_button);
 
         Bundle bundle = getArguments();
         if(bundle != null) {
@@ -172,6 +181,9 @@ public class OfferFragment extends Fragment {
 
         titleTextView.setText(offer.getTitle());
         payoutTextView.setText(Constants.INR_LABEL + String.valueOf(offer.getPayout()));
+        categoryTextView.setText(offer.getSubTitle());
+        descriptionTextView.setText(String.format(Locale.ENGLISH, offer.getDescription()));
+        tncTextView.setText(String.format(Locale.ENGLISH, offer.getDescription()));
 
         String url = Offer.IMAGE_SERVER_URL
                 + String.format(Locale.ENGLISH, offer.getImageName(), Utility.getDeviceDensity(getActivity()));
@@ -182,32 +194,34 @@ public class OfferFragment extends Fragment {
         Context context = getActivity();
 
         LayoutInflater inflater = (LayoutInflater.from(context));
+        boolean next = false;
         if(inflater != null) {
             for (Offer.Payout payout : offer.payouts) {
+                if(next) {
+                    View view = new View(context);
+                    view.setBackgroundColor(context.getResources().getColor(R.color.primary));
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 4);
+                    params.setMargins(4, 4, 4, 4);
+                    view.setLayoutParams(params);
+                    descriptionLinearLayout.addView(view);
+                }
                 View offerDetailView = inflater.inflate(R.layout.offer_description_view, descriptionLinearLayout, false);
                 TextView offerDescriptionTextView = (TextView) offerDetailView.findViewById(R.id.offer_description_view_text_view);
                 TextView offerPayoutTextView = (TextView) offerDetailView.findViewById(R.id.offer_description_view_payout_view);
                 ImageView installImageView = (ImageView)offerDetailView.findViewById(R.id.offer_description_view_install_image_view);
-                ImageView confirmationImageView = (ImageView)offerDetailView.findViewById(R.id.offer_description_view_confirmation_image_view);
-                View centerImageView = (View)offerDetailView.findViewById(R.id.offer_description_view_center_point_view);
 
                 offerDescriptionTextView.setText(payout.getDescription());
                 offerPayoutTextView.setText(Constants.INR_LABEL + String.valueOf(payout.getPayout()));
 
                 if(payout.isConverted()) {
                     installImageView.setImageResource(R.drawable.install_done);
-                    confirmationImageView.setImageResource(R.drawable.confirmation_done);
-                    centerImageView.setBackgroundResource(R.drawable.offer_description_view_circle_completed);
-                } else if(payout.isInstalled()) {
-                    installImageView.setImageResource(R.drawable.install_done);
-                    confirmationImageView.setImageResource(R.drawable.confirmation_pending);
-                    centerImageView.setBackgroundResource(R.drawable.offer_description_view_circle_active);
+                    installButton.setVisibility(View.GONE);
                 } else {
                     installImageView.setImageResource(R.drawable.install_pending);
-                    confirmationImageView.setImageResource(R.drawable.confirmation_pending);
-                    centerImageView.setBackgroundResource(R.drawable.offer_description_view_circle_inactive);
+                    offerDetailView.setAlpha(0.5f);
                 }
                 descriptionLinearLayout.addView(offerDetailView);
+                next = true;
             }
         }
     }

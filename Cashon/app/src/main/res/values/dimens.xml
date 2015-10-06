@@ -63,6 +63,7 @@
     <dimen name="drawer_list_item_image_margin_right">6dp</dimen>
     <dimen name="drawer_list_item_text_margin_right">6dp</dimen>
 
+    <dimen name="text_size_60">60dp</dimen>
     <dimen name="text_size_24">24dp</dimen>
     <dimen name="text_size_20">20dp</dimen>
     <dimen name="text_size_17">17dp</dimen>
@@ -187,6 +188,7 @@
     <dimen name="dimen_3">3dp</dimen>
     <dimen name="dimen_4">4dp</dimen>
     <dimen name="dimen_5">5dp</dimen>
+    <dimen name="dimen_6">6dp</dimen>
     <dimen name="dimen_8">6dp</dimen>
     <dimen name="dimen_10">10dp</dimen>
     <dimen name="dimen_12">12dp</dimen>

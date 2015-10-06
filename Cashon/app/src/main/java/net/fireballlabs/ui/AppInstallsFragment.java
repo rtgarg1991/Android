@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.adapter.AppInstallsAdapter;
+import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
@@ -149,6 +150,10 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
     @Override
     public void accessCompleted(int access, boolean isSuccess) {
         setUpOffers();
+    }
+
+    public void setFragment(int idAppOffer, String offId) {
+        mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_OFFER, Constants.ID_APP_OFFER, 0), offId);
     }
 
     class AppInstallAsyncTask extends AsyncTask<Void, Void, List<String>> {

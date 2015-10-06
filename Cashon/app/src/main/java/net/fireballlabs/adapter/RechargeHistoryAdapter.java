@@ -15,7 +15,11 @@ import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.model.Recharge;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -41,12 +45,13 @@ public class RechargeHistoryAdapter extends RecyclerView.Adapter<RechargeHistory
         LayoutInflater vi = LayoutInflater.from(parent.getContext());
         View v = vi.inflate(R.layout.recharge_history_list_item, parent, false);
         TextView number = (TextView) v.findViewById(R.id.recharge_history_list_item_number_text_view);
-        TextView company = (TextView) v.findViewById(R.id.recharge_history_list_item_company_text_view);
         TextView amount = (TextView) v.findViewById(R.id.recharge_history_list_item_amount_text_view);
+        TextView success = (TextView) v.findViewById(R.id.recharge_history_list_item_success_text_view);
+        TextView date = (TextView) v.findViewById(R.id.recharge_history_list_item_date_text_view);
         TextView reference = (TextView) v.findViewById(R.id.recharge_history_list_item_reference_text_view);
-        TextView referenceNumber = (TextView) v.findViewById(R.id.recharge_history_list_item_reference_number_text_view);
+
         ImageView image = (ImageView) v.findViewById(R.id.recharge_history_list_item_type_image_view);
-        ViewHolder holder = new ViewHolder(v, number, company, amount, reference, referenceNumber, image, type);
+        ViewHolder holder = new ViewHolder(v, number, success, amount, date, reference, image, type);
 
         return holder;
     }
@@ -54,11 +59,12 @@ public class RechargeHistoryAdapter extends RecyclerView.Adapter<RechargeHistory
     @Override
     public void onBindViewHolder(final RechargeHistoryAdapter.ViewHolder holder, final int position) {
         Recharge recharge = mRecharges.get(position);
-        holder.setTextViewAmountText(Constants.INR_LABEL + String.valueOf(recharge.getAmount()));
-        holder.setTextViewCompanyText(recharge.getCompany());
+        holder.setTextViewAmountText(Constants.RS_TEXT + String.valueOf(recharge.getAmount()));
+        holder.setTextViewSuccessText();
         holder.setTextViewNumberText(recharge.getNumber());
-        holder.setTextViewReferenceText(recharge.getReferenceNumber());
+        holder.setTextViewDateText(recharge.getRequestedDate());
         holder.setImageView(R.drawable.mobile);
+        holder.setTextViewReferenceText(recharge.getReferenceNumber());
     }
 
     @Override
@@ -82,33 +88,43 @@ public class RechargeHistoryAdapter extends RecyclerView.Adapter<RechargeHistory
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final int type;
         TextView textViewNumber = null;
-        TextView textViewCompany;
+        TextView textViewSuccess = null;
         TextView textViewAmount = null;
+        TextView textViewDate = null;
         TextView textViewReference = null;
-        TextView textViewReferenceNumber = null;
         Button clickButton = null;
         ImageView imageView = null;
         View parent;
 
-        public ViewHolder(View itemView, TextView textViewNumber, TextView textViewCompany, TextView textViewAmount,
-                          TextView textViewReference, TextView textViewReferenceNumber,
-                          ImageView imageView, int type) {
+        public ViewHolder(View itemView, TextView textViewNumber, TextView textViewSuccess, TextView textViewAmount,
+                          TextView textViewDate, TextView textViewReference, ImageView imageView, int type) {
             super(itemView);
             this.parent = itemView;
             this.textViewNumber = textViewNumber;
-            this.textViewCompany = textViewCompany;
+            this.textViewSuccess = textViewSuccess;
             this.textViewAmount = textViewAmount;
-            this.textViewReference = textViewReference;
-            this.textViewReferenceNumber = textViewReferenceNumber;
+            this.textViewDate = textViewDate;
             this.imageView = imageView;
+            this.textViewReference = textViewReference;
             this.type = type;
 
             if(type == 1) {
-                this.textViewAmount.setBackgroundColor(mContext.getResources().getColor(R.color.material_color_teal));
-                this.textViewReference.setVisibility(View.GONE);
+                this.textViewAmount.setTextColor(mContext.getResources().getColor(R.color.material_color_teal));
             } else {
-                this.textViewAmount.setBackgroundColor(mContext.getResources().getColor(R.color.material_color_red));
-                this.textViewReferenceNumber.setVisibility(View.GONE);
+                this.textViewAmount.setTextColor(mContext.getResources().getColor(R.color.material_color_red));
+                this.textViewReference.setVisibility(View.GONE);
+            }
+        }
+
+        public TextView getTextViewReference() {
+            return textViewReference;
+        }
+
+        public void setTextViewReferenceText(String text) {
+            if(this.textViewReference != null) {
+                if(this.type == 1) {
+                    this.textViewReference.setText(this.textViewReference.getText() + text);
+                }
             }
         }
 
@@ -123,13 +139,17 @@ public class RechargeHistoryAdapter extends RecyclerView.Adapter<RechargeHistory
             }
         }
 
-        public TextView getTextViewCompany() {
-            return textViewCompany;
+        public TextView getTextViewCSuccess() {
+            return textViewSuccess;
         }
 
-        public void setTextViewCompanyText(String text) {
-            if(this.textViewCompany != null) {
-                this.textViewCompany.setText(text);
+        public void setTextViewSuccessText() {
+            if(this.textViewSuccess != null) {
+                if(this.type == 1) {
+                    this.textViewSuccess.setText("Success");
+                } else {
+                    this.textViewSuccess.setText("Pending");
+                }
             }
         }
 
@@ -143,28 +163,28 @@ public class RechargeHistoryAdapter extends RecyclerView.Adapter<RechargeHistory
             }
         }
 
-        public TextView getTextViewReference() {
-            return textViewReference;
+        public TextView getTextViewDate() {
+            return textViewDate;
         }
 
-        public void setTextViewReferenceText(String text) {
-            if(this.textViewReference != null) {
-                if(type == 1) {
-                    this.textViewReference.setText("Reference :");
-                    setTextViewReferenceNumberText(text);
+        public void setTextViewDateText(Date requestedDate) {
+            if(this.textViewDate != null) {
+                Calendar c1 = Calendar.getInstance();
+                Calendar c2 = Calendar.getInstance();
+                c2.setTime(requestedDate);
+                if(c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)) {
+                    if (c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR)) {
+                        this.textViewDate.setText("Today");
+                    } else if (c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR) + 1) {
+                        this.textViewDate.setText("Yesterday");
+                    } else {
+                        DateFormat format=new SimpleDateFormat("yyyy/MM/dd");
+                        this.textViewDate.setText(format.format(requestedDate));
+                    }
                 } else {
-                    this.textViewReference.setText("Recharge Pending.");
+                    DateFormat format=new SimpleDateFormat("yyyy/MM/dd");
+                    this.textViewDate.setText(format.format(requestedDate));
                 }
-            }
-        }
-
-        public TextView getTextViewReferenceNumber() {
-            return textViewReferenceNumber;
-        }
-
-        public void setTextViewReferenceNumberText(String text) {
-            if(this.textViewReferenceNumber != null) {
-                this.textViewReferenceNumber.setText(text);
             }
         }
 

@@ -98,6 +98,7 @@ public class Constants {
     public static final int ID_APP_OFFER = 13;
 
     public static final String INR_TEXT = "INR";
+    public static final String RS_TEXT = "Rs. ";
     public static final String INR_LABEL = "\u20B9";
     public static final String TEXT_REFERAL = "Hey! Checkout CashGuru, Its the best way to get free recharge. Install now and get ₹5 bonus on installing any 2 apps! Get CashGuru %s";
     public static final int PUSH_NOTIFICATION_REFERRAL = 2;

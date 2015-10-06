@@ -18,77 +18,85 @@
             android:layout_height="match_parent" >
             <TextView
                 android:layout_width="@dimen/dimen_80"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/text_size_24"
-                android:background="@color/material_color_teal"
-                android:id="@+id/recharge_history_list_item_amount_text_view"
-                android:layout_alignParentTop="true"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_60"
+                android:id="@+id/recharge_history_list_item_inr_text_view"
                 android:layout_alignParentLeft="true"
                 android:gravity="center"
-                android:textColor="@color/white"
-                android:text="R10"/>
+                android:textColor="@color/black"
+                android:text="₹"/>
 
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/recharge_history_list_item_amount_text_view" >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/recharge_history_list_item_inr_text_view">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8"
+                    android:layout_marginLeft="@dimen/dimen_12"
+                    android:text="Top Up - "
+                    android:textSize="@dimen/text_size_20"
+                    android:id="@+id/recharge_history_list_item_top_up_text_view"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8"
+                    android:text="Rs. 20"
+                    android:textSize="@dimen/text_size_20"
+                    android:id="@+id/recharge_history_list_item_amount_text_view"
+                    android:layout_toRightOf="@id/recharge_history_list_item_top_up_text_view"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dimen_8"
+                    android:layout_marginTop="@dimen/dimen_8"
+                    android:text="Success"
+                    android:textSize="@dimen/text_size_20"
+                    android:id="@+id/recharge_history_list_item_success_text_view"
+                    android:layout_alignParentRight="true"/>
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_10"
+                    android:layout_marginTop="@dimen/dimen_5"
                     android:id="@+id/recharge_history_list_item_type_image_view"
-                    android:layout_marginLeft="@dimen/dimen_40"
-                    android:src="@drawable/mobile"/>
+                    android:layout_marginLeft="@dimen/dimen_12"
+                    android:src="@drawable/mobile"
+                    android:layout_below="@+id/recharge_history_list_item_top_up_text_view"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_20"
                     android:id="@+id/recharge_history_list_item_number_text_view"
+                    android:layout_below="@+id/recharge_history_list_item_top_up_text_view"
                     android:layout_toRightOf="@id/recharge_history_list_item_type_image_view"
-                    android:layout_alignParentTop="true"
                     android:layout_marginLeft="@dimen/dimen_2"
-                    android:layout_marginTop="@dimen/dimen_10"
+                    android:layout_marginTop="@dimen/dimen_4"
                     android:textColor="@color/black"
                     android:text="7503650942"/>
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_17"
-                    android:id="@+id/recharge_history_list_item_company_text_view"
-                    android:layout_below="@id/recharge_history_list_item_number_text_view"
-                    android:layout_marginLeft="@dimen/dimen_40"
-                    android:textColor="@color/black_dim"
-                    android:text="Airtel"/>
-
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_17"
-                    android:id="@+id/recharge_history_list_item_reference_text_view"
-                    android:layout_below="@id/recharge_history_list_item_company_text_view"
-                    android:layout_marginLeft="@dimen/dimen_40"
+                    android:textSize="@dimen/text_size_16"
+                    android:id="@+id/recharge_history_list_item_date_text_view"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/recharge_history_list_item_success_text_view"
+                    android:layout_marginRight="@dimen/dimen_8"
                     android:layout_marginTop="@dimen/dimen_4"
-                    android:textColor="@color/black_dim"
-                    android:text="Reference :"/>
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_17"
-                    android:id="@+id/recharge_history_list_item_reference_number_text_view"
-                    android:layout_below="@id/recharge_history_list_item_company_text_view"
-                    android:layout_toRightOf="@id/recharge_history_list_item_reference_text_view"
-                    android:layout_marginLeft="@dimen/dimen_40"
-                    android:layout_marginTop="@dimen/dimen_4"
-                    android:textColor="@color/black"
-                    android:text="FCVW150917231783073"/>
+                    android:textColor="@color/primary"
+                    android:text="dsfdfs"/>
             </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_12"
+                android:id="@+id/recharge_history_list_item_reference_text_view"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:text="Reference Number : "
+                android:layout_marginLeft="@dimen/dimen_12"
+                android:layout_centerHorizontal="true"/>
 
         </RelativeLayout>
 

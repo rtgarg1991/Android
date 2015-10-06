@@ -5,60 +5,66 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="140dp"
         android:id="@+id/offer_fragment_top_view"
         android:paddingTop="@dimen/dimen_4">
 
         <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:maxHeight="200dp"
-            android:id="@+id/offer_fragment_image_view2"
+            android:id="@+id/offer_fragment_image_view"
             android:src="@drawable/splash"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginTop="@dimen/dimen_12"/>
+            android:layout_marginTop="@dimen/dimen_12"
+            android:layout_marginLeft="@dimen/dimen_4"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/offer_fragment_title_view2"
+            android:id="@+id/offer_fragment_title_view"
             android:text="Flipkart2132312"
             android:gravity="center"
             android:textStyle="bold"
-            android:textSize="@dimen/text_size_20"
-            android:layout_marginTop="@dimen/dimen_4"
+            android:textSize="@dimen/text_size_24"
+            android:layout_marginTop="@dimen/dimen_16"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/offer_fragment_image_view2"/>
+            android:layout_toRightOf="@id/offer_fragment_image_view"
+            android:layout_marginLeft="@dimen/dimen_4"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/offer_fragment_category_view2"
+            android:id="@+id/offer_fragment_category_view"
             android:text="Flipkart"
             android:gravity="center"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_16"
-            android:layout_toRightOf="@id/offer_fragment_image_view2"
-            android:layout_below="@id/offer_fragment_title_view2"/>
+            android:layout_toRightOf="@id/offer_fragment_image_view"
+            android:layout_below="@id/offer_fragment_title_view"
+            android:textColor="@color/primary_dim"
+            android:layout_marginLeft="@dimen/dimen_4"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/offer_fragment_payout_view2"
+            android:id="@+id/offer_fragment_payout_view"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dimen_10"
             android:text="10"
             android:textStyle="bold"
-            android:textSize="@dimen/text_size_24"/>
+            android:textSize="@dimen/text_size_24"
+            android:layout_marginTop="@dimen/dimen_20"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/offer_fragment_install_button"
             android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="@dimen/dimen_10"
             android:text="Install"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_24"
-            android:layout_below="@id/offer_fragment_category_view2"/>
+            android:textColor="@color/white"/>
 
 
     </RelativeLayout>
@@ -66,16 +72,73 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/offer_fragment_top_view"
-        android:layout_marginTop="@dimen/dimen_12">
+        android:layout_margin="@dimen/dimen_12">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:id="@+id/offer_fragment_description_view">
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/offer_fragment_description_text_view"
+                android:layout_margin="@dimen/dimen_10"
+                android:layout_below="@id/offer_fragment_top_view"
+                android:text="10"
+                android:textSize="@dimen/text_size_16"
+                android:layout_marginTop="@dimen/dimen_12"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/offer_fragment_description_view"
+                android:background="@drawable/primary_color_rounded_offer_background"
+                >
 
-            <include layout="@layout/offer_description_view"/>
+                <include layout="@layout/offer_description_view"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/primary"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="2dp"
+                    />
 
-            <include layout="@layout/offer_description_view"/>
+                <include layout="@layout/offer_description_view"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="@dimen/dimen_16"
+                    android:layout_height="@dimen/dimen_16"
+                    android:src="@drawable/install_done"
+                    android:layout_gravity="center_vertical"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : Completed\t\t"/>
+                <ImageView
+                    android:layout_width="@dimen/dimen_16"
+                    android:layout_height="@dimen/dimen_12"
+                    android:src="@drawable/install_pending"
+                    android:layout_gravity="center_vertical"
+                    android:alpha="0.5"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : Awaiting Advertiser Confirmation"/>
+
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/offer_fragment_tnc_text_view"
+                android:layout_margin="@dimen/dimen_10"
+                android:layout_below="@id/offer_fragment_top_view"
+                android:text="10"
+                android:textSize="@dimen/text_size_16"
+                android:layout_marginTop="@dimen/dimen_20"/>
         </LinearLayout>
     </ScrollView>
 
