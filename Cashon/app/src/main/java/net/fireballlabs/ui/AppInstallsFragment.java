@@ -169,6 +169,8 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
                     // sync all offers
                     List<Offer> offers = Offer.getAllOffers(getActivity());
                     UsedOffer.clearSavedData();
+
+                    Offer.clearCurrentDataFromDB(getActivity());
                     for (Offer offer : offers) {
                         offer.saveData(getActivity());
                     }

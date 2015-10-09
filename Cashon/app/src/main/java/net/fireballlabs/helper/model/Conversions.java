@@ -7,7 +7,6 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
-import net.fireballlabs.cashguru.MainActivity;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.PreferenceManager;
 

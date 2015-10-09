@@ -15,4 +15,7 @@ public class ParseConstants {
     public static final String FUNCTION_SAVE_CONTACTS = "SaveContacts";
     public static final String FUNCTION_SEND_OTP = "SendOTP";
     public static final String FUNCTION_VERIFY_OTP = "VerifyOTP";
+
+    public static final String FUNCTION_CONTACT_US = "ContactUs";
+    public static final String FUNCTION_GET_CONTACT_US_HISTORY = "GetContactUsHistory";
 }

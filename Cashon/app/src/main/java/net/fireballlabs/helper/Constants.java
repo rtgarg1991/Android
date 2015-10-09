@@ -97,6 +97,9 @@ public class Constants {
     public static final String TITLE_APP_OFFER = "Offer";
     public static final int ID_APP_OFFER = 13;
 
+    public static final String TITLE_APP_CONTACT_US_HISTORY = "History";
+    public static final int ID_APP_CONTACT_US_HISTORY = 14;
+
     public static final String INR_TEXT = "INR";
     public static final String RS_TEXT = "Rs. ";
     public static final String INR_LABEL = "\u20B9";

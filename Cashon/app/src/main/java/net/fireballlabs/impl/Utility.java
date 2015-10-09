@@ -183,7 +183,7 @@ public class Utility {
                 .replace(AFF_LINK_DEVICE_ID, deviceId)
                 .replace(AFF_LINK_OFFER_ID, offerId)
                 .replace(AFF_LINK_TYPE, "1")
-                .replace(AFF_LINK_S_ID, userId + "_" + deviceId + "_" + offerId + "_" + 1);
+                .replace(AFF_LINK_S_ID, userId + "_" + deviceId + "_" + offerId);
 //        return userId + "_" + id + "_" + 1;
 //        return String.format(Locale.US, REF_URL_STRING, userId, generateRandomString());
     }

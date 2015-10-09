@@ -76,6 +76,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
         final RadioButton radioButtonPrepaid = (RadioButton)view.findViewById(R.id.recharge_radio_button_prepaid);*/
 
         final Spinner spinnerCompanyName = (Spinner)view.findViewById(R.id.recharge_spinner_company);
+        final Spinner spinnerCircleName = (Spinner)view.findViewById(R.id.recharge_spinner_circle);
 
         final EditText editTextNumber = (EditText)view.findViewById(R.id.recharge_mobile_number);
         final EditText editTextAmount = (EditText)view.findViewById(R.id.recharge_amount);
@@ -104,6 +105,11 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
                 R.array.recharge_mobile_prepaid_company, R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spinnerCompanyName.setAdapter(adapter);
+
+        ArrayAdapter<CharSequence> adapterCircle = ArrayAdapter.createFromResource(getActivity(),
+                R.array.recharge_mobile_circle, R.layout.simple_spinner_item);
+        adapterCircle.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+        spinnerCircleName.setAdapter(adapterCircle);
 
         specialRechargeCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -139,6 +145,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
                         params.put(Recharge.PARSE_TABLE_COLUMN_COMMENT, editTextMessage.getText().toString());
                         params.put(Recharge.PARSE_TABLE_COLUMN_NUMBER, editTextNumber.getText().toString());
                         params.put(Recharge.PARSE_TABLE_COLUMN_COMPANY, spinnerCompanyName.getSelectedItem().toString());
+                        params.put(Recharge.PARSE_TABLE_COLUMN_CIRCLE, spinnerCircleName.getSelectedItem().toString());
                         params.put(PARSE_TABLE_COLUMN_USER_ID, user.getObjectId());
                         params.put(Recharge.PARSE_TABLE_COLUMN_PREPAID, true);
                         params.put(Recharge.PARSE_TABLE_COLUMN_TYPE, TYPE_MOBILE);

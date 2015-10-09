@@ -374,6 +374,7 @@ public class Offer {
 
         Offer.offers = offers;
 
+        clearCurrentDataFromDB(context);
         for(Offer offer :offers) {
             offer.saveData(context);
         }
@@ -383,7 +384,6 @@ public class Offer {
 
 
     public void saveData(Context context) {
-        clearCurrentDataFromDB(context);
         SQLiteDatabase db = SQLWrapper.getWritableSqLiteDatabase(context);
         if(db != null) {
             ContentValues values = new ContentValues();

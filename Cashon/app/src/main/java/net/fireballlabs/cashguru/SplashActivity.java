@@ -132,6 +132,8 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
                 public void run() {
                     try {
                         List<Offer> offers = Offer.getAllOffers(SplashActivity.this);
+
+                        Offer.clearCurrentDataFromDB(SplashActivity.this);
                         if(offers != null) {
                             for (Offer offer : offers) {
                                 offer.saveData(SplashActivity.this);

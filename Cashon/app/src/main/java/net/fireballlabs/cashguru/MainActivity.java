@@ -316,7 +316,7 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        wallet.updateWalletBalance(Constants.INR_LABEL, Conversions.getBalance(MainActivity.this, false));
+                        wallet.updateWalletBalance(Constants.INR_LABEL, Conversions.getBalance(MainActivity.this, false), MainActivity.this);
                     }
                 });
                 thread.start();
@@ -376,7 +376,7 @@ public class MainActivity extends FragmentActivity implements MainDrawerAdapter.
                         new int[]{Constants.ID_APP_LATEST_DEALS}, this);
                 break;
             case Constants.ID_APP_CONTACT_US:
-                fragment = ContactUsFragment.newInstance(this);
+                fragment = ContactUsFragment.newInstance(Constants.TITLE_APP_CONTACT_US, this);
                 break;
             case Constants.ID_APP_RECHARGE:
                 if(!PreferenceManager.getDefaultSharedPreferenceValue(this, Constants.PREF_MOBILE_VERIFIED, MODE_PRIVATE, false)) {

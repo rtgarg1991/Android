@@ -39,6 +39,7 @@ public class Recharge {
     public static String PARSE_TABLE_COLUMN_REQUESTED_DATE = "requestedDate";
     public static String PARSE_TABLE_COLUMN_COMPLETED_DATE = "completedDate";
     public static String PARSE_TABLE_COLUMN_COMMENT = "comment";
+    public static String PARSE_TABLE_COLUMN_CIRCLE = "circle";
 
 
     public int getAmount() {

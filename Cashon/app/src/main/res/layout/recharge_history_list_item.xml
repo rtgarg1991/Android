@@ -19,7 +19,7 @@
             <TextView
                 android:layout_width="@dimen/dimen_80"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_60"
+                android:textSize="@dimen/text_size_50"
                 android:id="@+id/recharge_history_list_item_inr_text_view"
                 android:layout_alignParentLeft="true"
                 android:gravity="center"
@@ -36,14 +36,14 @@
                     android:layout_marginTop="@dimen/dimen_8"
                     android:layout_marginLeft="@dimen/dimen_12"
                     android:text="Top Up - "
-                    android:textSize="@dimen/text_size_20"
+                    android:textSize="@dimen/text_size_18"
                     android:id="@+id/recharge_history_list_item_top_up_text_view"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_8"
                     android:text="Rs. 20"
-                    android:textSize="@dimen/text_size_20"
+                    android:textSize="@dimen/text_size_18"
                     android:id="@+id/recharge_history_list_item_amount_text_view"
                     android:layout_toRightOf="@id/recharge_history_list_item_top_up_text_view"/>
                 <TextView
@@ -52,7 +52,7 @@
                     android:layout_marginRight="@dimen/dimen_8"
                     android:layout_marginTop="@dimen/dimen_8"
                     android:text="Success"
-                    android:textSize="@dimen/text_size_20"
+                    android:textSize="@dimen/text_size_16"
                     android:id="@+id/recharge_history_list_item_success_text_view"
                     android:layout_alignParentRight="true"/>
                 <ImageView
@@ -77,7 +77,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_16"
+                    android:textSize="@dimen/text_size_14"
                     android:id="@+id/recharge_history_list_item_date_text_view"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/recharge_history_list_item_success_text_view"

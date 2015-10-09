@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
+import net.fireballlabs.helper.model.ContactUs;
 import net.fireballlabs.view.SlidingTabLayout;
 
 import java.util.ArrayList;
@@ -146,6 +147,9 @@ public class SlidingTabFragment extends Fragment {
             } else if(Constants.TITLE_APP_RECHARGE_HISTORY.equals(mTitle)
                     && mFragmentId == Constants.ID_APP_RECHARGE_HISTORY) {
                 return RechargeHistoryFragment.newInstance(mTitle, mCallbacks);
+            } else if(Constants.TITLE_APP_CONTACT_US.equals(mTitle)
+                    && mFragmentId == Constants.ID_APP_CONTACT_US) {
+                return ContactUsFragment.newInstance(mTitle, mCallbacks);
             }
             return null;
         }

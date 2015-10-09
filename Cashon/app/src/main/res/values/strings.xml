@@ -122,6 +122,31 @@
         <item>MTS MBlaze</item>
         <item>MTS MBrowse</item>
     </string-array>
+    <string-array name="recharge_mobile_circle">
+        <item>None</item>
+        <item>Delhi/NCR</item>
+        <item>Mumbai</item>
+        <item>Kolkata</item>
+        <item>Maharashtra</item>
+        <item>Andhra Pradesh</item>
+        <item>Tamil Nadu</item>
+        <item>Karnataka</item>
+        <item>Gujarat</item>
+        <item>Uttar Pradesh (E)</item>
+        <item>Madhya Pradesh</item>
+        <item>Uttar Pradesh (W)</item>
+        <item>West Bengal</item>
+        <item>Rajasthan</item>
+        <item>Kerala</item>
+        <item>Punjab</item>
+        <item>Haryana</item>
+        <item>Bihar \u0026 Jharkhand</item>
+        <item>Orissa</item>
+        <item>Assam</item>
+        <item>North East</item>
+        <item>Himachal Pradesh</item>
+        <item>Jammu \u0026 Kashmir</item>
+    </string-array>
 
     <string name="recharge_text_balance">Your Balance : </string>
     <string name="recharge_text_top_up">Top up your Phone</string>

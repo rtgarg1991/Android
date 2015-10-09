@@ -202,6 +202,8 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                             handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
                         }
                     }, mContext, "Attention!", offer.getDescription(), "OK", true);
+
+                    UsedOffer.checkAndAddPackageOnCloud(mContext, offer.getPackageName());
                 }
             });
         }

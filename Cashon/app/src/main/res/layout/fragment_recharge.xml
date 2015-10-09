@@ -157,6 +157,13 @@
                     android:id="@+id/recharge_spinner_company"
                     android:popupBackground="@color/white"
                     android:layout_gravity="center_vertical"/>
+
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/recharge_spinner_circle"
+                    android:layout_gravity="center_vertical"/>
             </LinearLayout>
 
 

@@ -273,11 +273,11 @@ public class UsedOffer {
         database.close();
     }
 
-    public static boolean checkIfThisOfferUserHasAttempted(String offerId, Context context) {
+    public static boolean checkIfThisOfferUserHasAttempted(String packageName, Context context) {
         SQLiteDatabase database = SQLWrapper.getWritableSqLiteDatabase(context);
 
         String whereClause = CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_ATTEMPT_COLUMN_OFF_ID + "=?";
-        String[] whereArgs = new String[]{offerId};
+        String[] whereArgs = new String[]{packageName};
 
         Date date = new Date();
         long currentTime = date.getTime();
@@ -290,7 +290,7 @@ public class UsedOffer {
             database.close();
             return false;
         } else if(cursor.getCount() == 0) {
-            Logger.doSecureLogging(Log.INFO, "No install attempt data in db for offer : " + offerId);
+            Logger.doSecureLogging(Log.INFO, "No install attempt data in db for offer : " + packageName);
             database.close();
             return false;
         } else {
