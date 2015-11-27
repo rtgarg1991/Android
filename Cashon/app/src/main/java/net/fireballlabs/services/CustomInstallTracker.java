@@ -1,21 +1,15 @@
 package net.fireballlabs.services;
 
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
+import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
-import com.parse.ParsePushBroadcastReceiver;
 
 import net.fireballlabs.helper.Constants;
-import net.fireballlabs.helper.Logger;
 import net.fireballlabs.helper.PreferenceManager;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by Rohit on 7/9/2015.
@@ -26,6 +20,7 @@ public class CustomInstallTracker extends BroadcastReceiver {
     private static final String REFERRAL_ID = "c";
     private static final String USER_INVITE = "User_invite";
     private static final String REFERRER = "referrer";
+    private String clickId;
 
     public CustomInstallTracker() {
         super();
@@ -48,6 +43,8 @@ public class CustomInstallTracker extends BroadcastReceiver {
                                     referralId = ids[1];
                                 } else if(PID.equals(ids[0])) {
                                     referType = ids[1];
+                                } else if(Constants.CLICK_ID.equals(ids[0])) {
+                                    clickId = ids[1];
                                 }
                             }
                         }
@@ -56,14 +53,43 @@ public class CustomInstallTracker extends BroadcastReceiver {
                     referralId = extras.getString(key);
                 } else if(key.equals(PID)) {
                     referType = extras.getString(key);
+                } else if(key.equals(Constants.CLICK_ID)) {
+                    clickId = extras.getString(key);
                 }
             }
-            Log.i("CG", "CIT:Referral Id : " + referralId);
-            Log.i("CG", "CIT:pid : " + referType);
 
             if(referType != null && USER_INVITE.equals(referType) && referralId != null) {
                 PreferenceManager.setDefaultSharedPreferenceValue(context,
-                        Constants.PREF_REFERRAL_ID, Context.MODE_PRIVATE, referralId);
+                        Constants.PREF_REFERRAL_ID, Context.MODE_PRIVATE, Constants.USER_INVITE);
+                PreferenceManager.setDefaultSharedPreferenceValue(context,
+                        Constants.PREF_CLICK_ID, Context.MODE_PRIVATE, referralId);
+            } else if(referType != null) {
+
+                PreferenceManager.setDefaultSharedPreferenceValue(context,
+                        Constants.PREF_REFERRAL_ID, Context.MODE_PRIVATE, referType);
+                if(clickId != null) {
+                    PreferenceManager.setDefaultSharedPreferenceValue(context,
+                            Constants.PREF_CLICK_ID, Context.MODE_PRIVATE, clickId);
+                }
+                if(referralId != null) {
+                    PreferenceManager.setDefaultSharedPreferenceValue(context,
+                            Constants.PREF_CAMPAIGN, Context.MODE_PRIVATE, referralId);
+                }
+            }
+            if(referType != null) {
+                try {
+                    BroadcastReceiver e = (BroadcastReceiver)Class.forName("com.appsflyer.AppsFlyerLib").newInstance();
+                    e.onReceive(context, intent);
+                } catch (InstantiationException e) {
+                    Crashlytics.logException(e);
+                    (new AppsFlyerLib()).onReceive(context, intent);
+                } catch (IllegalAccessException e) {
+                    Crashlytics.logException(e);
+                    (new AppsFlyerLib()).onReceive(context, intent);
+                } catch (ClassNotFoundException e) {
+                    Crashlytics.logException(e);
+                    (new AppsFlyerLib()).onReceive(context, intent);
+                }
             }
         }
     }

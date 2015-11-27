@@ -6,43 +6,53 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
+
+import com.appsflyer.AFInAppEventType;
+import com.appsflyer.AppsFlyerLib;
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
+import com.parse.ParseInstallation;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import net.fireballlabs.URLShortener;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
+import net.fireballlabs.helper.ParseConstants;
 import net.fireballlabs.helper.PreferenceManager;
 import net.fireballlabs.helper.model.Referrals;
 import net.fireballlabs.helper.model.UserHelper;
 import net.fireballlabs.impl.SimpleAsyncTask;
 import net.fireballlabs.impl.Utility;
 
-import com.crashlytics.android.Crashlytics;
-import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -93,7 +103,7 @@ public class RegisterActivity extends Activity {
                 return false;
             }
         });*/
-        mCountrySpinner = (Spinner)findViewById(net.fireballlabs.cashguru.R.id.spinnerCountryCode);
+        mCountrySpinner = (Spinner) findViewById(net.fireballlabs.cashguru.R.id.spinnerCountryCode);
 //        mReferralView = (EditText) findViewById(net.fireballlabs.cashguru.R.id.textReferral);
 
         Button registerButton = (Button) findViewById(net.fireballlabs.cashguru.R.id.buttonRegister);
@@ -113,9 +123,9 @@ public class RegisterActivity extends Activity {
         mCountrySpinner.setAdapter(adapter);
 
         Intent intent = getIntent();
-        if(intent != null && intent.hasExtra(Constants.MOBILE_NUMBER)) {
+        if (intent != null && intent.hasExtra(Constants.MOBILE_NUMBER)) {
             String extra = intent.getStringExtra(Constants.MOBILE_NUMBER);
-            if(extra != null && !"".equals(extra)) {
+            if (extra != null && !"".equals(extra)) {
                 mMobileView.setText(extra);
             }
         }
@@ -125,12 +135,12 @@ public class RegisterActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             ActionBar actionBar = getActionBar();
             if (actionBar != null) {
                 actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(net.fireballlabs.cashguru.R.color.primary)));
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                    actionBar.setLogo(net.fireballlabs.cashguru.R.drawable.logo_no_shadow);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    actionBar.setLogo(R.drawable.logo_status_bar);
                 }
                 actionBar.setDisplayUseLogoEnabled(true);
             }
@@ -192,7 +202,7 @@ public class RegisterActivity extends Activity {
             cancel = true;
         }*/
 
-        if(TextUtils.isEmpty(referral)) {
+        if (TextUtils.isEmpty(referral)) {
             referral = null;
         }
 
@@ -234,11 +244,44 @@ public class RegisterActivity extends Activity {
                     editor.commit();
 
                     final ParseUser usr = ParseUser.getCurrentUser();
+                    String deviceId = Utility.generateDeviceUniqueId(getApplicationContext());
 
+                    String clickId = PreferenceManager.getDefaultSharedPreferenceValue(RegisterActivity.this,
+                            Constants.PREF_CLICK_ID, Context.MODE_PRIVATE, "");
                     // add referral for current signup
-                    if(referral != null) {
-                        Referrals.addReferral(ParseUser.getCurrentUser().getObjectId(), referral);
+                    if (referral != null) {
+                        if (Constants.USER_INVITE.equals(referral)) {
+                            String referrer = PreferenceManager.getDefaultSharedPreferenceValue(RegisterActivity.this,
+                                    Constants.PREF_CLICK_ID, Context.MODE_PRIVATE, "");
+                            if (referrer != null) {
+                                Referrals.addReferral(usr.getObjectId(), referrer);
+                            }
+                        } else {
+                            if (clickId != null) {
+                                String campaign = PreferenceManager.getDefaultSharedPreferenceValue(RegisterActivity.this,
+                                        Constants.PREF_CAMPAIGN, Context.MODE_PRIVATE, "");
+                                HashMap<String, Object> map = new HashMap<String, Object>();
+                                map.put("clickId", clickId);
+                                map.put("userId", usr.getObjectId());
+                                if (deviceId != null && !"".equals(deviceId)) {
+                                    map.put("deviceId", deviceId);
+                                }
+                                if (referral != null && !"".equals(referral)) {
+                                    map.put("referrer", referral);
+                                }
+                                if (campaign != null && !"".equals(campaign)) {
+                                    map.put("campaign", campaign);
+                                }
+                                ParseCloud.callFunctionInBackground(ParseConstants.FUNCTION_UPDATE_REFERRED_INSTALL, map);
+                            }
+                        }
                     }
+                    HashMap<String, Object> map2 = new HashMap<String, Object>();
+                    map2.put("deviceId", deviceId);
+                    map2.put("referral", ((referral == null || "".equals(referral)) ? "Empty" : referral));
+                    map2.put("clickId", ((clickId == null || "".equals(referral)) ? "Empty" : clickId));
+
+                    AppsFlyerLib.trackEvent(getApplicationContext(), AFInAppEventType.COMPLETE_REGISTRATION, map2);
 
                     // save current installation
                     try {
@@ -248,30 +291,22 @@ public class RegisterActivity extends Activity {
                         Crashlytics.logException(e1);
                     }
 
-                    if(usr != null) {
+                    if (usr != null) {
 
                         Thread thread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                if(usr.getString(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE) == null) {
+                                if (usr.getString(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE) == null) {
                                     try {
                                         usr.fetch();
                                     } catch (ParseException e1) {
                                         e1.printStackTrace();
                                     }
                                 }
-                                JSONObject json = URLShortener.getJSONFromUrl(RegisterActivity.this, usr.getString(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE));
-                                if (json != null) {
-                                    try {
-                                        String url = json.getString("id");
-//                                        usr.put(UserHelper.PARSE_TABLE_COLUMN_USER_ID, usr.getObjectId());
-                                        if (url != null) {
-                                            usr.put(UserHelper.PARSE_TABLE_COLUMN_REFER_URL, url);
-                                        }
-                                        usr.saveEventually();
-                                    } catch (JSONException e) {
-                                        Crashlytics.logException(e);
-                                    }
+                                String url = URLShortener.getShortenedUrl(RegisterActivity.this, usr.getString(UserHelper.PARSE_TABLE_COLUMN_REFER_CODE));
+                                if (url != null) {
+                                    usr.put(UserHelper.PARSE_TABLE_COLUMN_REFER_URL, url);
+                                    usr.saveEventually();
                                 }
 
                             }
@@ -285,6 +320,13 @@ public class RegisterActivity extends Activity {
                         Crashlytics.logException(e1);
                     }
 
+                    try {
+                        // send carrier information
+                        sendAdditionalInformation(user.getObjectId());
+                    } catch (Exception ex) {
+                        Crashlytics.logException(ex);
+                    }
+
                     // Open Main Activity notifying the user is registered
                     // and lets show him/her some awesome offers to earn some money
                     Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
@@ -296,9 +338,9 @@ public class RegisterActivity extends Activity {
                     Crashlytics.logException(e);
                     // Sign up didn't succeed. Look at the ParseException
                     // to figure out what went wrong
-                    if(e.getCode() == ParseException.USERNAME_TAKEN) {
+                    if (e.getCode() == ParseException.USERNAME_TAKEN) {
                         mMobileView.setError(mMobileView.getText().toString() + " already registered!");
-                    } else if(e.getCode() == ParseException.TIMEOUT) {
+                    } else if (e.getCode() == ParseException.TIMEOUT) {
                         mMobileView.setError(e.getMessage());
                     } else {
                         // TODO need to check for all type of errors
@@ -308,6 +350,124 @@ public class RegisterActivity extends Activity {
                 }
             }
         });
+    }
+
+    private void sendAdditionalInformation(String userId) {
+        Context context = RegisterActivity.this;
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("userId", userId);
+        params.put("brand", Build.BRAND);
+        params.put("device", Build.DEVICE);
+        params.put("product", Build.PRODUCT);
+        params.put("sdk", Integer.toString(Build.VERSION.SDK_INT));
+        params.put("model", Build.MODEL);
+        params.put("deviceType", Build.TYPE);
+
+        String installerPackage;
+        try {
+            installerPackage = context.getPackageManager().getInstallerPackageName(context.getPackageName());
+            if (installerPackage != null) {
+                params.put("installerPackage", installerPackage);
+            }
+        } catch (Exception e) {
+            ;
+        }
+        try {
+            params.put("lang", Locale.getDefault().getDisplayLanguage());
+        } catch (Exception e) {
+            ;
+        }
+        try {
+            params.put("langCode", Locale.getDefault().getLanguage());
+        } catch (Exception e) {
+            ;
+        }
+
+        try {
+            params.put("country", Locale.getDefault().getCountry());
+        } catch (Exception e) {
+            ;
+        }
+        try {
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
+            params.put("operator", telephonyManager.getSimOperatorName());
+            params.put("carrier", telephonyManager.getNetworkOperatorName());
+        } catch (Exception e) {
+            ;
+        }
+
+        try {
+            params.put("network", getNetwork(context));
+        } catch (Throwable e) {
+            ;
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hhmmZ");
+        try {
+            long firstInstallTime = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).firstInstallTime;
+            params.put("installDate", dateFormat.format(new Date(firstInstallTime)));
+        } catch (Exception e) {
+            ;
+        }
+        getUserLocation(params);
+        ParseCloud.callFunctionInBackground(ParseConstants.FUNCTION_ADD_ADDITIONAL_INFORMATION, params);
+
+    }
+
+    private void getUserLocation(HashMap<String, Object> params) {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        Criteria criteria = new Criteria();
+        String provider = locationManager.getBestProvider(criteria, false);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+        Location location = locationManager.getLastKnownLocation(provider);
+
+
+        if (location != null) {
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+
+            Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
+            StringBuilder builder = new StringBuilder();
+            List<Address> address = null;
+            try {
+                address = geoCoder.getFromLocation(lat, lng, 1);
+                if(address.size() > 0) {
+                    Address currentAddress = address.get(0);
+                    String adminArea = currentAddress.getAdminArea();
+                    String subAdminArea = currentAddress.getSubAdminArea();
+                    String locality = currentAddress.getLocality();
+                    String subLocality = currentAddress.getSubLocality();
+                    String featureName = currentAddress.getFeatureName();
+
+                    params.put("adminArea", adminArea == null ? "" : adminArea);
+                    params.put("subAdminArea", subAdminArea == null ? "" : subAdminArea);
+                    params.put("locality", locality == null ? "" : locality);
+                    params.put("subLocality", subLocality == null ? "" : subLocality);
+                    params.put("featureName", featureName == null ? "" : featureName);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            return;
+        }
+    }
+
+    private static String getNetwork(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = connectivityManager.getNetworkInfo(1);
+        if(wifi.isConnectedOrConnecting()) {
+            return "WIFI";
+        } else {
+            NetworkInfo mobile = connectivityManager.getNetworkInfo(0);
+            return mobile != null && mobile.isConnectedOrConnecting()?"MOBILE":"unknown";
+        }
     }
 
     /**

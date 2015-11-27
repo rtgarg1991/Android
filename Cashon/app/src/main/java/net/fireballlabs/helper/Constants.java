@@ -49,6 +49,17 @@ public class Constants {
     public static final String PREF_MOBILE_RECHARGE_DONE = "mobile_recharge_done";
     public static final String PREF_NEED_WALLET_REFRESH = "need_wallet_refresh";
     public static final String PREF_WALLET_BALANCE = "wallet_balance";
+    public static final String PREF_SEND_CONTACTS = "send_contacts";
+
+    public static final String PREF_REFERRAL_BONUS_1 = "referral_1";
+    public static final String PREF_REFERRAL_BONUS_2 = "referral_2";
+    public static final String PREF_REFERRAL_BONUS_3 = "referral_3";
+    public static final String PREF_REFERRAL_BONUS_COUNT_1 = "count_1";
+    public static final String PREF_REFERRAL_BONUS_COUNT_2 = "count_2";
+    public static final String PREF_REFERRAL_BONUS_COUNT_3 = "count_3";
+
+    public static final String PREF_CLICK_ID = "click_id";
+    public static final String PREF_CAMPAIGN = "campaign";
 
     // Custom Exception Messages [START]
     public static final String EXCEPTION_INVALID_CONTEXT = "Context Invalid";
@@ -103,9 +114,11 @@ public class Constants {
     public static final String INR_TEXT = "INR";
     public static final String RS_TEXT = "Rs. ";
     public static final String INR_LABEL = "\u20B9";
-    public static final String TEXT_REFERAL = "Hey! Checkout CashGuru, Its the best way to get free recharge. Install now and get ₹5 bonus on installing any 2 apps! Get CashGuru %s";
+    public static final String TEXT_REFERAL = "Hey! Checkout CashGuru, Its the best way to get free recharge. Install now and get free recharge by installing apps! Get CashGuru %s";
+    public static final String TEXT_APP_SHARE = "Try this amazing app -%s - %s";
     public static final int PUSH_NOTIFICATION_REFERRAL = 2;
     public static final int PUSH_NOTIFICATION_INSTALL_CONVERSION = 1;
+    public static final int PUSH_NOTIFICATION_REFERRAL_INSTALL_CONVERSION = 3;
     public static final int PUSH_NOTIFICATION_CLOUD_DATA_CHANGED = 11;
     public static final int PUSH_NOTIFICATION_RECHARGE_DONE = 12;
     public static final int MAX_PAYOUT_APP_INSTALL = 15;
@@ -115,6 +128,8 @@ public class Constants {
     // Feature List [END]
     public static boolean appInstallSyncNeeded = true;
 
+    public static final String ACTIVITY_LAUNCH_PARAM_OFFER_ID = "offer_id";
+    public static final String ACTIVITY_LAUNCH_PARAM_FRAGMENT_ID = "fragment_id";
 
 
     public static final String REQUEST_CODE_STRING = "REQUEST";
@@ -133,9 +148,28 @@ public class Constants {
     public static final String RECHARGE_SENT_SUCCESSFUL = "Recharge details sent successfully.\r\nYour recharge will be done within 24 hours";
     public static final String CONTACT_US_SENT_SUCCESSFUL = "Query sent successfully.";
 
-    public static final String REFERRAL_CODE_COPIED = "Referral code copied to clipboard";
+    public static final String REFERRAL_LINK_COPIED = "Referral link copied to clipboard";
     public static final String COUPON_CODE_COPIED = "Coupon code copied!";
 
     public static final String FAQ_URI = "http://cashguru.fireballlabs.net/faq";
     public static final String TNC_URI = "http://cashguru.fireballlabs.net/tnc";
+
+
+    public static final int OFFER_TYPE_NORMAL_INSTALL = 1;
+    public static final int OFFER_TYPE_REGISTER_INSTALL = 2;
+    public static final int OFFER_TYPE_NEW_INSTALL = 3;
+    public static final int OFFER_TYPE_DOWNLOAD_INSTALL = 4;
+    public static final int OFFER_TYPE_DOWNLOAD_INSTALL_REGISTER = 5;
+    public static final int OFFER_TYPE_DOWNLOAD_NEW_INSTALL = 6;
+    public static final int OFFER_TYPE_LEAD = 7;
+    public static final int OFFER_TYPE_NEW_LEAD = 8;
+    public static final int OFFER_TYPE_APP_SHARE = 9;
+    public static final int OFFER_TYPE_NEW_APP_SHARE = 10;
+    public static final int OFFER_TYPE_APP_REDIRECT_BASE = 20;
+
+
+
+    public static final String POCKETADS_INT = "pocketads_int";
+    public static final String CLICK_ID = "clickid";
+    public static final String USER_INVITE = "user_invite";
 }

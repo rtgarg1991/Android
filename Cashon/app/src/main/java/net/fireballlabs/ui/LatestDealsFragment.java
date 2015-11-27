@@ -1,16 +1,17 @@
 package net.fireballlabs.ui;
 
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseException;
 
 import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.adapter.LatestDealsAdapter;
@@ -19,19 +20,15 @@ import net.fireballlabs.helper.model.LatestDeal;
 import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.Utility;
 
-import com.crashlytics.android.Crashlytics;
-import com.parse.ParseException;
-
 import java.util.List;
 
 
-public class LatestDealsFragment extends Fragment implements HardwareAccess.HardwareAccessCallbacks {
+public class LatestDealsFragment extends BaseFragment implements HardwareAccess.HardwareAccessCallbacks {
 
     private static MainActivityCallBacks mCallBacks;
     private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
     private LatestDealsAdapter mAdapter;
-    private boolean mDetatched;
 
     public static LatestDealsFragment newInstance(String title, MainActivityCallBacks callBacks) {
         LatestDealsFragment fragment = new LatestDealsFragment();
@@ -107,7 +104,7 @@ public class LatestDealsFragment extends Fragment implements HardwareAccess.Hard
 
     public void showProgress(boolean show) {
         mRefreshLayout.setRefreshing(false);
-        if(isAdded() && !mDetatched) {
+        if(isAdded() && !mDetached) {
             Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait_app_offers)));
         }
     }
@@ -134,28 +131,20 @@ public class LatestDealsFragment extends Fragment implements HardwareAccess.Hard
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showProgress(true);
+            if(isValidContext(getActivity())) {
+                showProgress(true);
+            }
         }
 
         @Override
         protected void onPostExecute(List<LatestDeal> latestDeals) {
             super.onPostExecute(latestDeals);
-            mAdapter.addAll(latestDeals);
-            showProgress(false);
+            if(isValidContext(getActivity())) {
+                mAdapter.addAll(latestDeals);
+                showProgress(false);
+            }
         }
 
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDetatched = false;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mDetatched = true;
     }
 
 }

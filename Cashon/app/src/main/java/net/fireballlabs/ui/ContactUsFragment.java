@@ -1,10 +1,8 @@
 package net.fireballlabs.ui;
 
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+
 import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.adapter.ContactUsHistoryAdapter;
 import net.fireballlabs.cashguru.R;
@@ -22,18 +25,11 @@ import net.fireballlabs.helper.model.ContactUs;
 import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.Utility;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.crashlytics.android.Crashlytics;
-import com.parse.ParseACL;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
-
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ContactUsFragment extends Fragment implements Utility.DialogCallback, HardwareAccess.HardwareAccessCallbacks {
+public class ContactUsFragment extends BaseFragment implements Utility.DialogCallback, HardwareAccess.HardwareAccessCallbacks {
 
     public static String PARSE_TABLE_NAME_CONTACT_US = "ContactUs";
     public static String PARSE_TABLE_NAME_COLUMN_USER_ID = "userId";
@@ -45,7 +41,6 @@ public class ContactUsFragment extends Fragment implements Utility.DialogCallbac
     MaterialDialog mProgressDialog;
     private TextView mEmptyTextView;
     private LinearLayoutManager mLayoutManager;
-    private boolean mDetatched;
 
     public static ContactUsFragment newInstance(String titles, MainActivityCallBacks callBacks) {
         ContactUsFragment fragment = new ContactUsFragment();
@@ -73,7 +68,7 @@ public class ContactUsFragment extends Fragment implements Utility.DialogCallbac
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(et.getText() == null || et.getText().equals("")) {
+                if(et.getText() == null || "".equals(et.getText().toString()) || "".equals(et.getText().toString().trim())) {
                     et.setError("Enter some text.");
                 } else {
                     ParseUser user = ParseUser.getCurrentUser();
@@ -165,24 +160,28 @@ public class ContactUsFragment extends Fragment implements Utility.DialogCallbac
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showProgress(true);
+            if(isValidContext(getActivity())) {
+                showProgress(true);
+            }
         }
 
         @Override
         protected void onPostExecute(List<ContactUs> contactUs) {
             super.onPostExecute(contactUs);
-            showProgress(false);
-            if(contactUs == null) {
-                mAdapter.addContactUsHistory(new ArrayList<ContactUs>());
-                setEmptyViewVisibility(View.VISIBLE);
-            } else {
-                mAdapter.addContactUsHistory(contactUs);
-
-                if(contactUs.size() == 0) {
+            if(isValidContext(getActivity())) {
+                showProgress(false);
+                if (contactUs == null) {
+                    mAdapter.addContactUsHistory(new ArrayList<ContactUs>());
                     setEmptyViewVisibility(View.VISIBLE);
                 } else {
-                    mRecyclerView.scrollToPosition(contactUs.size() - 1);
-                    setEmptyViewVisibility(View.GONE);
+                    mAdapter.addContactUsHistory(contactUs);
+
+                    if (contactUs.size() == 0) {
+                        setEmptyViewVisibility(View.VISIBLE);
+                    } else {
+                        mRecyclerView.scrollToPosition(contactUs.size() - 1);
+                        setEmptyViewVisibility(View.GONE);
+                    }
                 }
             }
         }
@@ -197,20 +196,8 @@ public class ContactUsFragment extends Fragment implements Utility.DialogCallbac
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDetatched = false;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mDetatched = true;
-    }
-
     public void showProgress(boolean show) {
-        if(isAdded() && !mDetatched) {
+        if(isAdded() && !mDetached) {
             Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait)));
         }
     }

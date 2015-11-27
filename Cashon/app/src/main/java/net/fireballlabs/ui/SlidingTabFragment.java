@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
-import net.fireballlabs.helper.model.ContactUs;
 import net.fireballlabs.view.SlidingTabLayout;
 
 import java.util.ArrayList;

@@ -32,6 +32,7 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_SUB_TITLE = "_subTitle";
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_AFFLINK = "_affLink";
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_DESCRIPTION = "_description";
+    public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_TNC = "_tnc";
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_TYPE = "_type";
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_PACKAGE_NAME = "_packageName";
     public static final String TABLE_APP_INSTALL_OFFERS_COLUMN_IMAGE = "_image";
@@ -80,6 +81,7 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
             + " text not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_AFFID
             + " text not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_AFFLINK
             + " text not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_DESCRIPTION
+            + " text not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_TNC
             + " text not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_TYPE
             + " integer not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_PAYOUT
             + " integer not null, " + TABLE_APP_INSTALL_OFFERS_COLUMN_PACKAGE_NAME
@@ -133,7 +135,7 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Logger.doSecureLogging(Log.DEBUG, CashGuruSqliteOpenHelper.class.getName()
+        /*Logger.doSecureLogging(Log.DEBUG, CashGuruSqliteOpenHelper.class.getName()
                 + "Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
         switch (newVersion) {
@@ -144,8 +146,13 @@ public class CashGuruSqliteOpenHelper extends SQLiteOpenHelper {
             case 6:
                 return;
             case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
                 break;
-        }
+        }*/
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP_INSTALL_OFFERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APP_INSTALL_PAYOUT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_INSTALLED_APPS);

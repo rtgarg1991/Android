@@ -5,16 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.parse.ParseException;
 
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.model.NotificationHelper;
-import net.fireballlabs.helper.model.Offer;
 import net.fireballlabs.ui.NotificationFragment;
 
 import java.util.ArrayList;
@@ -63,6 +58,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 holder.setTextViewTitleText("Referral Credited");
                 break;
             case Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION:
+            case Constants.PUSH_NOTIFICATION_REFERRAL_INSTALL_CONVERSION:
                 holder.setTextViewTitleText("Credit");
                 break;
         }
@@ -88,7 +84,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         int type = (Integer)view.getTag();
         if(type == Constants.PUSH_NOTIFICATION_RECHARGE_DONE) {
             mFragment.selectFeature(Constants.ID_APP_RECHARGE);
-        } else if(type == Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION) {
+        } else if(type == Constants.PUSH_NOTIFICATION_INSTALL_CONVERSION
+                || type == Constants.PUSH_NOTIFICATION_REFERRAL_INSTALL_CONVERSION) {
             mFragment.selectFeature(Constants.ID_APP_INSTALLS);
         } else if(type == Constants.PUSH_NOTIFICATION_REFERRAL) {
             mFragment.selectFeature(Constants.ID_APP_REFER);

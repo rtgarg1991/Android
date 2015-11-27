@@ -1,10 +1,10 @@
 package net.fireballlabs.impl;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -12,14 +12,11 @@ import android.util.DisplayMetrics;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
 
-import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.PreferenceManager;
 import net.fireballlabs.sql.SQLWrapper;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -95,23 +92,6 @@ public class Utility {
         return password.length() > 4;
     }
 
-    public static List<MainDrawerAdapter.MainAppFeature> prepareFeatureList() {
-        // TODO Build Feature list based on requiement
-        // We can add Country checks or some other checks based on other information to decide feature list
-        // For now returning only App Installs based Feature
-        List<MainDrawerAdapter.MainAppFeature> featureList = new ArrayList<MainDrawerAdapter.MainAppFeature>();
-        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
-        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_LATEST_DEALS, Constants.ID_APP_LATEST_DEALS, R.drawable.hotdeals));
-        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_PROFILE, Constants.ID_APP_PROFILE, R.drawable.profile));
-        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_REFER, Constants.ID_APP_REFER, R.drawable.refericon));
-        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_RECHARGE, Constants.ID_APP_RECHARGE, R.drawable.topup));
-        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_CONTACT_US, Constants.ID_APP_CONTACT_US, R.drawable.contactus));
-
-        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_TANDC, Constants.ID_APP_TANDC, R.drawable.tnc));
-        featureList.add(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_FAQ, Constants.ID_APP_FAQ, R.drawable.faq));
-        return featureList;
-    }
-
     public static String getSuitableImage(SQLWrapper.Offer.Images images, Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         switch (metrics.densityDpi) {
@@ -182,11 +162,20 @@ public class Utility {
         return affLink.replace(AFF_LINK_USER_ID, userId)
                 .replace(AFF_LINK_DEVICE_ID, deviceId)
                 .replace(AFF_LINK_OFFER_ID, offerId)
-                .replace(AFF_LINK_TYPE, "1")
-                .replace(AFF_LINK_S_ID, userId + "_" + deviceId + "_" + offerId);
+                .replace(AFF_LINK_TYPE, "2")
+                .replace(AFF_LINK_S_ID, userId + "_" + deviceId + "_" + offerId + "_" + 2);
 //        return userId + "_" + id + "_" + 1;
 //        return String.format(Locale.US, REF_URL_STRING, userId, generateRandomString());
     }
+
+    public static String getAppShareUrlString(String affLink, String userId, String offerId) {
+        return affLink.replace(AFF_LINK_USER_ID, userId)
+                .replace(AFF_LINK_DEVICE_ID, "")
+                .replace(AFF_LINK_OFFER_ID, offerId)
+                .replace(AFF_LINK_TYPE, "")
+                .replace(AFF_LINK_S_ID, "");
+    }
+
     public static String generateRandomString() {
         Random generator = new Random();
         StringBuilder randomStringBuilder = new StringBuilder();
@@ -278,7 +267,9 @@ public class Utility {
     public static void showInformativeDialog(final DialogCallback callback, Context context, String title,
                                              String content, String positiveButtonText, boolean show) {
 
-        showInformativeDialog(callback, context, title, content, positiveButtonText, null, show);
+        if(isValidContext(context)) {
+            showInformativeDialog(callback, context, title, content, positiveButtonText, null, show);
+        }
     }
 
     public static void showInformativeDialog(final DialogCallback callback, Context context, String title,
@@ -368,5 +359,23 @@ public class Utility {
         // for wifi devices, it will be garbage entry
         // for devices without telephony this will be garbage
         return deviceIMEI;
+    }
+
+    public static Boolean isValidContext(Context context) {
+        if(context == null) {
+            return false;
+        }
+        if(context instanceof Activity) {
+            if(((Activity)context).isFinishing()) {
+                return false;
+            } else {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    if(((Activity)context).isDestroyed()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

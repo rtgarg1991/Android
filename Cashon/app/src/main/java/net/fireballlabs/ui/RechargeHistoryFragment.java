@@ -1,11 +1,9 @@
 package net.fireballlabs.ui;
 
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +16,6 @@ import com.crashlytics.android.Crashlytics;
 import com.parse.ParseException;
 
 import net.fireballlabs.MainActivityCallBacks;
-import net.fireballlabs.adapter.PendingInstallsAdapter;
 import net.fireballlabs.adapter.RechargeHistoryAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.model.Recharge;
@@ -33,14 +30,13 @@ import java.util.List;
  * Use the {@link RechargeHistoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RechargeHistoryFragment extends Fragment implements HardwareAccess.HardwareAccessCallbacks {
+public class RechargeHistoryFragment extends BaseFragment implements HardwareAccess.HardwareAccessCallbacks {
     private static MainActivityCallBacks mCallBacks;
     RecyclerView mRecyclerView;
     RechargeHistoryAdapter mAdapter;
     MaterialDialog mProgressDialog;
     private TextView mEmptyTextView;
     private LinearLayoutManager mLayoutManager;
-    private boolean mDetatched;
 
     public static RechargeHistoryFragment newInstance(String title, MainActivityCallBacks callBacks) {
         RechargeHistoryFragment fragment = new RechargeHistoryFragment();
@@ -135,42 +131,34 @@ public class RechargeHistoryFragment extends Fragment implements HardwareAccess.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showProgress(true);
+            if(isValidContext(getActivity())) {
+                showProgress(true);
+            }
         }
 
         @Override
         protected void onPostExecute(List<Recharge> recharges) {
             super.onPostExecute(recharges);
-            showProgress(false);
-            if(recharges == null) {
-                mAdapter.addRechargeHistory(new ArrayList<Recharge>());
-                setEmptyViewVisibility(View.VISIBLE);
-            } else {
-                mAdapter.addRechargeHistory(recharges);
-
-                if(recharges.size() == 0) {
+            if(isValidContext(getActivity())) {
+                showProgress(false);
+                if (recharges == null) {
+                    mAdapter.addRechargeHistory(new ArrayList<Recharge>());
                     setEmptyViewVisibility(View.VISIBLE);
                 } else {
-                    setEmptyViewVisibility(View.GONE);
+                    mAdapter.addRechargeHistory(recharges);
+
+                    if (recharges.size() == 0) {
+                        setEmptyViewVisibility(View.VISIBLE);
+                    } else {
+                        setEmptyViewVisibility(View.GONE);
+                    }
                 }
             }
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDetatched = false;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mDetatched = true;
-    }
-
     public void showProgress(boolean show) {
-        if(isAdded() && !mDetatched) {
+        if(isAdded() && !mDetached) {
             Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait)));
         }
     }

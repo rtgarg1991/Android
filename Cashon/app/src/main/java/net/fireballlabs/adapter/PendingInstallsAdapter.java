@@ -1,5 +1,7 @@
 package net.fireballlabs.adapter;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,20 +10,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseException;
+import com.squareup.picasso.Picasso;
+
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.model.Offer;
 import net.fireballlabs.helper.model.UsedOffer;
 import net.fireballlabs.impl.SimpleDelayHandler;
-import net.fireballlabs.ui.PendingInstallsFragment;
 import net.fireballlabs.impl.Utility;
+import net.fireballlabs.ui.PendingInstallsFragment;
 
-import com.crashlytics.android.Crashlytics;
-import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,7 +37,7 @@ public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstalls
     public PendingInstallsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int type) {
         LayoutInflater vi = LayoutInflater.from(parent.getContext());
         View v = null;
-        if(type == 1) {
+        if(type > 0) {
             v = vi.inflate(R.layout.app_pending_list_item, parent, false);
             TextView title = (TextView) v.findViewById(R.id.app_pending_list_item_title);
             TextView subtitle = (TextView) v.findViewById(R.id.app_pending_list_item_subtitle);
@@ -57,7 +57,7 @@ public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstalls
         holder.setTextViewTitleText(offer.getTitle());
         holder.setTextViewSubtitleText(offer.getSubTitle());
         holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(offer.getPayout()));
-        holder.setTextViewDescriptionText("Waiting for Advertiser's confirmation!");
+        holder.setTextViewDescriptionText("Waiting for confirmation from " + offer.getTitle() + ".!");
 
         String url = Offer.IMAGE_SERVER_URL
                 + String.format(Locale.ENGLISH, offer.getImageName(), Utility.getDeviceDensity(mContext));
@@ -69,6 +69,20 @@ public class PendingInstallsAdapter extends RecyclerView.Adapter<PendingInstalls
                 mFragment.setFragment(Constants.ID_APP_OFFER, offer.getId());
             }
         });
+
+
+
+        holder.parent.setTranslationY(200);
+        holder.parent.setAlpha(0);
+
+        PropertyValuesHolder propx = PropertyValuesHolder.ofFloat("translationY", 0);
+        PropertyValuesHolder propa = PropertyValuesHolder.ofFloat("alpha", 1);
+
+        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(holder.parent, propx, propa);
+//        animator.setStartDelay(0);
+        //scrollDelay++;
+        animator.setDuration(400);
+        animator.start();
     }
 
     @Override

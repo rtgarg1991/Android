@@ -1,10 +1,8 @@
 package net.fireballlabs.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseException;
+
 import net.fireballlabs.MainActivityCallBacks;
 import net.fireballlabs.adapter.AppInstallsAdapter;
-import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
@@ -27,22 +27,20 @@ import net.fireballlabs.helper.model.UsedOffer;
 import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.Utility;
 
-import com.crashlytics.android.Crashlytics;
-import com.parse.ParseException;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppInstallsFragment extends Fragment implements HardwareAccess.HardwareAccessCallbacks {
+public class AppInstallsFragment extends BaseFragment implements HardwareAccess.HardwareAccessCallbacks {
     private static MainActivityCallBacks mCallBacks;
     RecyclerView mRecyclerView;
     AppInstallsAdapter mAdapter;
     MaterialDialog mProgressDialog;
     private SwipeRefreshLayout mRefreshLayout;
     private TextView mEmptyTextView;
-    private boolean mDetatched;
     private List<String> mOffers;
     private LinearLayoutManager layoutManager;
+    private int mFirstVisibleItem;
+    private int mLastVisibleItem;
 
     public static AppInstallsFragment newInstance(String title, MainActivityCallBacks callBacks) {
         AppInstallsFragment fragment = new AppInstallsFragment();
@@ -91,6 +89,8 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
                 int topRowVerticalPosition =
                         (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                 mRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+                mFirstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                mLastVisibleItem = layoutManager.findLastVisibleItemPosition();
             }
         });
 
@@ -153,8 +153,20 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
     }
 
     public void setFragment(int idAppOffer, String offId) {
-        mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_OFFER, Constants.ID_APP_OFFER, 0), offId);
+        if(mCallBacks != null) {
+            mCallBacks.setFragment(idAppOffer, offId);
+        }
     }
+
+    public boolean isScrollDown(int position) {
+        if(position < mFirstVisibleItem) {
+            return false;
+        } else if (position > mLastVisibleItem) {
+            return true;
+        }
+        return true;
+    }
+
 
     class AppInstallAsyncTask extends AsyncTask<Void, Void, List<String>> {
 
@@ -174,7 +186,9 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
                     for (Offer offer : offers) {
                         offer.saveData(getActivity());
                     }
-                    PreferenceManager.setDefaultSharedPreferenceValue(getActivity(), Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, false);
+                    if(isValidContext(getActivity())) {
+                        PreferenceManager.setDefaultSharedPreferenceValue(getActivity(), Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, false);
+                    }
                 } catch (ParseException e) {
                     Logger.doSecureLogging(Log.WARN, getClass().getSimpleName()
                             + " Error  While getting Offer details from Parse");
@@ -198,36 +212,28 @@ public class AppInstallsFragment extends Fragment implements HardwareAccess.Hard
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showProgress(true);
+            if(isValidContext(getActivity())) {
+                showProgress(true);
+            }
         }
 
         @Override
         protected void onPostExecute(List<String> offers) {
             super.onPostExecute(offers);
-            showProgress(false);
-            if(offers == null) {
-                mAdapter.addAppInstallOffers(new ArrayList<String>());
-            } else {
-                mAdapter.addAppInstallOffers((List<String>) offers);
+            if(isValidContext(getActivity())) {
+                showProgress(false);
+                if (offers == null) {
+                    mAdapter.addAppInstallOffers(new ArrayList<String>());
+                } else {
+                    mAdapter.addAppInstallOffers((List<String>) offers);
+                }
+                mOffers = offers;
             }
-            mOffers = offers;
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDetatched = false;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mDetatched = true;
-    }
-
     public void showProgress(boolean show) {
-        if(isAdded() && !mDetatched) {
+        if(isAdded() && !mDetached) {
             mRefreshLayout.setRefreshing(false);
             Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait_app_offers)));
         }

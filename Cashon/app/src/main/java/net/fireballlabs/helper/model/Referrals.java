@@ -1,14 +1,18 @@
 package net.fireballlabs.helper.model;
 
+import android.content.Context;
 import android.util.Log;
 
+import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
+import net.fireballlabs.helper.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +43,42 @@ public class Referrals {
                         Logger.doSecureLogging(Log.DEBUG, "Referral sent successfully.");
                     } else {
                         Logger.doSecureLogging(Log.WARN, "Referral not sent successfully." + e.getCode());
+                        Crashlytics.logException(e);
+                    }
+                }
+            });
+        }
+    }
+
+    public static void syncReferralBonus(final Context context) {
+        if(context != null) {
+            Map<String, String> params = new HashMap<String, String>();
+            ParseCloud.callFunctionInBackground("getReferralBonus", params, new FunctionCallback<ArrayList<HashMap<String, Object>>>() {
+                public void done(ArrayList<HashMap<String, Object>> object, ParseException e) {
+                    if (e == null) {
+                        if(object != null) {
+                            boolean firstDone = false;
+                            for(HashMap<String, Object> obj : object) {
+                                int type = (Integer) obj.get("type");
+                                int count = (Integer) obj.get("count");
+                                int payout = (Integer) obj.get("payout");
+
+                                if(type == 1) {
+                                    if(!firstDone) {
+                                        PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_REFERRAL_BONUS_1, Context.MODE_PRIVATE, (int)payout);
+                                        PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_REFERRAL_BONUS_COUNT_1, Context.MODE_PRIVATE, (int)count);
+                                        firstDone = true;
+                                    } else {
+                                        PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_REFERRAL_BONUS_2, Context.MODE_PRIVATE, (int)payout);
+                                        PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_REFERRAL_BONUS_COUNT_2, Context.MODE_PRIVATE, (int)count);
+                                    }
+                                } else if(type == 2) {
+                                    PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_REFERRAL_BONUS_3, Context.MODE_PRIVATE, (int)payout);
+                                    PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_REFERRAL_BONUS_COUNT_3, Context.MODE_PRIVATE, (int)count);
+                                }
+                            }
+                        }
+                    } else {
                         Crashlytics.logException(e);
                     }
                 }

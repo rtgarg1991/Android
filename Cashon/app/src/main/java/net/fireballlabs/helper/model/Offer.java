@@ -2,12 +2,16 @@ package net.fireballlabs.helper.model;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+
+import net.fireballlabs.cashguru.BuildConfig;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
 import net.fireballlabs.helper.ParseConstants;
@@ -15,10 +19,6 @@ import net.fireballlabs.helper.PreferenceManager;
 import net.fireballlabs.sql.CashGuruSqliteOpenHelper;
 import net.fireballlabs.sql.SQLWrapper;
 import net.fireballlabs.ui.AppInstallsFragment;
-
-import com.parse.ParseCloud;
-import com.parse.ParseException;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +35,7 @@ public class Offer {
     public String affLink;
     public String title;
     public String subTitle;
+    public String tnc;
     public String description;
     public int payout;
     public int type;
@@ -130,6 +131,14 @@ public class Offer {
         this.isAvailable = isAvailable;
     }
 
+    public String getTnc() {
+        return tnc;
+    }
+
+    public void setTnc(String tnc) {
+        this.tnc = tnc;
+    }
+
     public static Offer findOffer(List<Offer> offers, String offerId) {
         if(offers == null || offerId == null) {
             return null;
@@ -177,9 +186,29 @@ public class Offer {
     }
 
     public static Offer getOffer(String s) {
-        for(Offer offer : offers) {
-            if(offer.id.equals(s)) {
-                return offer;
+        if(offers != null) {
+            for (Offer offer : offers) {
+                if (offer.id.equals(s)) {
+                    return offer;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Offer getOffer(String s, Context context) {
+        if(offers == null) {
+            try {
+                getAllOffers(context);
+            } catch (ParseException e) {
+                Crashlytics.logException(e);
+            }
+        }
+        if(offers != null) {
+            for (Offer offer : offers) {
+                if (offer.id.equals(s)) {
+                    return offer;
+                }
             }
         }
         return null;
@@ -245,18 +274,6 @@ public class Offer {
 
     public static String IMAGE_SERVER_URL = "http://cashguru.fireballlabs.net/app_images/";
 
-    public static int OFFER_TYPE_INSTALL = 1;
-    public static int OFFER_TYPE_LEAD = 2;
-    public static int OFFER_TYPE_PROMO = 3;
-    public static int OFFER_TYPE_HOT = 4;
-    public static int OFFER_TYPE_PAY_BUMP = 5;
-
-    public static int OFFER_SUB_TYPE_INSTALL = 1;
-    public static int OFFER_SUB_TYPE_KEEP = 2;
-
-    public static String PARSE_TABLE_NAME_OFFERS = "Offers";
-    public static String PARSE_TABLE_NAME_PAYOUT = "Payout";
-
     public static String PARSE_TABLE_OFFERS_COLUMN_ID = "id";
     public static String PARSE_TABLE_OFFERS_COLUMN_IMAGE_NAME = "imageName";
     public static String PARSE_TABLE_OFFERS_COLUMN_PACKAGE_NAME = "packageName";
@@ -264,6 +281,7 @@ public class Offer {
     public static String PARSE_TABLE_OFFERS_COLUMN_TITLE = "title";
     public static String PARSE_TABLE_OFFERS_COLUMN_SUB_TITLE = "subTitle";
     public static String PARSE_TABLE_OFFERS_COLUMN_DESCRIPTION = "description";
+    public static String PARSE_TABLE_OFFERS_COLUMN_TNC = "tnc";
     public static String PARSE_TABLE_OFFERS_COLUMN_PAYOUT = "payout";
     public static String PARSE_TABLE_OFFERS_COLUMN_TYPE = "type";
     public static String PARSE_TABLE_OFFERS_COLUMN_IS_AVAILABLE = "isAvailable";
@@ -277,60 +295,14 @@ public class Offer {
     /* Category*/
 
     synchronized public static List<Offer> getAllOffers(Context context) throws ParseException {
-
-        // old approach, no cloud function usage
-        /*ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSE_TABLE_NAME_OFFERS);
-        query.whereEqualTo(PARSE_TABLE_OFFERS_COLUMN_IS_AVAILABLE, true);
-        List<ParseObject> list = query.find();
-
-        List<Offer> offers = new ArrayList<Offer>();
-        for(ParseObject obj : list) {
-            Offer offer = new Offer();
-            offer.setId(obj.getObjectId());
-            offer.setImageName(obj.getString(PARSE_TABLE_OFFERS_COLUMN_IMAGE_NAME));
-            offer.setPackageName(obj.getString(PARSE_TABLE_OFFERS_COLUMN_PACKAGE_NAME));
-            offer.setAffLink(obj.getString(PARSE_TABLE_OFFERS_COLUMN_AFF_LINK));
-            offer.setTitle(obj.getString(PARSE_TABLE_OFFERS_COLUMN_TITLE));
-            offer.setSubTitle(obj.getString(PARSE_TABLE_OFFERS_COLUMN_SUB_TITLE));
-            offer.setDescription(obj.getString(PARSE_TABLE_OFFERS_COLUMN_DESCRIPTION));
-            offer.setPayout(obj.getInt(PARSE_TABLE_OFFERS_COLUMN_PAYOUT));
-            offer.setType(obj.getInt(PARSE_TABLE_OFFERS_COLUMN_TYPE));
-            offer.setIsAvailable(obj.getBoolean(PARSE_TABLE_OFFERS_COLUMN_IS_AVAILABLE));
-
-            offer.payouts = new ArrayList<Payout>();
-
-            ParseQuery<ParseObject> queryPayout = ParseQuery.getQuery(PARSE_TABLE_NAME_PAYOUT);
-            queryPayout.whereEqualTo(PARSE_TABLE_PAYOUT_COLUMN_OFFER_ID, offer.getId());
-            List<ParseObject> listPayouts = queryPayout.find();
-
-            for(ParseObject payout : listPayouts) {
-                Payout p = offer.new Payout();
-                offer.payouts.add(p);
-                p.setOfferType(payout.getInt(PARSE_TABLE_PAYOUT_COLUMN_OFFER_TYPE));
-                p.setDescription(payout.getString(PARSE_TABLE_PAYOUT_COLUMN_DESCRIPTION));
-                p.setPayout(payout.getInt(PARSE_TABLE_PAYOUT_COLUMN_OFFER_PAYOUT));
-            }
-            PackageManager pm = context.getPackageManager();
-            // get all installed applications
-            try {
-                PackageInfo info= pm.getPackageInfo(offer.getPackageName(), PackageManager.GET_META_DATA);
-                if(info == null && offer.isAvailable()) {
-                    checkAndAddOffer(offers, offer);
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                if(offer.isAvailable()) {
-                    checkAndAddOffer(offers, offer);
-                }
-            }
-        }*/
         // if we already have offers, then lets sync from it
-        if(offers != null || context == null) {
+        if((offers != null && offers.size() > 0) || context == null) {
             if(!PreferenceManager.getDefaultSharedPreferenceValue(context, Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, true)) {
                 return offers;
             }
         } else if(!PreferenceManager.getDefaultSharedPreferenceValue(context, Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, true)) {
             List<Offer> offers = getData(context);
-            if(offers != null) {
+            if(offers != null && offers.size() > 0) {
                 return offers;
             }
         }
@@ -341,6 +313,7 @@ public class Offer {
             return null;
         }
         HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("appId", BuildConfig.VERSION_CODE);
         ArrayList<HashMap<String, Object>> cloudOffers = ParseCloud.callFunction(ParseConstants.FUNCTION_GET_ALL_OFFERS, params);
         List<Offer> offers = new ArrayList<Offer>();
         for(int i = 0; i < cloudOffers.size(); i++) {
@@ -351,6 +324,7 @@ public class Offer {
             offer.setAffLink((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_AFF_LINK));
             offer.setTitle((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_TITLE));
             offer.setSubTitle((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_SUB_TITLE));
+            offer.setTnc((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_TNC));
             offer.setDescription((String) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_DESCRIPTION));
             offer.setPayout((Integer) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_PAYOUT));
             offer.setType((Integer) cloudOffers.get(i).get(PARSE_TABLE_OFFERS_COLUMN_TYPE));
@@ -394,6 +368,7 @@ public class Offer {
             values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_TITLE, title);
             values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_SUB_TITLE, subTitle);
             values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_DESCRIPTION, description);
+            values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_TNC, tnc);
             values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_PAYOUT, payout);
             values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_TYPE, type);
             values.put(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_IS_AVAILABLE, isAvailable ? 1 : 0);
@@ -450,6 +425,7 @@ public class Offer {
                     offer.title = cursor.getString(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_TITLE));
                     offer.subTitle = cursor.getString(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_SUB_TITLE));
                     offer.description = cursor.getString(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_DESCRIPTION));
+                    offer.tnc = cursor.getString(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_TNC));
                     offer.payout = cursor.getInt(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_PAYOUT));
                     offer.type = cursor.getInt(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_TYPE));
                     offer.isAvailable = cursor.getInt(cursor.getColumnIndex(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS_COLUMN_IS_AVAILABLE)) == 1 ? true : false;
@@ -478,18 +454,6 @@ public class Offer {
                             cursor2.moveToNext();
                         }
                         cursor2.close();
-                    }
-                    PackageManager pm = context.getPackageManager();
-                    // get all installed applications
-                    try {
-                        PackageInfo info= pm.getPackageInfo(offer.getPackageName(), PackageManager.GET_META_DATA);
-                        if(info == null && offer.isAvailable()) {
-                            offers.add(offer);
-                        }
-                    } catch (PackageManager.NameNotFoundException e) {
-                        if(offer.isAvailable()) {
-                            offers.add(offer);
-                        }
                     }
                     cursor.moveToNext();
                 }
@@ -549,11 +513,11 @@ public class Offer {
         if(db != null) {
             db.delete(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_OFFERS, null, null);
             db.delete(CashGuruSqliteOpenHelper.TABLE_APP_INSTALL_PAYOUT, null, null);
+            db.close();
         } else {
             // TODO do Parse error reporting
             Logger.doSecureLogging(Log.WARN, AppInstallsFragment.class.getName()
                     + " An Error occured while retrieving Writable Database");
         }
-        db.close();
     }
 }

@@ -43,7 +43,7 @@ import java.util.Random;
  */
 public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.ViewHolder> {
     private final LatestDealsFragment mFragment;
-    Context mContext;
+    static Context mContext;
     List<LatestDeal> mOffers;
 
     private static final int MSG_TIMEOUT = 1;
@@ -51,7 +51,7 @@ public class LatestDealsAdapter extends RecyclerView.Adapter<LatestDealsAdapter.
 
     TimerHandler handler = new TimerHandler();
 
-    public class TimerHandler extends Handler {
+    public static class TimerHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {

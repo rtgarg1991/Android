@@ -44,13 +44,11 @@
         android:layout_width="@dimen/mobile_verification_edit_text_width"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        android:fontFamily="sans-serif-light"
         android:gravity="center_horizontal"
         android:hint="@string/lbl_enter_otp"
         android:inputType="number"
         android:maxLength="6"
         android:padding="@dimen/mobile_verification_edit_text_padding_left"
-        android:textCursorDrawable="@null"
         android:textSize="@dimen/text_size_17" />
 
     <Button
@@ -59,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/mobile_verification_button_submit_margin_top"
-        android:background="@color/primary_dark"
+        android:background="@drawable/cashguru_btn_default_holo_light"
         android:paddingLeft="@dimen/mobile_verification_button_submit_padding_left"
         android:paddingRight="@dimen/mobile_verification_button_submit_padding_right"
         android:text="@string/action_Submit"
@@ -107,8 +105,6 @@
             android:layout_height="@dimen/mobile_verification_progress_bar_height"
             android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
-            android:indeterminateTint="@color/primary"
-            android:indeterminateTintMode="src_atop"
             android:visibility="gone" />
         <TextView
             android:id="@+id/mobile_verification_progress_text_view"

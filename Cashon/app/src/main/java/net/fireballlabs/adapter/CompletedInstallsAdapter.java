@@ -1,5 +1,7 @@
 package net.fireballlabs.adapter;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseException;
+import com.squareup.picasso.Picasso;
+
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.model.Offer;
@@ -15,11 +21,6 @@ import net.fireballlabs.helper.model.UsedOffer;
 import net.fireballlabs.impl.SimpleDelayHandler;
 import net.fireballlabs.impl.Utility;
 import net.fireballlabs.ui.CompletedInstallsFragment;
-
-import com.crashlytics.android.Crashlytics;
-import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +37,7 @@ public class CompletedInstallsAdapter extends RecyclerView.Adapter<CompletedInst
     public CompletedInstallsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int type) {
         LayoutInflater vi = LayoutInflater.from(parent.getContext());
         View v = null;
-        if(type == 1) {
+        if(type > 0) {
             v = vi.inflate(R.layout.app_completed_list_item, parent, false);
             TextView title = (TextView) v.findViewById(R.id.app_completed_list_item_title);
             TextView subtitle = (TextView) v.findViewById(R.id.app_completed_list_item_subtitle);
@@ -62,6 +63,20 @@ public class CompletedInstallsAdapter extends RecyclerView.Adapter<CompletedInst
         String url = Offer.IMAGE_SERVER_URL
                 + String.format(Locale.ENGLISH, offer.getImageName(), Utility.getDeviceDensity(mContext));
         holder.setImageView(url);
+
+
+
+        holder.parent.setTranslationY(200);
+        holder.parent.setAlpha(0);
+
+        PropertyValuesHolder propx = PropertyValuesHolder.ofFloat("translationY", 0);
+        PropertyValuesHolder propa = PropertyValuesHolder.ofFloat("alpha", 1);
+
+        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(holder.parent, propx, propa);
+//        animator.setStartDelay(0);
+        //scrollDelay++;
+        animator.setDuration(400);
+        animator.start();
     }
 
     @Override

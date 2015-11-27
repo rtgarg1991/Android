@@ -40,7 +40,6 @@ public class Conversions {
             } catch (ParseException e) {
                 Crashlytics.logException(e);
             }
-
         } else {
             return PreferenceManager.getDefaultSharedPreferenceValue(context, Constants.PREF_WALLET_BALANCE, context.MODE_PRIVATE, 0.0f);
         }

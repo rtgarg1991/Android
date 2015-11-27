@@ -2,31 +2,42 @@ package net.fireballlabs.cashguru;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import net.fireballlabs.helper.Constants;
-import net.fireballlabs.helper.PreferenceManager;
-import net.fireballlabs.helper.model.Offer;
-import net.fireballlabs.impl.HardwareAccess;
-import net.fireballlabs.impl.SimpleDelayHandler;
-import net.fireballlabs.helper.Logger;
-import net.fireballlabs.impl.Utility;
-
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
 import com.parse.ParseAnalytics;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
-import java.util.ArrayList;
+import net.fireballlabs.helper.Constants;
+import net.fireballlabs.helper.Logger;
+import net.fireballlabs.helper.ParseConstants;
+import net.fireballlabs.helper.PreferenceManager;
+import net.fireballlabs.helper.model.Offer;
+import net.fireballlabs.helper.model.Referrals;
+import net.fireballlabs.impl.HardwareAccess;
+import net.fireballlabs.impl.SimpleDelayHandler;
+import net.fireballlabs.impl.Utility;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
 
 public class SplashActivity extends Activity implements SimpleDelayHandler.SimpleDelayHandlerCallback, HardwareAccess.HardwareAccessCallbacks {
@@ -40,6 +51,30 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
     private boolean mStopped;
     private boolean mDataSynced = true;
 
+    private boolean mPermissionsGranted = false;
+    private View mLayout;
+
+
+    private String[] permissions = {"android.permission.GET_ACCOUNTS", "android.permission.READ_PROFILE",
+            "android.permission.READ_CONTACTS", "android.permission.INTERNET",
+            "android.permission.READ_PHONE_STATE", "com.google.android.c2dm.permission.RECEIVE",
+            "android.permission.RECEIVE_SMS", "android.permission.ACCESS_NETWORK_STATE",
+            "android.permission.WAKE_LOCK", "android.permission.RECEIVE_BOOT_COMPLETED",
+            "android.permission.VIBRATE", "com.android.launcher.permission.INSTALL_SHORTCUT",
+            "android.permission.ACCESS_COARSE_LOCATION"
+    };
+
+    private int[] permissionRationale = {R.string.permission_get_account_rationale, R.string.permission_read_profile_rationale,
+            R.string.permission_read_contacts_rationale, R.string.permission_internet_rationale,
+            R.string.permission_read_phone_state_rationale, R.string.permission_c2dm_rationale,
+            R.string.permission_receive_sms_rationale, R.string.permission_access_network_state_rationale,
+            R.string.permission_wake_lock_rationale, R.string.permission_boot_completed_rationale,
+            R.string.permission_vibrate_rationale, R.string.permission_install_shortcut_rationale,
+            R.string.permission_access_coarse_location
+    };
+    private String mOfferId;
+    private int mFragmentId = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +86,8 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
+            getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+
             View decorView = getWindow().getDecorView();
             // Hide the status bar.
             int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -58,7 +95,9 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
             // Remember that you should never show the action bar if the
             // status bar is hidden, so hide that too if necessary.
             ActionBar actionBar = getActionBar();
-            actionBar.hide();
+            if(actionBar != null) {
+                actionBar.hide();
+            }
         }
 
         boolean newInstallation = PreferenceManager.getDefaultSharedPreferenceValue(this, Constants.PREF_FIRST_TIME, MODE_PRIVATE, true);
@@ -74,14 +113,112 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
         setContentView(net.fireballlabs.cashguru.R.layout.activity_splash);
+        mLayout = findViewById(R.id.activity_splash_main_layout);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermissionStatus();
+        } else {
+            mPermissionsGranted = true;
+        }
 
         ProgressBar progressBar = (ProgressBar)findViewById(net.fireballlabs.cashguru.R.id.splashProgressBar);
+
+        Intent intent = getIntent();
+        if(intent != null) {
+            if(intent.getStringExtra("com.parse.Data") != null) {
+
+                JSONObject obj = null;
+                try {
+                    obj = new JSONObject(intent.getStringExtra("com.parse.Data"));
+                } catch (JSONException ex) {
+                    Crashlytics.logException(ex);
+                }
+                if (obj != null) {
+                    if (obj.has("deal_link")) {
+
+                        Intent intent2 = null;
+                        try {
+                            intent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(obj.getString("deal_link")));
+                            startActivity(intent2);
+                        } catch (JSONException e) {
+                            Crashlytics.logException(e);
+                        }
+                    } else if(obj.has("offer_id")) {
+                        try {
+                            mOfferId = obj.getString("offer_id");
+                        } catch (JSONException e) {
+                            Crashlytics.logException(e);
+                        }
+                    } else if(obj.has("fragment_id")) {
+                        try {
+                            mFragmentId = obj.getInt("fragment_id");
+                        } catch (JSONException e) {
+                            Crashlytics.logException(e);
+                        }
+                    }
+                }
+            }
+        }
 
         /*Intent i = new Intent("com.android.vending.INSTALL_REFERRER");
         i.setPackage("net.fireballlabs.cashguru"); //referrer is a composition of the parameter of the campaign
         i.putExtra("referrer", "af_tranid=C6G39N5ENDS9R9W&c=ZZZYX&pid=User_invite");
         sendBroadcast(i);*/
     }
+
+    private void checkPermissionStatus() {
+        for(int i = 0; i < permissions.length; i++) {
+            if (ActivityCompat.checkSelfPermission(this, permissions[i])
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermission(permissions[i], permissionRationale[i], i);
+                mPermissionsGranted = false;
+                return;
+            }
+        }
+        mPermissionsGranted = true;
+    }
+
+    private void requestPermission(final String permission, int stringId, final int requestCode) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                permission)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // For example if the user has previously denied the permission.
+            Snackbar.make(mLayout, stringId, Snackbar.LENGTH_INDEFINITE)
+                    .setAction("OK!", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(SplashActivity.this,
+                                    new String[]{permission},
+                                    requestCode);
+                        }
+                    })
+                    .show();
+        } else {
+            // Camera permission has not been granted yet. Request it directly.
+            ActivityCompat.requestPermissions(this, new String[]{permission},
+                    requestCode);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(requestCode < permissions.length) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission has been granted, preview can be displayed
+                checkPermissionStatus();
+                if(mPermissionsGranted) {
+                    initialize();
+                }
+            } else {
+                requestPermission(permissions[requestCode], permissionRationale[requestCode], requestCode);
+
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
     private void addShortcut() {
         //Adding shortcut for MainActivity
         //on Home screen
@@ -114,16 +251,54 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
             }
         }*/
 
+        if(mPermissionsGranted) {
+            initialize();
+        }
+
+
+    }
+
+    private void initialize() {
+
         // lets create a timeout request
         SimpleDelayHandler simpleDelayHandler = SimpleDelayHandler.getInstance(this);
         simpleDelayHandler.startDelayed(this, Constants.SPLASH_SCREEN_TIMEOUT, true);
 
-        if(Utility.isInternetConnected(this)) {
+        if (Utility.isInternetConnected(this)) {
             isInternetConnected = true;
         }
 
         // get all offers from Parse and sync data to local db
         boolean newInstallation = PreferenceManager.getDefaultSharedPreferenceValue(this, Constants.PREF_FIRST_TIME, MODE_PRIVATE, true);
+
+        if(newInstallation) {
+            String referral = PreferenceManager.getDefaultSharedPreferenceValue(this,
+                    Constants.PREF_REFERRAL_ID, Context.MODE_PRIVATE, "");
+            if(referral != null && !"".equals(referral) && !Constants.USER_INVITE.equals(referral)) {
+                String clickId = PreferenceManager.getDefaultSharedPreferenceValue(this,
+                        Constants.PREF_CLICK_ID, Context.MODE_PRIVATE, "");
+                String campaign = PreferenceManager.getDefaultSharedPreferenceValue(this,
+                        Constants.PREF_CAMPAIGN, Context.MODE_PRIVATE, "");
+                String deviceId = Utility.generateDeviceUniqueId(this);
+                HashMap<String, Object> map = new HashMap<>();
+
+                if(deviceId != null && !"".equals(deviceId)) {
+                    map.put("deviceId", deviceId);
+                }
+                if(referral != null && !"".equals(referral)) {
+                    map.put("referrer", referral);
+                }
+                if(campaign != null && !"".equals(campaign)) {
+                    map.put("campaign", campaign);
+                }
+                if(clickId != null && !"".equals(clickId)) {
+                    map.put("clickId", clickId);
+                }
+
+                ParseCloud.callFunctionInBackground(ParseConstants.FUNCTION_ADD_NEW_REFERRED_INSTALL, map);
+            }
+            PreferenceManager.setDefaultSharedPreferenceValue(SplashActivity.this, Constants.PREF_FIRST_TIME, MODE_PRIVATE, false);
+        }
 
         if(newInstallation && isInternetConnected) {
             mDataSynced = false;
@@ -139,11 +314,9 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
                                 offer.saveData(SplashActivity.this);
                             }
                         }
-                        PreferenceManager.setDefaultSharedPreferenceValue(SplashActivity.this, Constants.PREF_FIRST_TIME, MODE_PRIVATE, false);
                         mDataSynced = true;
                     } catch (ParseException e) {
                         Crashlytics.logException(e);
-                        PreferenceManager.setDefaultSharedPreferenceValue(SplashActivity.this, Constants.PREF_FIRST_TIME, MODE_PRIVATE, false);
                         mDataSynced = true;
                     }
                 }
@@ -218,6 +391,15 @@ public class SplashActivity extends Activity implements SimpleDelayHandler.Simpl
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra(Constants.IS_NEW_LOGIN, false);
+            if(mOfferId != null && !"".equals(mOfferId)) {
+                intent.putExtra(Constants.ACTIVITY_LAUNCH_PARAM_OFFER_ID, mOfferId);
+            }
+            if(mFragmentId != -1) {
+                intent.putExtra(Constants.ACTIVITY_LAUNCH_PARAM_FRAGMENT_ID, mFragmentId);
+                if(mFragmentId == Constants.ID_APP_REFER) {
+                    Referrals.syncReferralBonus(getApplicationContext());
+                }
+            }
             startActivity(intent);
         }
     }

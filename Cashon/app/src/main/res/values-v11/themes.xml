@@ -2,9 +2,9 @@
 <resources>
     <style name="cashguru" parent="@style/_cashguru"/>
 
-    <style name="_cashguru" parent="Theme.AppCompat.Light">
+    <style name="_cashguru" parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="android:editTextBackground">@drawable/cashguru_edit_text_holo_light</item>
+        <item name="editTextBackground">@drawable/cashguru_edit_text_holo_light</item>
 
         <item name="android:textColorHighlight">#99e35555</item>
         <item name="android:textSelectHandleLeft">@drawable/cashguru_text_select_handle_left</item>
@@ -17,17 +17,17 @@
 
         <item name="android:listChoiceIndicatorSingle">@drawable/cashguru_btn_radio_holo_light</item>
 
-        <item name="android:buttonStyle">@style/Buttoncashguru</item>
+        <item name="buttonStyle">@style/Buttoncashguru</item>
 
-        <item name="android:imageButtonStyle">@style/ImageButtoncashguru</item>
+        <item name="imageButtonStyle">@style/ImageButtoncashguru</item>
 
         <item name="android:dropDownSpinnerStyle">@style/Spinnercashguru</item>
 
         <item name="android:progressBarStyleHorizontal">@style/ProgressBarcashguru</item>
 
-        <item name="android:seekBarStyle">@style/SeekBarcashguru</item>
+        <item name="seekBarStyle">@style/SeekBarcashguru</item>
 
-        <item name="android:ratingBarStyle">@style/RatingBarcashguru</item>
+        <item name="ratingBarStyle">@style/RatingBarcashguru</item>
 
         <item name="android:ratingBarStyleIndicator">@style/RatingBarBigcashguru</item>
 
@@ -35,11 +35,23 @@
 
         <item name="android:buttonStyleToggle">@style/Togglecashguru</item>
 
-        <item name="android:listChoiceBackgroundIndicator">@drawable/cashguru_list_selector_holo_light</item>
+        <item name="listChoiceBackgroundIndicator">@drawable/cashguru_list_selector_holo_light</item>
 
         <item name="android:activatedBackgroundIndicator">@drawable/cashguru_activated_background_holo_light</item>
 
         <item name="android:fastScrollThumbDrawable">@drawable/cashguru_fastscroll_thumb_holo</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="checkboxStyle">@style/CheckBoxcashguru</item>
+        <item name="radioButtonStyle">@style/RadioButtoncashguru</item>
+        <item name="autoCompleteTextViewStyle">@style/AutoCompleteTextViewcashguru</item>
+
+        <item name="spinnerStyle">@style/Spinnercashguru</item>
+
+        <item name="spinnerDropDownItemStyle">@style/SpinnerDropDownItemcashguru</item>
 
     </style>
 </resources>

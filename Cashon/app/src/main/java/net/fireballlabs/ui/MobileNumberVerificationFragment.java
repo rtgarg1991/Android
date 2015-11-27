@@ -1,13 +1,11 @@
 package net.fireballlabs.ui;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v4.app.Fragment;
 import android.telephony.SmsMessage;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appsflyer.AppsFlyerLib;
 import com.parse.FunctionCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
@@ -27,7 +26,6 @@ import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 
 import net.fireballlabs.MainActivityCallBacks;
-import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.ParseConstants;
@@ -38,14 +36,13 @@ import net.fireballlabs.impl.Utility;
 
 import java.util.HashMap;
 
-public class MobileNumberVerificationFragment extends Fragment implements View.OnClickListener {
+public class MobileNumberVerificationFragment extends BaseFragment implements View.OnClickListener {
 
     public static final String VERIFICATION_DONE = "Verification Done!";
     public static final String PHONE_SUCCESSFULLY_VERIFIED = "Your Phone is successfully verified";
     public static final String WRONG_OTP = "Provided OTP is wrong.";
     public static final String DONE = "Done";
     private static MainActivityCallBacks mCallBacks;
-    private boolean mDetatched;
 
     static MobileNumberVerificationFragment fr;
 
@@ -180,35 +177,41 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
         ParseCloud.callFunctionInBackground(ParseConstants.FUNCTION_VERIFY_OTP, params, new FunctionCallback<Boolean>() {
             @Override
             public void done(Boolean success, ParseException e) {
-                if (e == null) {
-                    if (success) {
-                        if (isVisible()) {
-                            Toast.makeText(getActivity(), "Your mobile number is verified.", Toast.LENGTH_SHORT).show();
-                        }
-                        PreferenceManager.setDefaultSharedPreferenceValue(getActivity(), Constants.PREF_MOBILE_VERIFIED, Context.MODE_PRIVATE, true);
-                        Utility.showInformativeDialog(new Utility.DialogCallback() {
-                            @Override
-                            public void onDialogCallback(boolean success) {
-                                if (mCallBacks != null) {
-                                    mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall), null);
-                                }
+                if(isValidContext(getActivity())) {
+                    if (e == null) {
+                        if (success) {
+                            if (isVisible()) {
+                                Toast.makeText(getActivity(), "Your mobile number is verified.", Toast.LENGTH_SHORT).show();
                             }
-                        }, getActivity(), VERIFICATION_DONE, PHONE_SUCCESSFULLY_VERIFIED, DONE, true);
+                            PreferenceManager.setDefaultSharedPreferenceValue(getActivity(), Constants.PREF_MOBILE_VERIFIED, Context.MODE_PRIVATE, true);
+                            Utility.showInformativeDialog(new Utility.DialogCallback() {
+                                @Override
+                                public void onDialogCallback(boolean success) {
+                                    if (mCallBacks != null) {
+                                        mCallBacks.setFragment(Constants.ID_APP_INSTALLS, null);
+                                    }
+                                }
+                            }, getActivity(), VERIFICATION_DONE, PHONE_SUCCESSFULLY_VERIFIED, DONE, true);
+
+                            HashMap<String, Object> map2 = new HashMap<String, Object>();
+                            map2.put("verified", true);
+                            AppsFlyerLib.trackEvent(getActivity(), "af_verified_mobile", map2);
+                        } else {
+                            Utility.showInformativeDialog(new Utility.DialogCallback() {
+                                @Override
+                                public void onDialogCallback(boolean success) {
+                                    //mCallBacks.setFragment(Constants.ID_APP_INSTALLS, null);
+                                }
+                            }, getActivity(), null, WRONG_OTP, DONE, true);
+                        }
                     } else {
                         Utility.showInformativeDialog(new Utility.DialogCallback() {
                             @Override
                             public void onDialogCallback(boolean success) {
-                                //mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
+                                //mCallBacks.setFragment(Constants.ID_APP_INSTALLS, null);
                             }
                         }, getActivity(), null, WRONG_OTP, DONE, true);
                     }
-                } else {
-                    Utility.showInformativeDialog(new Utility.DialogCallback() {
-                        @Override
-                        public void onDialogCallback(boolean success) {
-                            //mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall));
-                        }
-                    }, getActivity(), null, WRONG_OTP, DONE, true);
                 }
             }
         });
@@ -225,24 +228,6 @@ public class MobileNumberVerificationFragment extends Fragment implements View.O
         super.onStop();
         Utility.showInformativeDialog(null, null, null, null, null, false);
         getActivity().unregisterReceiver(smsReceiver);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDetatched = false;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mDetatched = true;
-    }
-
-    public void showProgress(boolean show) {
-        if(isAdded() && !mDetatched) {
-            Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait)));
-        }
     }
 
     @Override

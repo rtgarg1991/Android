@@ -2,11 +2,13 @@
     android:id="@+id/app_installs_swipe_refresh_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/black_triple_dim">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -15,7 +17,8 @@
             android:visibility="gone"
             android:id="@+id/app_install_empty_text_view"
             android:textColor="@color/black"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/app_installs_recycler_view"
@@ -25,7 +28,6 @@
             android:layout_gravity="left|start"
             android:choiceMode="singleChoice"
             android:divider="@null"
-            android:background="@color/white"
             android:layout_alignParentTop="true"/>
     </RelativeLayout>
 

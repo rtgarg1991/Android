@@ -1,7 +1,6 @@
 package net.fireballlabs.ui;
 
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import net.fireballlabs.MainActivityCallBacks;
-import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.adapter.NotificationAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
@@ -31,14 +29,13 @@ import java.util.List;
  * Use the {@link NotificationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NotificationFragment extends Fragment implements HardwareAccess.HardwareAccessCallbacks {
+public class NotificationFragment extends BaseFragment implements HardwareAccess.HardwareAccessCallbacks {
     private static MainActivityCallBacks mCallBacks;
     RecyclerView mRecyclerView;
     NotificationAdapter mAdapter;
     MaterialDialog mProgressDialog;
     private TextView mEmptyTextView;
     private LinearLayoutManager mLayoutManager;
-    private boolean mDetatched;
 
     public static NotificationFragment newInstance (MainActivityCallBacks callBacks) {
         NotificationFragment fragment = new NotificationFragment();
@@ -112,13 +109,13 @@ public class NotificationFragment extends Fragment implements HardwareAccess.Har
     public void selectFeature(int id) {
         switch (id) {
             case Constants.ID_APP_REFER:
-                mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_REFER, Constants.ID_APP_REFER, R.drawable.refericon), null);
+                mCallBacks.setFragment(Constants.ID_APP_REFER, null);
                 break;
             case Constants.ID_APP_INSTALLS:
-                mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall), null);
+                mCallBacks.setFragment(Constants.ID_APP_INSTALLS, null);
                 break;
             case Constants.ID_APP_RECHARGE:
-                mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_RECHARGE, Constants.ID_APP_RECHARGE, R.drawable.topup), null);
+                mCallBacks.setFragment(Constants.ID_APP_RECHARGE, null);
                 break;
         }
     }
@@ -137,42 +134,34 @@ public class NotificationFragment extends Fragment implements HardwareAccess.Har
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showProgress(true);
+            if(isValidContext(getActivity())) {
+                showProgress(true);
+            }
         }
 
         @Override
         protected void onPostExecute(List<NotificationHelper.Notification> recharges) {
             super.onPostExecute(recharges);
-            showProgress(false);
-            if(recharges == null) {
-                mAdapter.addNotifications(new ArrayList<NotificationHelper.Notification>());
-                setEmptyViewVisibility(View.VISIBLE);
-            } else {
-                mAdapter.addNotifications(recharges);
-
-                if(recharges.size() == 0) {
+            if(isValidContext(getActivity())) {
+                showProgress(false);
+                if (recharges == null) {
+                    mAdapter.addNotifications(new ArrayList<NotificationHelper.Notification>());
                     setEmptyViewVisibility(View.VISIBLE);
                 } else {
-                    setEmptyViewVisibility(View.GONE);
+                    mAdapter.addNotifications(recharges);
+
+                    if (recharges.size() == 0) {
+                        setEmptyViewVisibility(View.VISIBLE);
+                    } else {
+                        setEmptyViewVisibility(View.GONE);
+                    }
                 }
             }
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDetatched = false;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mDetatched = true;
-    }
-
     public void showProgress(boolean show) {
-        if(isAdded() && !mDetatched) {
+        if(isAdded() && !mDetached) {
             Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait)));
         }
     }

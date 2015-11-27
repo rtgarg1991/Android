@@ -23,7 +23,7 @@ import net.fireballlabs.impl.Utility;
  * Use the {@link CompletedInstallsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CompletedInstallsFragment extends Fragment implements HardwareAccess.HardwareAccessCallbacks {
+public class CompletedInstallsFragment extends BaseFragment implements HardwareAccess.HardwareAccessCallbacks {
     private static MainActivityCallBacks mCallBacks;
     RecyclerView mRecyclerView;
     CompletedInstallsAdapter mAdapter;

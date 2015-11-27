@@ -197,7 +197,8 @@
                 android:id="@+id/recharge_send_button"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/white"
-                android:layout_marginTop="@dimen/recharge_default_item_margin_top"/>
+                android:layout_marginTop="@dimen/recharge_default_item_margin_top"
+                android:background="@drawable/cashguru_btn_default_holo_light"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

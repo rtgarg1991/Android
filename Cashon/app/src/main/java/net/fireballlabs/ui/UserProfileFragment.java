@@ -1,18 +1,11 @@
 package net.fireballlabs.ui;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,38 +14,22 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
-import com.parse.Parse;
-import com.parse.ParseAnalytics;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import net.fireballlabs.MainActivityCallBacks;
-import net.fireballlabs.adapter.AppInstallsAdapter;
-import net.fireballlabs.adapter.MainDrawerAdapter;
-import net.fireballlabs.cashguru.MainActivity;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
-import net.fireballlabs.helper.Logger;
-import net.fireballlabs.helper.model.Offer;
 import net.fireballlabs.helper.model.UserProfile;
 import net.fireballlabs.impl.Utility;
-import net.fireballlabs.sql.SQLWrapper;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-public class UserProfileFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
+public class UserProfileFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener {
 
     private static MainActivityCallBacks mCallBacks;
-    private boolean mDetatched;
 
     static UserProfileFragment fr;
 
@@ -64,7 +41,12 @@ public class UserProfileFragment extends Fragment implements DatePickerDialog.On
     private EditText mDobEditText;
     private Spinner mSexSpinner;
     private Button mButton;
-    private ParseObject mProfile;
+    private EditText mPhoneEditText;
+    private Spinner mOperatorSpinner;
+    private Spinner mCircleSpinner;
+    private Spinner mPhoneTypeSpinner;
+    private EditText mCityEditText;
+    private Spinner mStateSpinner;
 
     public static UserProfileFragment newInstance(MainActivityCallBacks callBacks) {
         UserProfileFragment fragment = new UserProfileFragment();
@@ -90,6 +72,15 @@ public class UserProfileFragment extends Fragment implements DatePickerDialog.On
         mNameEditText = (EditText)rootView.findViewById(R.id.user_profile_name);
         mDobEditText = (EditText)rootView.findViewById(R.id.user_profile_dob);
         mSexSpinner = (Spinner)rootView.findViewById(R.id.user_profile_sex);
+
+        mPhoneEditText = (EditText)rootView.findViewById(R.id.user_profile_phone);
+        mOperatorSpinner = (Spinner)rootView.findViewById(R.id.user_profile_operator);
+        mCircleSpinner = (Spinner)rootView.findViewById(R.id.user_profile_circle);
+        mPhoneTypeSpinner = (Spinner)rootView.findViewById(R.id.user_profile_type);
+
+        mCityEditText = (EditText)rootView.findViewById(R.id.user_profile_city);
+        mStateSpinner = (Spinner)rootView.findViewById(R.id.user_profile_state);
+
         mButton = (Button)rootView.findViewById(R.id.user_profile_button);
 
         mDobEditText.setKeyListener(null);
@@ -98,6 +89,26 @@ public class UserProfileFragment extends Fragment implements DatePickerDialog.On
                 R.array.user_profile_sex_array, R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         mSexSpinner.setAdapter(adapter);
+
+        ArrayAdapter<CharSequence> adapterMobileType = ArrayAdapter.createFromResource(getActivity(),
+                R.array.user_profile_mobile_type_array, R.layout.simple_spinner_item);
+        adapterMobileType.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+        mPhoneTypeSpinner.setAdapter(adapterMobileType);
+
+        ArrayAdapter<CharSequence> adapterState = ArrayAdapter.createFromResource(getActivity(),
+                R.array.user_profile_state_array, R.layout.simple_spinner_item);
+        adapterState.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+        mStateSpinner.setAdapter(adapterState);
+
+        ArrayAdapter<CharSequence> adapterCircle = ArrayAdapter.createFromResource(getActivity(),
+                R.array.recharge_mobile_circle, R.layout.simple_spinner_item);
+        adapterCircle.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+        mCircleSpinner.setAdapter(adapterCircle);
+
+        ArrayAdapter<CharSequence> adapterOperator = ArrayAdapter.createFromResource(getActivity(),
+                R.array.recharge_mobile_prepaid_company, R.layout.simple_spinner_item);
+        adapterOperator.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+        mOperatorSpinner.setAdapter(adapterOperator);
 
         mDobEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,42 +127,27 @@ public class UserProfileFragment extends Fragment implements DatePickerDialog.On
             @Override
             public void onClick(View v) {
                 if(validateViews()) {
-                    Date date;
+                    DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
+                    int height = metrics.heightPixels;
+                    int width = metrics.widthPixels;
+
                     try {
-                        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-                        date = format.parse(mDobEditText.getText().toString());
+                        Utility.showProgress(getActivity(), true, getActivity().getResources().getText(R.string.please_wait).toString());
 
-
-                        ParseObject object;
-                        if(mProfile != null) {
-                            object = mProfile;
-                        } else {
-                            object = new ParseObject(UserProfile.PARSE_TABLE_NAME_USER_PROFILE);
-                        }
-
-                        object.put(UserProfile.PARSE_TABLE_COLUMN_SEX, "Male".equals(mSexSpinner.getSelectedItem().toString()) ? false : true);
-                        object.put(UserProfile.PARSE_TABLE_COLUMN_DOB, date);
-                        object.put(UserProfile.PARSE_TABLE_COLUMN_NAME, mNameEditText.getText().toString());
-                        object.put(UserProfile.PARSE_TABLE_COLUMN_USER_ID, ParseUser.getCurrentUser().getObjectId());
-                        object.put(UserProfile.PARSE_TABLE_COLUMN_ANDROID_API, android.os.Build.VERSION.SDK_INT);
-
-                        DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
-                        int height = metrics.heightPixels;
-                        int width = metrics.widthPixels;
-
-                        object.put(UserProfile.PARSE_TABLE_COLUMN_SCREEN_SIZE_X, width);
-                        object.put(UserProfile.PARSE_TABLE_COLUMN_SCREEN_SIZE_Y, height);
-
-                        try {
-                            Utility.showProgress(getActivity(), true, getActivity().getResources().getText(R.string.please_wait).toString());
-                            object.save();
-                            Utility.showProgress(getActivity(), false, null);
-                            mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS, Constants.ID_APP_INSTALLS, R.drawable.offerwall), null);
-                        } catch (ParseException e) {
-                            Crashlytics.logException(e);
-                        }
+                        UserProfile.updateProfile(mNameEditText.getText().toString(), mSexSpinner.getSelectedItem().toString(),
+                                mDobEditText.getText().toString(), android.os.Build.VERSION.SDK_INT, width, height,
+                                mOperatorSpinner.getSelectedItem().toString(), mCircleSpinner.getSelectedItem().toString(),
+                                mPhoneTypeSpinner.getSelectedItem().toString(),
+                                mCityEditText.getText().toString(), mStateSpinner.getSelectedItem().toString(),
+                                getActivity());
+                        Utility.showProgress(getActivity(), false, null);
+                        mCallBacks.setFragment(Constants.ID_APP_INSTALLS, null);
+                    } catch (ParseException e) {
+                        Crashlytics.logException(e);
+                        Utility.showProgress(getActivity(), false, null);
                     } catch (java.text.ParseException e) {
                         e.printStackTrace();
+                        Utility.showProgress(getActivity(), false, null);
                     }
                 }
             }
@@ -176,49 +172,16 @@ public class UserProfileFragment extends Fragment implements DatePickerDialog.On
     @Override
     public void onStart() {
         super.onStart();
-        showProgress(true);
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(UserProfile.PARSE_TABLE_NAME_USER_PROFILE);
-        query.whereEqualTo(UserProfile.PARSE_TABLE_COLUMN_USER_ID, ParseUser.getCurrentUser().getObjectId());
-        try {
-            mProfile =  query.getFirst();
 
-            mNameEditText.setText(mProfile.getString(UserProfile.PARSE_TABLE_COLUMN_NAME));
-            Date cDate = mProfile.getDate(UserProfile.PARSE_TABLE_COLUMN_DOB);
-            String fDate = new SimpleDateFormat("dd/MM/yyyy").format(cDate);
-            mDobEditText.setText(fDate);
-            mSexSpinner.setSelection(mProfile.getBoolean(UserProfile.PARSE_TABLE_COLUMN_SEX) ? 1 : 0);
-
-            mButton.setText("Update");
-        } catch (ParseException e) {
-//            e.printStackTrace();
-            mButton.setText("Save");
-            mProfile = null;
-        }
-        showProgress(false);
+        UserProfile.loadProfileData(mNameEditText, mSexSpinner, mDobEditText,
+                mPhoneEditText, mPhoneTypeSpinner, mOperatorSpinner, mCircleSpinner,
+                mCityEditText, mStateSpinner, getActivity());
     }
 
     @Override
     public void onStop() {
         super.onStop();
         Utility.showProgress(null, false, null);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDetatched = false;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mDetatched = true;
-    }
-
-    public void showProgress(boolean show) {
-        if(isAdded() && !mDetatched) {
-            Utility.showProgress(getActivity(), show, String.valueOf(getResources().getText(R.string.please_wait)));
-        }
     }
 
     @Override
@@ -242,8 +205,8 @@ public class UserProfileFragment extends Fragment implements DatePickerDialog.On
             // Use the current time as the default values for the picker
             final Calendar c = Calendar.getInstance();
             int year = 2003;//c.get(Calendar.YEAR);
-            int month = 01;//c.get(Calendar.MONTH);
-            int day = 01;//c.get(Calendar.DAY_OF_MONTH);
+            int month = 1;//c.get(Calendar.MONTH);
+            int day = 1;//c.get(Calendar.DAY_OF_MONTH);
 
             // Create a new instance of TimePickerDialog and return it
             DatePickerDialog dialog = new DatePickerDialog(getActivity(), fr, year,month,day);

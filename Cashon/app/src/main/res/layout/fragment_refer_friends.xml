@@ -1,10 +1,97 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="net.fireballlabs.ui.ReferFriendsFragment"
-    android:orientation="horizontal" android:background="@color/white"
-    android:paddingLeft="@dimen/refer_friends_main_padding_left"
-    android:paddingRight="@dimen/refer_friends_main_padding_right"
-    android:paddingTop="@dimen/refer_friends_main_padding_top">
+    android:orientation="vertical" android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/refer_background">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_20"
+            android:textSize="@dimen/text_size_20"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="Refer \u0026 Earn"
+            android:textColor="@color/white"/>
+        <RelativeLayout
+            android:layout_width="140dp"
+            android:layout_height="60dp"
+            android:background="@color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/refer_friend_payout_layout"
+            android:layout_marginTop="0dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="₹20"
+                android:textSize="@dimen/text_size_24"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:background="@drawable/refer_friends_payout_button_shape"
+                android:layout_marginTop="0dp"
+                android:id="@+id/refer_friend_payout_view"/>
+        </RelativeLayout>
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="180dp"
+            android:src="@drawable/friends"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-24dp"
+            android:layout_above="@id/refer_friend_payout_layout"
+            android:paddingBottom="0dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/dimen_12">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/referral_conditions"
+            android:textSize="@dimen/text_size_14"
+            android:layout_marginTop="@dimen/dimen_12"
+            android:id="@+id/refer_friend_share_conditions_text_view"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Share this link with your friends!"
+            android:textSize="@dimen/text_size_14"
+            android:layout_marginTop="@dimen/dimen_16"
+            android:layout_below="@id/refer_friend_share_conditions_text_view"
+            android:id="@+id/refer_friend_share_text_view"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_14"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:layout_below="@id/refer_friend_share_text_view"
+            android:id="@+id/refer_friend_share_link_text_view"
+            android:textColor="@color/primary_indigo"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Invite Friends!"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_20"
+            android:layout_marginBottom="@dimen/dimen_12"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/refer_friends_share_button"
+            android:background="@drawable/cashguru_btn_default_holo_light"/>
+    </RelativeLayout><!--
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,5 +126,5 @@
                 android:textColor="@color/white"
                 android:layout_marginTop="@dimen/refer_friends_default_item_margin_top"/>
         </LinearLayout>
-    </ScrollView>
+    </ScrollView>-->
 </LinearLayout>

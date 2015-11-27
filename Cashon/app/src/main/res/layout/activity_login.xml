@@ -48,6 +48,7 @@
                 android:paddingTop="@dimen/login_edit_text_padding_top"
                 android:paddingBottom="@dimen/login_edit_text_padding_bottom"
                 android:textColor="@color/white"
+                android:background="@drawable/cashguru_btn_default_holo_light"
 
                 />
 

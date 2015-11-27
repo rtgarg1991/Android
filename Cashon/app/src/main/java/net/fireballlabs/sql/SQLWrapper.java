@@ -2,10 +2,7 @@ package net.fireballlabs.sql;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-import net.fireballlabs.helper.Logger;
-import net.fireballlabs.ui.AppInstallsFragment;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

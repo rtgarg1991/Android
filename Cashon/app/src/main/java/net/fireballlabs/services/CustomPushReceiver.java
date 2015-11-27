@@ -3,16 +3,18 @@ package net.fireballlabs.services;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParsePushBroadcastReceiver;
+
+import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
 import net.fireballlabs.helper.PreferenceManager;
 import net.fireballlabs.helper.model.NotificationHelper;
-import net.fireballlabs.helper.model.Referrals;
-
-import com.crashlytics.android.Crashlytics;
-import com.parse.ParsePushBroadcastReceiver;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +30,25 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
+    }
+
+    @Override
+    protected int getSmallIconId(Context context, Intent intent) {
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            return R.drawable.status_new;
+        } else {
+            return R.drawable.status_old;
+        }
+    }
+
+    @Override
+    protected Bitmap getLargeIcon(Context context, Intent intent) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);
+        }
+        else {
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);
+        }
     }
 
     @Override
@@ -59,8 +80,14 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
                         PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_NEED_WALLET_REFRESH, context.MODE_PRIVATE, true);
                         NotificationHelper.addNotification(context, Integer.parseInt(obj.optString("amount")), obj.optInt("code"),
                                 obj.optString("extra"), obj.optString("alert"), obj.optString("refId"));
+                    } else if (Constants.PUSH_NOTIFICATION_REFERRAL_INSTALL_CONVERSION == obj.optInt("code")) {
+                        PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_NEED_WALLET_REFRESH, context.MODE_PRIVATE, true);
+                        NotificationHelper.addNotification(context, Integer.parseInt(obj.optString("amount")), obj.optInt("code"),
+                                obj.optString("extra"), obj.optString("alert"), obj.optString("refId"));
                     }
                 }
+            } else {
+                super.onPushReceive(context, intent);
             }
         }
     }

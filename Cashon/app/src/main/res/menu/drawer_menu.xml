@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <group android:checkableBehavior="single">
+            <item android:id="@+id/offer_wall" android:checked="false" android:icon="@drawable/offerwall" android:title="@string/drawer_item_offer_wall" />
+            <item android:id="@+id/hot_deals" android:checked="false" android:icon="@drawable/hotdeals" android:title="@string/drawer_item_hot_deals" />
+            <item android:id="@+id/refer" android:checked="false" android:icon="@drawable/refericon" android:title="@string/drawer_item_refer" />
+            <item android:id="@+id/top_up" android:checked="false" android:icon="@drawable/topup" android:title="@string/drawer_item_top_up" />
+            <item android:id="@+id/contact_us" android:checked="false" android:icon="@drawable/contactus" android:title="@string/drawer_item_contact_us" />
+            <item android:id="@+id/tandc" android:checked="false" android:icon="@drawable/tnc" android:title="@string/drawer_item_tandc" />
+            <item android:id="@+id/faq" android:checked="false" android:icon="@drawable/faq" android:title="@string/drawer_item_faq" />
+        </group>
+</menu>

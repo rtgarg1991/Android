@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import net.fireballlabs.MainActivityCallBacks;
-import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.adapter.PendingInstallsAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
@@ -25,7 +24,7 @@ import net.fireballlabs.impl.Utility;
  * Use the {@link PendingInstallsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PendingInstallsFragment extends Fragment implements HardwareAccess.HardwareAccessCallbacks {
+public class PendingInstallsFragment extends BaseFragment implements HardwareAccess.HardwareAccessCallbacks {
     private static MainActivityCallBacks mCallBacks;
     RecyclerView mRecyclerView;
     PendingInstallsAdapter mAdapter;
@@ -128,6 +127,8 @@ public class PendingInstallsFragment extends Fragment implements HardwareAccess.
     }
 
     public void setFragment(int idAppOffer, String offId) {
-        mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_OFFER, Constants.ID_APP_OFFER, 0), offId);
+        if(mCallBacks != null) {
+            mCallBacks.setFragment(Constants.ID_APP_OFFER, offId);
+        }
     }
 }

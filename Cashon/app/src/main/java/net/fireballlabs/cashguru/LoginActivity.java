@@ -8,26 +8,23 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import net.fireballlabs.helper.Constants;
-import net.fireballlabs.impl.Utility;
 
 import com.crashlytics.android.Crashlytics;
 import com.parse.LogInCallback;
+import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
-import com.parse.ParseException;
+
+import net.fireballlabs.helper.Constants;
+import net.fireballlabs.impl.Utility;
 
 /**
  * A login screen that offers login via email/password.
@@ -98,7 +95,7 @@ public class LoginActivity extends Activity {
             if (actionBar != null) {
                 actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(net.fireballlabs.cashguru.R.color.primary)));
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                    actionBar.setLogo(net.fireballlabs.cashguru.R.drawable.logo_no_shadow);
+                    actionBar.setLogo(R.drawable.logo_status_bar);
                 }
                 actionBar.setDisplayUseLogoEnabled(true);
             }
@@ -169,13 +166,13 @@ public class LoginActivity extends Activity {
                         if(e != null) {
                             Crashlytics.logException(e);
                             if (e.getCode() == ParseException.VALIDATION_ERROR || e.getCode() == ParseException.OBJECT_NOT_FOUND) {
-                                mMobileNumberEditText.setError(e.getMessage());
-                                Crashlytics.logException(e);
+//                                mMobileNumberEditText.setError(e.getMessage());
+//                                Crashlytics.logException(e);
                                 mMobileNumberEditText.requestFocus();
                             } else {
                                 // TODO Need to check for other exceptions
-                                mMobileNumberEditText.setError(e.getMessage());
-                                Crashlytics.logException(e);
+//                                mMobileNumberEditText.setError(e.getMessage());
+//                                Crashlytics.logException(e);
                             }
                         }
                         showProgress(false);

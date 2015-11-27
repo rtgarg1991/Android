@@ -39,7 +39,7 @@ public class UsedOffer {
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_INSTALL_DATE = "installDate";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_UNINSTALL_DATE = "uninstallDate";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_CONVERTED = "converted";
-    public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OUR_AFFILIATION = "ourAffiliation";
+        public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OUR_AFFILIATION = "ourAffiliation";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME = "package";
     public static final String PARSE_TABLE_INSTALLED_OFFERS_COLUMN_TYPE_ID = "offerType";
     public static String PARSE_TABLE_NAME_INSTALLS = "Installs";
@@ -218,16 +218,22 @@ public class UsedOffer {
                 // TODO store this info somewhere that user wasn't login and app was installed
                 return true;
             }
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
+            params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
+            params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME, packageName);
+            params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OUR_AFFILIATION, UsedOffer.checkIfThisOfferUserHasAttempted(packageName, context));
+//                params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OUR_AFFILIATION, true);
+            params.put("isInstallation", true);
             try {
-                HashMap<String, Object> params = new HashMap<String, Object>();
-                params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_USER_ID, user.getObjectId());
-                params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_DEVICE_ID, installation.getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID));
-                params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_PACKAGE_NAME, packageName);
-                params.put(UsedOffer.PARSE_TABLE_INSTALLED_OFFERS_COLUMN_OUR_AFFILIATION, UsedOffer.checkIfThisOfferUserHasAttempted(packageName, context));
-                params.put("isInstallation", true);
                 ParseCloud.callFunction(ParseConstants.FUNCTION_ADD_UPDATE_INSTALL, params);
             } catch (ParseException e) {
                 Crashlytics.logException(e);
+                try {
+                    ParseCloud.callFunction(ParseConstants.FUNCTION_ADD_UPDATE_INSTALL, params);
+                } catch (ParseException e1) {
+                    Crashlytics.logException(e1);
+                }
                 return true;
             }
         }
@@ -369,10 +375,12 @@ public class UsedOffer {
                 offer = Offer.findOffer(offers, offerId);
                 PreferenceManager.setDefaultSharedPreferenceValue(context, Constants.PREF_CLOUD_DATA_CHANGED, Context.MODE_PRIVATE, false);
             }
-            if (!ourAffiliation) {
-                offer.setIsAvailable(false);
-            } else {
-                offer.setPayoutConverted(typeId, converted);
+            if(offer != null) {
+                if (!ourAffiliation) {
+                    offer.setIsAvailable(false);
+                } else {
+                    offer.setPayoutConverted(typeId, converted);
+                }
             }
         }
         clearSavedData();
@@ -400,7 +408,20 @@ public class UsedOffer {
                     } catch (PackageManager.NameNotFoundException e) {
                         // No need
                     }
-                    availableOffers.add(offer.getId());
+                    if(availableOffers.size() > 0) {
+                        int i = 0;
+                        for (; i < availableOffers.size(); i++) {
+                            if(Offer.getOffer(availableOffers.get(i)).getPayout() < offer.getPayout()) {
+                                availableOffers.add(i, offer.getId());
+                                break;
+                            }
+                        }
+                        if(i == availableOffers.size()) {
+                            availableOffers.add(offer.getId());
+                        }
+                    } else {
+                        availableOffers.add(offer.getId());
+                    }
                 }
             }
         }

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_dim"
+    android:paddingLeft="@dimen/mobile_verification_main_padding_left"
+    android:paddingRight="@dimen/mobile_verification_main_padding_right"
+    android:paddingTop="@dimen/mobile_verification_main_padding_top"
+    android:gravity="center_horizontal">
+    <ImageView
+        android:layout_width="@dimen/mobile_verification_image_view_width"
+        android:layout_height="@dimen/mobile_verification_image_view_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/mobile_verification_image_view_margin_bottom"
+        android:layout_marginTop="@dimen/mobile_verification_image_view_margin_top"
+        android:src="@drawable/logo"
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/mobile_verification_sit_back_view_margin_bottom"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/mobile_verification_text_view_padding_left"
+        android:paddingRight="@dimen/mobile_verification_text_view_padding_right"
+        android:text="@string/msg_sit_back"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_17" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/mobile_verification_text_view_padding_left"
+        android:paddingRight="@dimen/mobile_verification_text_view_padding_right"
+        android:text="@string/msg_manual_otp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_12" />
+
+    <EditText
+        android:id="@+id/mobile_verification_otp_edit_text"
+        android:layout_width="@dimen/mobile_verification_edit_text_width"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:gravity="center_horizontal"
+        android:hint="@string/lbl_enter_otp"
+        android:inputType="number"
+        android:maxLength="6"
+        android:padding="@dimen/mobile_verification_edit_text_padding_left"
+        android:textSize="@dimen/text_size_17" />
+
+    <Button
+        android:id="@+id/mobile_verification_submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/mobile_verification_button_submit_margin_top"
+        android:background="@drawable/cashguru_btn_default_holo_light"
+        android:paddingLeft="@dimen/mobile_verification_button_submit_padding_left"
+        android:paddingRight="@dimen/mobile_verification_button_submit_padding_right"
+        android:text="@string/action_Submit"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_14" />
+
+    <LinearLayout
+        android:id="@+id/mobile_verification_edit_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/mobile_verification_edit_layout_margin_bottom"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/mobile_verification_mobile_number_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_16"
+            android:enabled="false"/>
+
+        <ImageButton
+            android:id="@+id/mobile_verification_mobile_number_edit_button"
+            android:layout_width="@dimen/mobile_verification_image_button_width"
+            android:layout_height="@dimen/mobile_verification_image_button_height"
+            android:layout_marginLeft="10dp"
+            android:background="@null"
+            android:src="@drawable/mode_edit"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/mobile_verification_button_submit_margin_top">
+
+        <ProgressBar
+            android:id="@+id/mobile_verification_progress_bar"
+            android:layout_width="@dimen/mobile_verification_progress_bar_width"
+            android:layout_height="@dimen/mobile_verification_progress_bar_height"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@color/primary"
+            android:indeterminateTintMode="src_atop"
+            android:visibility="gone" />
+        <TextView
+            android:id="@+id/mobile_verification_progress_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+</LinearLayout>

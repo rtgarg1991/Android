@@ -4,31 +4,31 @@
 
     <style name="cashguru" parent="@style/_cashguru"/>
 
-    <style name="_cashguru" parent="Theme.AppCompat.Light">
+    <style name="_cashguru" parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="android:editTextStyle">@style/EditTextcashguru</item>
+        <item name="editTextStyle">@style/EditTextcashguru</item>
 
         <item name="android:textColorHighlight">#99e35555</item>
 
-        <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewcashguru</item>
+        <item name="autoCompleteTextViewStyle">@style/AutoCompleteTextViewcashguru</item>
 
-        <item name="android:checkboxStyle">@style/CheckBoxcashguru</item>
+        <item name="checkboxStyle">@style/CheckBoxcashguru</item>
 
-        <item name="android:radioButtonStyle">@style/RadioButtoncashguru</item>
+        <item name="radioButtonStyle">@style/RadioButtoncashguru</item>
 
-        <item name="android:buttonStyle">@style/Buttoncashguru</item>
+        <item name="buttonStyle">@style/Buttoncashguru</item>
 
-        <item name="android:imageButtonStyle">@style/ImageButtoncashguru</item>
+        <item name="imageButtonStyle">@style/ImageButtoncashguru</item>
 
-        <item name="android:spinnerStyle">@style/Spinnercashguru</item>
+        <item name="spinnerStyle">@style/Spinnercashguru</item>
 
-        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemcashguru</item>
+        <item name="spinnerDropDownItemStyle">@style/SpinnerDropDownItemcashguru</item>
 
         <item name="android:progressBarStyleHorizontal">@style/ProgressBarcashguru</item>
 
-        <item name="android:seekBarStyle">@style/SeekBarcashguru</item>
+        <item name="seekBarStyle">@style/SeekBarcashguru</item>
 
-        <item name="android:ratingBarStyle">@style/RatingBarcashguru</item>
+        <item name="ratingBarStyle">@style/RatingBarcashguru</item>
 
         <item name="android:ratingBarStyleIndicator">@style/RatingBarBigcashguru</item>
 
@@ -41,7 +41,12 @@
         <item name="android:listViewWhiteStyle">@style/ListViewcashguru.White</item>
 
         <item name="android:spinnerItemStyle">@style/SpinnerItemcashguru</item>
-
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="listChoiceBackgroundIndicator">@drawable/cashguru_list_selector_holo_light</item>
     </style>
 
 </resources>

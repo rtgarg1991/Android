@@ -14,6 +14,8 @@
     <color name="primary_text_color">#FF212121</color>
     <color name="primary_text_color_light">#FFEDEDED</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white_dim">#AAFFFFFF</color>
+    <color name="white_double_dim">#55FFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="black_dim">#AA000000</color>
     <color name="black_double_dim">#55000000</color>

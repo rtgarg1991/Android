@@ -14,34 +14,9 @@
             android:layout_height="120dp"
             android:maxHeight="200dp"
             android:id="@+id/offer_fragment_image_view"
-            android:src="@drawable/splash"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="@dimen/dimen_12"
-            android:layout_marginLeft="@dimen/dimen_4"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/offer_fragment_title_view"
-            android:text="Flipkart2132312"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_size_24"
-            android:layout_marginTop="@dimen/dimen_16"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/offer_fragment_image_view"
-            android:layout_marginLeft="@dimen/dimen_4"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/offer_fragment_category_view"
-            android:text="Flipkart"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_size_16"
-            android:layout_toRightOf="@id/offer_fragment_image_view"
-            android:layout_below="@id/offer_fragment_title_view"
-            android:textColor="@color/primary_dim"
             android:layout_marginLeft="@dimen/dimen_4"/>
         <TextView
             android:layout_width="wrap_content"
@@ -50,10 +25,31 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dimen_10"
-            android:text="10"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_24"
             android:layout_marginTop="@dimen/dimen_20"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/offer_fragment_title_view"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_24"
+            android:layout_marginTop="@dimen/dimen_16"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/offer_fragment_image_view"
+            android:layout_toLeftOf="@id/offer_fragment_payout_view"
+            android:layout_marginLeft="@dimen/dimen_4"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/offer_fragment_category_view"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_16"
+            android:layout_toRightOf="@id/offer_fragment_image_view"
+            android:layout_below="@id/offer_fragment_title_view"
+            android:textColor="@color/primary_dim"
+            android:layout_marginLeft="@dimen/dimen_4"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,10 +57,11 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginRight="@dimen/dimen_10"
-            android:text="Install"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_24"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+
+            android:background="@drawable/cashguru_btn_default_holo_light"/>
 
 
     </RelativeLayout>
@@ -84,7 +81,6 @@
                 android:id="@+id/offer_fragment_description_text_view"
                 android:layout_margin="@dimen/dimen_10"
                 android:layout_below="@id/offer_fragment_top_view"
-                android:text="10"
                 android:textSize="@dimen/text_size_16"
                 android:layout_marginTop="@dimen/dimen_12"/>
             <LinearLayout
@@ -136,7 +132,6 @@
                 android:id="@+id/offer_fragment_tnc_text_view"
                 android:layout_margin="@dimen/dimen_10"
                 android:layout_below="@id/offer_fragment_top_view"
-                android:text="10"
                 android:textSize="@dimen/text_size_16"
                 android:layout_marginTop="@dimen/dimen_20"/>
         </LinearLayout>

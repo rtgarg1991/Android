@@ -1,5 +1,7 @@
 package net.fireballlabs.adapter;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -18,6 +20,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseInstallation;
+import com.parse.ParseUser;
+import com.squareup.picasso.Picasso;
+
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
@@ -28,15 +35,9 @@ import net.fireballlabs.impl.HardwareAccess;
 import net.fireballlabs.impl.Utility;
 import net.fireballlabs.ui.AppInstallsFragment;
 
-import com.crashlytics.android.Crashlytics;
-import com.parse.ParseInstallation;
-import com.parse.ParseUser;
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
 
 
 /**
@@ -44,15 +45,15 @@ import java.util.Timer;
  */
 public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.ViewHolder> {
     private final AppInstallsFragment mFragment;
-    Context mContext;
+    static Context mContext;
     List<String> mOffers;
 
     private static final int MSG_TIMEOUT = 1;
-    private static final long TIMEOUT = 15000;
+    private static final long TIMEOUT = 35000;
 
     TimerHandler handler = new TimerHandler();
 
-    public class TimerHandler extends Handler {
+    public static class TimerHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
@@ -70,7 +71,9 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
     public AppInstallsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int type) {
         LayoutInflater vi = LayoutInflater.from(parent.getContext());
         View v = null;
-        if(type == 1) {
+        if(type == Constants.OFFER_TYPE_NORMAL_INSTALL || type == Constants.OFFER_TYPE_REGISTER_INSTALL
+                || type == Constants.OFFER_TYPE_DOWNLOAD_INSTALL || type == Constants.OFFER_TYPE_DOWNLOAD_INSTALL_REGISTER
+                || type == Constants.OFFER_TYPE_LEAD || type == Constants.OFFER_TYPE_APP_SHARE) {
             v = vi.inflate(R.layout.app_install_list_item, parent, false);
             TextView title = (TextView) v.findViewById(R.id.app_install_list_item_title);
             TextView subtitle = (TextView) v.findViewById(R.id.app_install_list_item_subtitle);
@@ -81,7 +84,28 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
             ViewHolder holder = new ViewHolder(v, title, subtitle, payout, description, image, button, type);
 
             return holder;
-        } else if(type == -1){
+        } else if(type == Constants.OFFER_TYPE_NEW_INSTALL || type == Constants.OFFER_TYPE_DOWNLOAD_NEW_INSTALL
+                || type == Constants.OFFER_TYPE_NEW_LEAD || type == Constants.OFFER_TYPE_NEW_APP_SHARE) {
+            v = vi.inflate(R.layout.app_install_list_item_new, parent, false);
+            TextView title = (TextView) v.findViewById(R.id.app_install_list_item_title);
+            TextView subtitle = (TextView) v.findViewById(R.id.app_install_list_item_subtitle);
+            TextView payout = (TextView) v.findViewById(R.id.app_install_list_item_payout);
+            TextView description = (TextView) v.findViewById(R.id.app_install_list_item_description);
+            ImageView image = (ImageView) v.findViewById(R.id.app_install_list_item_image_view);
+            Button button = (Button) v.findViewById(R.id.app_install_list_item_Button);
+            ViewHolder holder = new ViewHolder(v, title, subtitle, payout, description, image, button, type);
+            return holder;
+        } else if(type > Constants.OFFER_TYPE_APP_REDIRECT_BASE) {
+            v = vi.inflate(R.layout.app_install_list_item_navigation, parent, false);
+            TextView subtitle = (TextView) v.findViewById(R.id.app_install_list_item_subtitle);
+            Button button = (Button) v.findViewById(R.id.app_install_list_item_Button);
+            /*TextView title = (TextView) v.findViewById(R.id.app_install_list_item_title);
+            TextView payout = (TextView) v.findViewById(R.id.app_install_list_item_payout);
+            TextView description = (TextView) v.findViewById(R.id.app_install_list_item_description);
+            ImageView image = (ImageView) v.findViewById(R.id.app_install_list_item_image_view);*/
+            ViewHolder holder = new ViewHolder(v, null, subtitle, null, null, null, button, type);
+            return holder;
+        } else if(type == -1) {
             ViewHolder holder = new ViewHolder(new View(mContext), null, null, null, null, null, null, -1);
             return holder;
         } else {
@@ -96,116 +120,211 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
         holder.setTextViewTitleText(offer.getTitle());
         holder.setTextViewSubtitleText(offer.getSubTitle());
         holder.setTextViewPayoutText(Constants.INR_LABEL + String.valueOf(offer.getPayout()));
-        if(holder.type == 1) {
+        if(holder.type == Constants.OFFER_TYPE_NORMAL_INSTALL || holder.type == Constants.OFFER_TYPE_NEW_INSTALL) {
             holder.setTextViewDescriptionText("Click here and install this app to earn " + Constants.INR_LABEL + "" + offer.getPayout());
-        } else if(holder.type == 2) {
+        } else if(holder.type == Constants.OFFER_TYPE_REGISTER_INSTALL) {
             holder.setTextViewDescriptionText("Install this app and register to earn " + Constants.INR_LABEL + "" + offer.getPayout());
+        } else if(holder.type == Constants.OFFER_TYPE_DOWNLOAD_INSTALL || holder.type == Constants.OFFER_TYPE_DOWNLOAD_NEW_INSTALL) {
+            holder.setTextViewDescriptionText("Download and Install this app to earn " + Constants.INR_LABEL + "" + offer.getPayout());
+        } else if(holder.type == Constants.OFFER_TYPE_DOWNLOAD_INSTALL_REGISTER) {
+            holder.setTextViewDescriptionText("Download, Install and Register in this app to earn " + Constants.INR_LABEL + "" + offer.getPayout());
+        } else if(holder.type == Constants.OFFER_TYPE_NEW_LEAD || holder.type == Constants.OFFER_TYPE_LEAD) {
+            holder.setTextViewDescriptionText("Open and complete this survey to earn " + Constants.INR_LABEL + "" + offer.getPayout());
+        } else if(holder.type == Constants.OFFER_TYPE_APP_SHARE || holder.type == Constants.OFFER_TYPE_NEW_APP_SHARE) {
+            holder.setTextViewDescriptionText(offer.getDescription());
         }
 
-        StringBuilder allPayout = new StringBuilder();
-        /*for (AppInstallsFragment.Offer.Payout payout:
-                mOffers.get(position).payouts) {
-            allPayout.append(payout.description + "\t" + payout.currency + payout.payout);
+        if(offer.getImageName() != null) {
+            String url = Offer.IMAGE_SERVER_URL
+                    + String.format(Locale.ENGLISH, offer.getImageName(), Utility.getDeviceDensity(mContext));
+            holder.setImageView(url);
         }
-        holder.textViewReferenceNumber.setText(allPayout);*/
-        String url = Offer.IMAGE_SERVER_URL
-                + String.format(Locale.ENGLISH, offer.getImageName(), Utility.getDeviceDensity(mContext));
-        holder.setImageView(url);
-
 
         holder.getParent().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mFragment.setFragment(Constants.ID_APP_OFFER, offer.getId());
+                if (mFragment != null) {
+                    if (holder.type <= Constants.OFFER_TYPE_APP_REDIRECT_BASE) {
+                        mFragment.setFragment(Constants.ID_APP_OFFER, offer.getId());
+                    } else {
+                        mFragment.setFragment(offer.getType() - Constants.OFFER_TYPE_APP_REDIRECT_BASE, null);
+                    }
+                }
             }
         });
 
-        if(holder.clickButton != null) {
-            holder.clickButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Utility.showInformativeDialog(new Utility.DialogCallback() {
-                        @Override
-                        public void onDialogCallback(boolean success) {
-                            if(!Utility.isInternetConnected(mContext)) {
-                                HardwareAccess.access(mContext, mFragment, HardwareAccess.ACCESS_INTERNET);
-                                return;
-                            }
-                            final WebView webView = new WebView(mContext);
-                            final String affUrl = Utility.getRefUrlString(offer.getAffLink(),
-                                    ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID), offer.getId());
-                            final String trackId = offer.getPackageName();
+        if(holder.type > Constants.OFFER_TYPE_APP_REDIRECT_BASE) {
+            if (holder.clickButton != null) {
+                holder.clickButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mFragment.setFragment(offer.getType() - Constants.OFFER_TYPE_APP_REDIRECT_BASE, null);
+                    }
+                });
+            }
+        } else if(holder.type == Constants.OFFER_TYPE_APP_SHARE
+                || holder.type == Constants.OFFER_TYPE_NEW_APP_SHARE) {
 
-                            webView.setWebViewClient(new WebViewClient() {
-                                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                                    if(handler.hasMessages(MSG_TIMEOUT)) {
-                                        handler.removeMessages(MSG_TIMEOUT);
-                                    }
-                                    Logger.doSecureLogging(Log.INFO, url);
-                                    if (url.indexOf("https://play.google.com/store/apps/details") == 0) {
-                                        UsedOffer.recordInstallAttempt(trackId, mContext);
-                                        url = url.replace("https://play.google.com/store/apps/details", "market://details");
-                                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                        if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                                            mContext.startActivity(browserIntent);
-                                        } else {
-                                            // do nothing for now as there is no Play Store app there in this device
+            holder.clickButton.setText("Share & Earn");
+            if (holder.clickButton != null) {
+                holder.clickButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mFragment.setFragment(Constants.ID_APP_OFFER, offer.getId());
+                    }
+                });
+            }
+
+        } else if(holder.type == Constants.OFFER_TYPE_DOWNLOAD_INSTALL
+                || holder.type == Constants.OFFER_TYPE_DOWNLOAD_INSTALL_REGISTER
+                || holder.type == Constants.OFFER_TYPE_DOWNLOAD_NEW_INSTALL
+                || holder.type == Constants.OFFER_TYPE_LEAD
+                || holder.type == Constants.OFFER_TYPE_NEW_LEAD) {
+            if(holder.type == Constants.OFFER_TYPE_DOWNLOAD_INSTALL
+                    || holder.type == Constants.OFFER_TYPE_DOWNLOAD_INSTALL_REGISTER
+                    || holder.type == Constants.OFFER_TYPE_DOWNLOAD_NEW_INSTALL) {
+                holder.clickButton.setText("Download & Earn");
+            } else {
+                holder.clickButton.setText("Complete & Earn");
+            }
+            if (holder.clickButton != null) {
+                holder.clickButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Utility.showInformativeDialog(new Utility.DialogCallback() {
+                            @Override
+                            public void onDialogCallback(boolean success) {
+                                if (!Utility.isInternetConnected(mContext)) {
+                                    HardwareAccess.access(mContext, mFragment, HardwareAccess.ACCESS_INTERNET);
+                                    return;
+                                }
+                                final String affUrl = Utility.getRefUrlString(offer.getAffLink(),
+                                        ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID), offer.getId());
+
+                                if(holder.type == Constants.OFFER_TYPE_DOWNLOAD_INSTALL
+                                        || holder.type == Constants.OFFER_TYPE_DOWNLOAD_INSTALL_REGISTER
+                                        || holder.type == Constants.OFFER_TYPE_DOWNLOAD_NEW_INSTALL) {
+                                    UsedOffer.recordInstallAttempt(offer.getPackageName(), mContext);
+                                }
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(affUrl));
+                                mContext.startActivity(intent);
+                            }
+                        }, mContext, "Attention!", offer.getTnc(), "OK", true);
+                    }
+                });
+            }
+        } else {
+            if (holder.clickButton != null) {
+                holder.clickButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Utility.showInformativeDialog(new Utility.DialogCallback() {
+                            @Override
+                            public void onDialogCallback(boolean success) {
+                                if (!Utility.isInternetConnected(mContext)) {
+                                    HardwareAccess.access(mContext, mFragment, HardwareAccess.ACCESS_INTERNET);
+                                    return;
+                                }
+                                final WebView webView = new WebView(mContext);
+                                final String affUrl = Utility.getRefUrlString(offer.getAffLink(),
+                                        ParseUser.getCurrentUser().getObjectId(), ParseInstallation.getCurrentInstallation().getString(InstallationHelper.PARSE_TABLE_COLUMN_DEVICE_ID), offer.getId());
+                                final String trackId = offer.getPackageName();
+                                webView.getSettings().setJavaScriptEnabled(true);
+                                webView.setWebViewClient(new WebViewClient() {
+                                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                                        if (handler.hasMessages(MSG_TIMEOUT)) {
+                                            handler.removeMessages(MSG_TIMEOUT);
                                         }
-                                        Utility.showProgress(mContext, false, null);
-                                        return true;
-                                    } else if (url.contains("market://details")) {
-                                        UsedOffer.recordInstallAttempt(trackId, mContext);
-                                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                        if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                                            mContext.startActivity(browserIntent);
-                                        } else {
-                                            // do nothing for now as there is no Play Store app there in this device
+                                        Logger.doSecureLogging(Log.INFO, url);
+                                        if (url.indexOf("https://play.google.com/store/apps/details") == 0) {
+                                            UsedOffer.recordInstallAttempt(trackId, mContext);
+                                            url = url.replace("https://play.google.com/store/apps/details", "market://details");
+                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                            if (browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                                mContext.startActivity(browserIntent);
+                                            } else {
+                                                // do nothing for now as there is no Play Store app there in this device
+                                            }
+                                            Utility.showProgress(mContext, false, null);
+                                            return true;
+                                        } else if (url.contains("market://details")) {
+                                            UsedOffer.recordInstallAttempt(trackId, mContext);
+                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                            if (browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                                mContext.startActivity(browserIntent);
+                                            }
+                                            Utility.showProgress(mContext, false, null);
+                                            return true;
                                         }
-                                        Utility.showProgress(mContext, false, null);
-                                        return true;
+                                        handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
+                                        view.loadUrl(url);
+                                        return false; // then it is not handled by default action
                                     }
-                                    handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
-                                    view.loadUrl(url);
-                                    return false; // then it is not handled by default action
-                                }
-                            });
+                                });
 
-                            if (affUrl.contains("play.google.com")) {
-                                String url = affUrl;
-                                UsedOffer.recordInstallAttempt(trackId, mContext);
-                                url = url.replace("https://play.google.com/store/apps/details", "market://details");
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                                    mContext.startActivity(browserIntent);
+                                if (affUrl.contains("play.google.com")) {
+                                    String url = affUrl;
+                                    UsedOffer.recordInstallAttempt(trackId, mContext);
+                                    url = url.replace("https://play.google.com/store/apps/details", "market://details");
+                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                    if (browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                        mContext.startActivity(browserIntent);
+                                    } else {
+                                        // do nothing for now as there is no Play Store app there in this device
+                                    }
+                                    Utility.showProgress(mContext, false, null);
+                                } else if (affUrl.contains("market://details")) {
+                                    String url = affUrl;
+                                    UsedOffer.recordInstallAttempt(trackId, mContext);
+                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                    if (browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                                        mContext.startActivity(browserIntent);
+                                    } else {
+                                        // do nothing for now as there is no Play Store app there in this device
+                                    }
+                                    Utility.showProgress(mContext, false, null);
                                 } else {
-                                    // do nothing for now as there is no Play Store app there in this device
+                                    webView.loadUrl(affUrl);
+                                    Logger.doSecureLogging(Log.INFO, "1" + affUrl);
+                                    Utility.showProgress(mContext, true, "Please Wait...");
                                 }
-                                Utility.showProgress(mContext, false, null);
-                            } else if (affUrl.contains("market://details")) {
-                                String url = affUrl;
-                                UsedOffer.recordInstallAttempt(trackId, mContext);
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                if(browserIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                                    mContext.startActivity(browserIntent);
-                                } else {
-                                    // do nothing for now as there is no Play Store app there in this device
+                                if (handler.hasMessages(MSG_TIMEOUT)) {
+                                    handler.removeMessages(MSG_TIMEOUT);
                                 }
-                                Utility.showProgress(mContext, false, null);
-                            } else {
-                                webView.loadUrl(affUrl);
-                                Logger.doSecureLogging(Log.INFO, "1" + affUrl);
-                                Utility.showProgress(mContext, true, "Please Wait...");
+                                handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
                             }
-                            if(handler.hasMessages(MSG_TIMEOUT)) {
-                                handler.removeMessages(MSG_TIMEOUT);
-                            }
-                            handler.sendEmptyMessageDelayed(MSG_TIMEOUT, TIMEOUT);
-                        }
-                    }, mContext, "Attention!", offer.getDescription(), "OK", true);
+                        }, mContext, "Attention!", offer.getTnc(), "OK", true);
 
-                    UsedOffer.checkAndAddPackageOnCloud(mContext, offer.getPackageName());
-                }
-            });
+                        //UsedOffer.checkAndAddPackageOnCloud(mContext, offer.getPackageName());
+                    }
+                });
+            }
+        }
+
+        if(mFragment.isScrollDown(position)) {
+            holder.parent.setTranslationY(200);
+            holder.parent.setAlpha(0);
+
+            PropertyValuesHolder propx = PropertyValuesHolder.ofFloat("translationY", 0);
+            PropertyValuesHolder propa = PropertyValuesHolder.ofFloat("alpha", 1);
+
+            ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(holder.parent, propx, propa);
+//        animator.setStartDelay(0);
+            //scrollDelay++;
+            animator.setDuration(400);
+            animator.start();
+        } else {
+            holder.parent.setTranslationY(-200);
+            holder.parent.setAlpha(0);
+
+            PropertyValuesHolder propx = PropertyValuesHolder.ofFloat("translationY", 0);
+            PropertyValuesHolder propa = PropertyValuesHolder.ofFloat("alpha", 1);
+
+            ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(holder.parent, propx, propa);
+//        animator.setStartDelay(0);
+            //scrollDelay++;
+            animator.setDuration(400);
+            animator.start();
         }
     }
 
@@ -256,6 +375,19 @@ public class AppInstallsAdapter extends RecyclerView.Adapter<AppInstallsAdapter.
                 mFragment.setEmptyViewVisibility(View.GONE);
             } else {
                 mFragment.setEmptyViewVisibility(View.VISIBLE);
+            }
+        }
+        for(int i = 0; i < mOffers.size(); i++) {
+            String offerId = mOffers.get(i);
+            if(Offer.getOffer(offerId).getType() > Constants.OFFER_TYPE_APP_REDIRECT_BASE) {
+                int pos = Offer.getOffer(offerId).getPayout();
+                if(mOffers.size() > pos) {
+                    mOffers.remove(offerId);
+                    mOffers.add(pos, offerId);
+                } else {
+                    mOffers.remove(offerId);
+                    mOffers.add(mOffers.size(), offerId);
+                }
             }
         }
         notifyDataSetChanged();

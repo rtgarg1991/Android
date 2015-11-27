@@ -2,7 +2,6 @@ package net.fireballlabs.ui;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +14,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+
 import net.fireballlabs.MainActivityCallBacks;
-import net.fireballlabs.adapter.MainDrawerAdapter;
 import net.fireballlabs.cashguru.R;
 import net.fireballlabs.helper.Constants;
 import net.fireballlabs.helper.Logger;
@@ -24,17 +28,11 @@ import net.fireballlabs.helper.model.Conversions;
 import net.fireballlabs.helper.model.Recharge;
 import net.fireballlabs.impl.Utility;
 
-import com.crashlytics.android.Crashlytics;
-import com.parse.FunctionCallback;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class RechargeFragment extends Fragment implements Utility.DialogCallback {
+public class RechargeFragment extends BaseFragment implements Utility.DialogCallback {
 
     public static String PARSE_TABLE_COLUMN_USER_ID = "userId";
 
@@ -88,14 +86,16 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                balance = Conversions.getBalance(getActivity(), true);
-                if(getActivity() != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            balanceTextView.setText(Constants.INR_LABEL + String.valueOf(balance));
-                        }
-                    });
+                if(isValidContext(getActivity())) {
+                    balance = Conversions.getBalance(getActivity(), true);
+                    if(isValidContext(getActivity())) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                balanceTextView.setText(Constants.INR_LABEL + String.valueOf(balance));
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -154,27 +154,27 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
                         ParseCloud.callFunctionInBackground("addNewRechargeRequest", params, new FunctionCallback<Boolean>() {
                             public void done(Boolean success, ParseException e) {
                                 if (e == null) {
-                                    if(success) {
-                                        Utility.showInformativeDialog(new Utility.DialogCallback() {
-                                                      @Override
-                                                      public void onDialogCallback(boolean success) {
-                                                          mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS
-                                                                  , Constants.ID_APP_INSTALLS, R.drawable.offerwall), null);
-                                                      }
-                                                  }, getActivity(), "Recharge Sent Successfully",
-                                            "Recharge request sent successfully, and it will be processed within 48 hours",
-                                            "OK", true);
-                                        Recharge.clearRechargeHistory();
-                                    } else {
-                                        Utility.showInformativeDialog(new Utility.DialogCallback() {
-                                                      @Override
-                                                      public void onDialogCallback(boolean success) {
-                                                          mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_INSTALLS
-                                                                  , Constants.ID_APP_INSTALLS, R.drawable.offerwall), null);
-                                                      }
-                                                  }, getActivity(), "Recharge Not Sent",
-                                            "Recharge request not sent, we already have one pending request for Recharge from your id",
-                                            "OK", true);
+                                    if(isValidContext(getActivity())) {
+                                        if (success) {
+                                            Utility.showInformativeDialog(new Utility.DialogCallback() {
+                                                                              @Override
+                                                                              public void onDialogCallback(boolean success) {
+                                                                                  mCallBacks.setFragment(Constants.ID_APP_INSTALLS, null);
+                                                                              }
+                                                                          }, getActivity(), "Recharge Sent Successfully",
+                                                    "Recharge request sent successfully, and it will be processed within 48 hours",
+                                                    "OK", true);
+                                            Recharge.clearRechargeHistory();
+                                        } else {
+                                            Utility.showInformativeDialog(new Utility.DialogCallback() {
+                                                                              @Override
+                                                                              public void onDialogCallback(boolean success) {
+                                                                                  mCallBacks.setFragment(Constants.ID_APP_INSTALLS, null);
+                                                                              }
+                                                                          }, getActivity(), "Recharge Not Sent",
+                                                    "Recharge request not sent, we already have one pending request for Recharge from your id",
+                                                    "OK", true);
+                                        }
                                     }
                                 } else {
                                     Logger.doSecureLogging(Log.WARN, "Recharge request not sent successfully." + e.getCode());
@@ -183,7 +183,7 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
                             }
                         });
 
-                        if(isVisible()) {
+                        if(isVisible() && isValidContext(getActivity())) {
                             Utility.showInformativeDialog(RechargeFragment.this, getActivity(), null, Constants.RECHARGE_SENT_SUCCESSFUL, null, false);
                         }
                     } else {
@@ -201,7 +201,9 @@ public class RechargeFragment extends Fragment implements Utility.DialogCallback
 
     @Override
     public void onDialogCallback(boolean success) {
-        mCallBacks.setFragment(new MainDrawerAdapter.MainAppFeature(Constants.TITLE_APP_RECHARGE, Constants.ID_APP_RECHARGE, R.drawable.topup), null);
+        if(mCallBacks != null) {
+            mCallBacks.setFragment(Constants.ID_APP_RECHARGE, null);
+        }
     }
 
     @Override

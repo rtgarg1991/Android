@@ -38,7 +38,8 @@
     <string name="title_activity_main">CashGuru</string>
 
     <string name="referral_code">Your Referral Code is : </string>
-    <string name="referral_conditions">How it works : \r\n\r\n1. Share your unique referral code with your friends\r\n\r\n2. Your friend must enter your unique referral code while signing up.\r\n\r\n3. You and your friend will be credited with ₹5 each once your friend has 2 completed installs.\r\n\r\n4. You will credited with extra ₹5 referral bonus when your friend  completes 4 installations in total (Limited Time) \r\n\r\nNote: Valid for new users only.</string>
+    <string name="referral_conditions">How it works : \r\n1. Invite your friends and earn upto ₹{refer} for each referral.\r\n2. ₹{refer_1} will be credited to your account when your friend installs {count_1} app and ₹{refer_2} when your friend installs {count_2} app.\r\nNote: Valid for new users only.</string>
+    <string name="referral_conditions_2">How it works : \r\n1. Invite your friends and earn upto ₹{refer} for each referral.\r\n2. ₹{refer_1} will be credited to your account when your friend installs {count_1} app and ₹{refer_2} when your friend installs {count_2} app.\r\nNote: Valid for new users only.</string>
     <string name="share_text">Share</string>
     <string name="share_using">Share Referral Code via</string>
 
@@ -48,6 +49,7 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save">Save</string>
     <string name="send">Send</string>
     <string name="contact_us_title_string">Contact Us</string>
     <string name="edit_number">Edit Number</string>
@@ -172,13 +174,92 @@
     <string name="user_profile_name">Name</string>
     <string name="user_profile_sex">Sex</string>
     <string name="user_profile_dob">Date of Birth</string>
+
+    <string name="user_profile_phone">Phone</string>
+    <string name="user_profile_type">Type</string>
+    <string name="user_profile_Operator">Operator</string>
+    <string name="user_profile_Circle">Circle</string>
+
+    <string name="user_profile_city">City</string>
+    <string name="user_profile_state">State</string>
+
+    <string name="user_profile">Profile</string>
     <string-array name="user_profile_sex_array">
+        <item>Select</item>
         <item>Male</item>
         <item>Female</item>
+    </string-array>
+    <string-array name="user_profile_mobile_type_array">
+        <item>Select</item>
+        <item>Prepaid</item>
+        <item>Postpaid</item>
+    </string-array>
+    <string-array name="user_profile_state_array">
+        <item>Select</item>
+        <item>Andaman and Nicobar Islands</item>
+        <item>Andhra Pradesh</item>
+        <item>Arunachal Pradesh</item>
+        <item>Assam</item>
+        <item>Bihar</item>
+        <item>Chandigarh</item>
+        <item>Chhattisgarh</item>
+        <item>Dadra and Nagar Haveli</item>
+        <item>Daman and Diu</item>
+        <item>NCR/Delhi</item>
+        <item>Goa</item>
+        <item>Gujarat</item>
+        <item>Haryana</item>
+        <item>Himachal Pradesh</item>
+        <item>Jammu and Kashmir</item>
+        <item>Jharkhand</item>
+        <item>Karnataka</item>
+        <item>Kerala</item>
+        <item>Lakshadweep</item>
+        <item>Madhya Pradesh</item>
+        <item>Maharashtra</item>
+        <item>Manipur</item>
+        <item>Meghalaya</item>
+        <item>Mizoram</item>
+        <item>Nagaland</item>
+        <item>Odisha</item>
+        <item>Puducherry</item>
+        <item>Punjab</item>
+        <item>Rajasthan</item>
+        <item>Sikkim</item>
+        <item>Tamil Nadu</item>
+        <item>Telangana</item>
+        <item>Tripura</item>
+        <item>Uttar Pradesh</item>
+        <item>Uttarakhand</item>
+        <item>West Bengal</item>
     </string-array>
     <string name="sms_api_key">87880AE6FkBTWqTR559cd101</string>
     <string name="msg_sit_back">Sit back &amp; Relax! while we verify your mobile number</string>
     <string name="lbl_enter_otp">Enter OTP</string>
     <string name="msg_manual_otp">(Enter the OTP below in case if we fail to detect the SMS automatically)</string>
     <string name="title_activity_offer">OfferActivity</string>
+
+
+    <string name="permission_get_account_rationale">Get Account permission is needed for CashGuru to work properly.</string>
+    <string name="permission_read_profile_rationale">Read Profile permission is needed for CashGuru to work properly.</string>
+    <string name="permission_read_contacts_rationale">Read Contacts permission is needed for CashGuru to work properly.</string>
+    <string name="permission_internet_rationale">Internet permission is needed for CashGuru to work properly.</string>
+    <string name="permission_read_phone_state_rationale">Read Phone State permission is needed for CashGuru to work properly.</string>
+    <string name="permission_c2dm_rationale">C2DM permission is needed for CashGuru to work properly.</string>
+    <string name="permission_receive_sms_rationale">Receive SMS permission is needed for CashGuru to work properly.</string>
+    <string name="permission_access_network_state_rationale">Access Network State permission is needed for CashGuru to work properly.</string>
+    <string name="permission_wake_lock_rationale">Wake Lock permission is needed for CashGuru to work properly.</string>
+    <string name="permission_boot_completed_rationale">Boot Completed permission is needed for CashGuru to work properly.</string>
+    <string name="permission_vibrate_rationale">Vibrate permission is needed for CashGuru to work properly.</string>
+    <string name="permission_install_shortcut_rationale">Install Shortcut permission is needed for CashGuru to work properly.</string>
+    <string name="permission_access_coarse_location">Access to Coarse Location permission is needed for CashGuru to work properly.</string>
+
+
+    <string name="drawer_item_offer_wall">Offer Wall</string>
+    <string name="drawer_item_hot_deals">Hot Deals</string>
+    <string name="drawer_item_refer">Refer \u0026 Earn</string>
+    <string name="drawer_item_top_up">Top Up</string>
+    <string name="drawer_item_contact_us">Contact Us</string>
+    <string name="drawer_item_tandc">T \u0026 C</string>
+    <string name="drawer_item_faq">FAQ</string>
 </resources>

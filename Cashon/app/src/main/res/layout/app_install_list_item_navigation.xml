@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    card_view:cardCornerRadius="@dimen/dimen_4"
+    android:layout_margin="@dimen/dimen_2"
+    card_view:cardBackgroundColor="@color/primary">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dimen_8"
+        android:paddingRight="@dimen/dimen_8">
+
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/app_install_list_item_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_20"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/app_install_item_title_margin_top"
+                android:layout_marginLeft="@dimen/dimen_6"
+                android:layout_marginBottom="@dimen/app_install_item_title_margin_bottom"
+                android:textColor="@color/white"
+                android:text="Refer \u0026 Earn"
+                android:textStyle="bold"
+                android:visibility="gone"
+                />
+            <TextView
+                android:id="@+id/app_install_list_item_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Refer your friends and Earn upto ₹20. Limited time offer!"
+                android:gravity="left"
+                android:layout_toRightOf="@id/app_install_list_item_image_view"
+                android:layout_below="@id/app_install_list_item_title"
+                android:layout_marginTop="@dimen/app_install_item_description_margin_top"
+                android:layout_marginLeft="@dimen/dimen_6"
+                android:layout_marginBottom="@dimen/app_install_item_description_margin_bottom"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_17"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-20dp">
+            <Button
+                android:id="@+id/app_install_list_item_Button"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:textSize="@dimen/text_size_17"
+                android:text="Refer \u0026 Earn"
+                android:textStyle="bold"
+                android:layout_marginLeft="@dimen/app_install_item_button_margin_left"
+                android:layout_marginBottom="@dimen/app_install_item_button_margin_bottom"
+                android:layout_marginRight="@dimen/app_install_item_button_margin_right"
+                android:textColor="@color/white"
+                android:background="@null"/>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:singleLine="false"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:id="@+id/app_install_list_item_description"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="@dimen/app_install_item_button_margin_top"
+                android:layout_marginLeft="@dimen/app_install_item_button_margin_left"
+                android:layout_marginBottom="@dimen/app_install_item_button_margin_bottom"
+                android:layout_marginRight="@dimen/app_install_item_button_margin_right"
+                android:textColor="@color/black"
+                android:layout_toLeftOf="@id/app_install_list_item_Button"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>
